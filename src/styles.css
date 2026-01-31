@@ -1,1 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+/* styles.css - Configuración global */
+body {
+  overscroll-behavior: none; /* Previene bounce en iOS */
+}
+
+html {
+  scroll-padding-top: calc(56px + env(safe-area-inset-top));
+  scroll-padding-bottom: calc(64px + env(safe-area-inset-bottom));
+}
