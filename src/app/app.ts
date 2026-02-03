@@ -1,6 +1,8 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, RouterOutlet } from '@angular/router';
 import { BottomBar } from './layout/bottom-bar/bottom-bar';
+import { Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +11,18 @@ import { BottomBar } from './layout/bottom-bar/bottom-bar';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('cafeya');
+  hideBottomBar = signal(false);
+  activeSession: boolean = false;
+
+  constructor(router: Router) {
+    router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const url = event.urlAfterRedirects;
+        
+        const shouldHide = url.startsWith('/scan') || url.startsWith('/validate');
+        
+        this.hideBottomBar.set(shouldHide);
+      });
+  }
 }

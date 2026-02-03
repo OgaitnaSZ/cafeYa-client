@@ -1,0 +1,314 @@
+<!-- validate.component.html -->
+<div class="h-full flex flex-col bg-gradient-to-b from-orange-50 to-white">
+  
+  <!-- HEADER -->
+  <header class="
+    h-14
+    pt-safe-top
+    px-4
+    flex items-center
+    bg-white
+    border-b border-gray-100
+  ">
+    <button 
+      (click)="goBack()"
+      class="
+        w-10 h-10
+        flex items-center justify-center
+        text-gray-700
+        rounded-full
+        active:bg-gray-100
+      "
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    
+    <h1 class="flex-1 text-center text-lg font-semibold text-gray-900">
+      Validar mesa
+    </h1>
+    
+    <div class="w-10"></div> <!-- Spacer para centrar el título -->
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="flex-1 overflow-y-auto px-4 pt-8 pb-6">
+    <div class="max-w-md mx-auto">
+      
+      <!-- Ícono de éxito (QR escaneado) -->
+      <div class="
+        w-20 h-20
+        mx-auto mb-6
+        bg-green-100
+        rounded-full
+        flex items-center justify-center
+      ">
+        <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      
+      <!-- Título -->
+      <h2 class="text-2xl font-bold text-center text-gray-900 mb-2">
+        ¡QR escaneado!
+      </h2>
+      
+      <p class="text-center text-gray-600 mb-8">
+        Ahora ingresá el código de tu mesa para continuar
+      </p>
+      
+      <!-- CARD DE MESA -->
+      <div class="
+        bg-white
+        rounded-2xl
+        p-6
+        shadow-lg
+        border-2 border-orange-200
+        mb-6
+      ">
+        <!-- Número de mesa -->
+        <div class="text-center mb-6">
+          <p class="text-sm text-gray-500 mb-2">
+            Número de mesa
+          </p>
+          <div class="
+            inline-flex items-center justify-center
+            w-20 h-20
+            bg-gradient-to-br from-orange-500 to-red-500
+            text-white
+            rounded-2xl
+            shadow-lg
+          ">
+            <span class="text-4xl font-bold">
+              {{ mesaNumber }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Separador -->
+        <div class="border-t border-gray-200 mb-6"></div>
+        
+        <!-- Input de código -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-3">
+            Código de validación
+          </label>
+          
+          <!-- Código PIN de 4 dígitos -->
+          <div class="flex gap-3 justify-center mb-2">
+            <input
+              #digit1
+              type="text"
+              inputmode="numeric"
+              maxlength="1"
+              (input)="onDigitInput($event, 1)"
+              (keydown)="onKeyDown($event, 0)"
+              class="
+                w-14 h-16
+                text-center text-2xl font-bold
+                bg-gray-50
+                border-2 border-gray-300
+                rounded-xl
+                focus:border-orange-500 focus:bg-white
+                focus:outline-none
+                transition
+              "
+            />
+            <input
+              #digit2
+              type="text"
+              inputmode="numeric"
+              maxlength="1"
+
+              (input)="onDigitInput($event, 2)"
+              (keydown)="onKeyDown($event, 1)"
+              class="
+                w-14 h-16
+                text-center text-2xl font-bold
+                bg-gray-50
+                border-2 border-gray-300
+                rounded-xl
+                focus:border-orange-500 focus:bg-white
+                focus:outline-none
+                transition
+              "
+            />
+            <input
+              #digit3
+              type="text"
+              inputmode="numeric"
+              maxlength="1"
+
+              (input)="onDigitInput($event, 3)"
+              (keydown)="onKeyDown($event, 2)"
+              class="
+                w-14 h-16
+                text-center text-2xl font-bold
+                bg-gray-50
+                border-2 border-gray-300
+                rounded-xl
+                focus:border-orange-500 focus:bg-white
+                focus:outline-none
+                transition
+              "
+            />
+            <input
+              #digit4
+              type="text"
+              inputmode="numeric"
+              maxlength="1"
+
+              (input)="onDigitInput($event, 4)"
+              (keydown)="onKeyDown($event, 3)"
+              class="
+                w-14 h-16
+                text-center text-2xl font-bold
+                bg-gray-50
+                border-2 border-gray-300
+                rounded-xl
+                focus:border-orange-500 focus:bg-white
+                focus:outline-none
+                transition
+              "
+            />
+          </div>
+          
+          <!-- Hint -->
+          <p class="text-xs text-gray-500 text-center">
+            El código está visible en la mesa
+          </p>
+          
+          <!-- Error message -->
+          @if(error){
+            <div 
+              class="
+                mt-4
+                p-3
+                bg-red-50
+                border border-red-200
+                rounded-xl
+                flex items-start gap-2
+              "
+            >
+              <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <p class="text-sm text-red-700">
+                {{ error }}
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+      
+      <!-- Botón de validación -->
+      <button
+        [disabled]="!isCodeComplete() || isValidating"
+        (click)="validateCode()"
+        class="
+          w-full h-14
+          bg-gradient-to-r from-orange-500 to-red-500
+          text-white text-lg font-bold
+          rounded-xl
+          shadow-lg shadow-orange-500/30
+          disabled:opacity-50 disabled:shadow-none
+          active:scale-95
+          transition-all
+          flex items-center justify-center gap-2
+        "
+      >
+        @if (!isValidating){
+          <span>Validar y continuar</span>
+        }
+        
+        <!-- Loading state -->
+        @if(isValidating){
+          <div class="flex items-center gap-2">
+            <div class="
+              w-5 h-5
+              border-2 border-white border-t-transparent
+              rounded-full
+              animate-spin
+            "></div>
+            <span>Validando...</span>
+          </div>
+        }
+      </button>
+      
+      <!-- Ayuda adicional -->
+      <div class="mt-6 text-center">
+        <button 
+          (click)="showHelpModal = true"
+          class="text-sm text-gray-600 underline"
+        >
+          ¿No encontrás el código?
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE AYUDA -->
+@if(showHelpModal){
+  <div 
+    class="fixed inset-0 bg-black/70 flex items-end sm:items-center justify-center z-50"
+    (click)="showHelpModal = false"
+  >
+    <div 
+      class="
+        bg-white 
+        rounded-t-3xl sm:rounded-2xl 
+        p-6 
+        w-full sm:max-w-md
+        pb-safe-bottom
+      "
+      (click)="$event.stopPropagation()"
+    >
+      <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6 sm:hidden"></div>
+      
+      <h3 class="text-xl font-bold mb-4">¿Dónde está el código?</h3>
+      
+      <div class="space-y-4 mb-6">
+        <!-- Ilustración o imagen -->
+        <div class="
+          w-full h-40
+          bg-orange-100
+          rounded-xl
+          flex items-center justify-center
+          text-6xl
+        ">
+          🔢
+        </div>
+        
+        <div class="space-y-3 text-sm text-gray-700">
+          <p class="flex items-start gap-2">
+            <span class="text-orange-500 font-bold">•</span>
+            <span>El código está en un cartel en tu mesa, generalmente cerca del QR</span>
+          </p>
+          <p class="flex items-start gap-2">
+            <span class="text-orange-500 font-bold">•</span>
+            <span>Son 4 números que cambian cada vez que se ocupa la mesa</span>
+          </p>
+          <p class="flex items-start gap-2">
+            <span class="text-orange-500 font-bold">•</span>
+            <span>Si no lo ves, pedile ayuda al mozo</span>
+          </p>
+        </div>
+      </div>
+      
+      <button 
+        (click)="showHelpModal = false"
+        class="
+          w-full h-12
+          bg-orange-500 text-white
+          rounded-xl
+          font-semibold
+          active:bg-orange-600
+        "
+      >
+        Entendido
+      </button>
+    </div>
+  </div>
+}

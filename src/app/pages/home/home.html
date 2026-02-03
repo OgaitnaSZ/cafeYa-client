@@ -1,1 +1,209 @@
-<p>home works!</p>
+<!-- home.component.html -->
+<div class="min-h-full">
+  
+  <!-- HERO SECTION -->
+  <section class="px-4 pt-12 pb-8 bg-linear-to-b from-amber-100 to-white">
+    <div class="max-w-md mx-auto text-center">
+      <!-- Logo de la cafetería -->
+      <img 
+        src="images/logo_iso.png" 
+        alt="CafeYa" 
+        class="w-auto h-24 mx-auto mb-4 rounded-full shadow-lg"
+      />
+      
+      <!-- Nombre de la cafetería -->
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">
+        Bienvenido a CafeYa
+      </h1>
+      
+      <!-- Subtitle -->
+      <p class="text-lg text-gray-600 mb-8">
+        Pedí desde tu mesa y disfrutá sin esperas
+      </p>
+      
+      <!-- Ilustración o imagen del local -->
+      <div class="
+        w-full h-48 
+        bg-linear-to-br from-amber-200 to-orange-300
+        rounded-2xl
+        mb-8
+        flex items-center justify-center
+        text-6xl
+      ">
+        ☕
+      </div>
+      
+      <!-- CTA Principal -->
+      <div class="space-y-3">
+        <button
+          routerLink="/scan"
+          class="
+            w-full
+            h-14
+            bg-linear-to-r from-orange-500 to-red-500
+            text-white text-lg font-bold
+            rounded-xl
+            shadow-lg shadow-orange-500/30
+            active:scale-95
+            transition-transform
+            flex items-center justify-center gap-3
+          "
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+          </svg>
+          Escanear QR de la mesa
+        </button>
+        
+        <p class="text-xs text-gray-500">
+          El código QR está en tu mesa
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CÓMO FUNCIONA -->
+  <section class="px-4 py-8">
+    <div class="max-w-md mx-auto">
+      <h2 class="text-xl font-bold text-center mb-6 text-gray-900">
+        ¿Cómo pedir?
+      </h2>
+      
+      <div class="space-y-4">
+        <!-- Step 1 -->
+        <div class="flex gap-3 items-start">
+          <div class="
+            w-10 h-10 shrink-0
+            bg-orange-500 text-white
+            rounded-full
+            flex items-center justify-center
+            font-bold
+          ">
+            1
+          </div>
+          <div class="flex-1 pt-1">
+            <h3 class="font-semibold text-gray-900 text-sm mb-0.5">
+              Escaneá el QR de tu mesa
+            </h3>
+            <p class="text-sm text-gray-600">
+              Usá la cámara de tu celular
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="flex gap-3 items-start">
+          <div class="
+            w-10 h-10 shrink-0
+            bg-orange-500 text-white
+            rounded-full
+            flex items-center justify-center
+            font-bold
+          ">
+            2
+          </div>
+          <div class="flex-1 pt-1">
+            <h3 class="font-semibold text-gray-900 text-sm mb-0.5">
+              Elegí lo que querés
+            </h3>
+            <p class="text-sm text-gray-600">
+              Mirá nuestro menú completo con fotos y precios
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="flex gap-3 items-start">
+          <div class="
+            w-10 h-10 shrink-0
+            bg-orange-500 text-white
+            rounded-full
+            flex items-center justify-center
+            font-bold
+          ">
+            3
+          </div>
+          <div class="flex-1 pt-1">
+            <h3 class="font-semibold text-gray-900 text-sm mb-0.5">
+              Confirmá tu pedido
+            </h3>
+            <p class="text-sm text-gray-600">
+              Elegí cómo pagar: app, tarjeta o efectivo
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 4 -->
+        <div class="flex gap-3 items-start">
+          <div class="
+            w-10 h-10 shrink-0
+            bg-orange-500 text-white
+            rounded-full
+            flex items-center justify-center
+            font-bold
+          ">
+            4
+          </div>
+          <div class="flex-1 pt-1">
+            <h3 class="font-semibold text-gray-900 text-sm mb-0.5">
+              ¡Listo! Te lo llevamos a tu mesa
+            </h3>
+            <p class="text-sm text-gray-600">
+              Seguí el estado de tu pedido en tiempo real
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTACADOS DEL LOCAL -->
+  <app-destacados></app-destacados>
+
+  <!-- INFORMACIÓN DEL LOCAL -->
+  <app-info></app-info>
+
+  <!-- CTA FINAL -->
+  <section class="px-4 py-12 bg-linear-to-br from-orange-500 to-red-500">
+    <div class="max-w-md mx-auto text-center">
+      <h2 class="text-2xl font-bold text-white mb-3">
+        ¿Ya estás en tu mesa?
+      </h2>
+      <p class="text-white/90 mb-6">
+        Empezá a pedir ahora
+      </p>
+      <button 
+        routerLink="/scan"
+        class="
+          w-full max-w-xs mx-auto
+          h-14
+          bg-white text-orange-600
+          text-lg font-bold
+          rounded-xl
+          shadow-lg
+          active:scale-95
+          transition-transform
+        "
+      >
+        Escanear QR
+      </button>
+    </div>
+  </section>
+
+  <!-- MINI FOOTER -->
+  <footer class="px-4 py-6 h-50 bg-gray-900 text-white">
+    <div class="max-w-md mx-auto text-center">
+      <p class="text-sm text-gray-400 mb-2">
+        CafeYa - Café & Brunch
+      </p>
+      <div class="flex items-center justify-center gap-4 text-xs text-gray-500">
+        <a routerLink="/ayuda" class="hover:text-gray-300">Ayuda</a>
+        <span>•</span>
+        <a routerLink="/terminos" class="hover:text-gray-300">Términos</a>
+        <span>•</span>
+        <a routerLink="/contacto" class="hover:text-gray-300">Contacto</a>
+      </div>
+    </div>
+  </footer>
+</div>

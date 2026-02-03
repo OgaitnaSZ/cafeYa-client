@@ -1,10 +1,18 @@
 <!-- app-root component template -->
 <div class="h-full flex flex-col">
-  <main class="flex-1 overflow-y-auto p-2">
+  <main class="flex-1 overflow-y-auto">
     <router-outlet></router-outlet>
   </main>
   
-  <section class="h-16">
-    <app-bottom-bar></app-bottom-bar>
-  </section>
+  @if (!hideBottomBar()) {
+    @if (activeSession) {
+      <section class="h-16">
+        <app-bottom-bar></app-bottom-bar>
+      </section>
+    } @else {
+      <section class="h-16 fixed w-full bottom-0">
+        <app-bottom-bar></app-bottom-bar>
+      </section>
+    }
+  }
 </div>
