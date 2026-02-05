@@ -36,7 +36,7 @@
       <!-- CTA Principal -->
       <div class="space-y-3">
         <button
-          routerLink="/scan"
+          routerLink="/menu"
           class="
             w-full
             h-14
@@ -49,21 +49,18 @@
             flex items-center justify-center gap-3
           "
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-          </svg>
-          Escanear QR de la mesa
+          <span class="material-symbols-outlined"> menu_book </span>
+          Ver menú completo
         </button>
         
         <p class="text-xs text-gray-500">
-          El código QR está en tu mesa
+          Explorá nuestra carta y hacé tu pedido
         </p>
       </div>
     </div>
   </section>
 
-  <!-- CÓMO FUNCIONA -->
+<!-- CÓMO FUNCIONA -->
   <section class="px-4 py-8">
     <div class="max-w-md mx-auto">
       <h2 class="text-xl font-bold text-center mb-6 text-gray-900">
@@ -84,10 +81,10 @@
           </div>
           <div class="flex-1 pt-1">
             <h3 class="font-semibold text-gray-900 text-sm mb-0.5">
-              Escaneá el QR de tu mesa
+              Explorá nuestro menú
             </h3>
             <p class="text-sm text-gray-600">
-              Usá la cámara de tu celular
+              Mirá la carta completa con fotos y precios
             </p>
           </div>
         </div>
@@ -105,10 +102,10 @@
           </div>
           <div class="flex-1 pt-1">
             <h3 class="font-semibold text-gray-900 text-sm mb-0.5">
-              Elegí lo que querés
+              Armá tu pedido
             </h3>
             <p class="text-sm text-gray-600">
-              Mirá nuestro menú completo con fotos y precios
+              Agregá lo que quieras al carrito
             </p>
           </div>
         </div>
@@ -126,10 +123,10 @@
           </div>
           <div class="flex-1 pt-1">
             <h3 class="font-semibold text-gray-900 text-sm mb-0.5">
-              Confirmá tu pedido
+              Confirmá y pagá
             </h3>
             <p class="text-sm text-gray-600">
-              Elegí cómo pagar: app, tarjeta o efectivo
+              Elegí tu método de pago favorito
             </p>
           </div>
         </div>
@@ -147,7 +144,7 @@
           </div>
           <div class="flex-1 pt-1">
             <h3 class="font-semibold text-gray-900 text-sm mb-0.5">
-              ¡Listo! Te lo llevamos a tu mesa
+              ¡Listo! Te lo llevamos
             </h3>
             <p class="text-sm text-gray-600">
               Seguí el estado de tu pedido en tiempo real
@@ -168,13 +165,13 @@
   <section class="px-4 py-12 bg-linear-to-br from-orange-500 to-red-500">
     <div class="max-w-md mx-auto text-center">
       <h2 class="text-2xl font-bold text-white mb-3">
-        ¿Ya estás en tu mesa?
+        ¿Listo para pedir?
       </h2>
       <p class="text-white/90 mb-6">
-        Empezá a pedir ahora
+        Mirá nuestro menú y elegí lo que más te guste
       </p>
       <button 
-        routerLink="/scan"
+        routerLink="/menu"
         class="
           w-full max-w-xs mx-auto
           h-14
@@ -186,7 +183,7 @@
           transition-transform
         "
       >
-        Escanear QR
+        Ver menú
       </button>
     </div>
   </section>
