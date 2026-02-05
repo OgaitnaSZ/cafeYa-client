@@ -111,6 +111,6 @@ export class Validate {
   }
 
   goBack(): void {
-    this.router.navigate(['/scan']);
+    this.router.navigate(['/']);
   }
 }
