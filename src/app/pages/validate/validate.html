@@ -1,5 +1,5 @@
 <!-- validate.component.html -->
-<div class="h-full flex flex-col bg-gradient-to-b from-orange-50 to-white">
+<div class="h-full flex flex-col bg-linear-to-b from-orange-50 to-white">
   
   <!-- HEADER -->
   <header class="
@@ -75,13 +75,13 @@
           <div class="
             inline-flex items-center justify-center
             w-20 h-20
-            bg-gradient-to-br from-orange-500 to-red-500
+            bg-linear-to-br from-orange-500 to-red-500
             text-white
             rounded-2xl
             shadow-lg
           ">
             <span class="text-4xl font-bold">
-              {{ mesaNumber }}
+              {{ mesa()?.numero || '??' }}
             </span>
           </div>
         </div>
@@ -180,7 +180,7 @@
           </p>
           
           <!-- Error message -->
-          @if(error){
+          @if(error()){
             <div 
               class="
                 mt-4
@@ -195,7 +195,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
               <p class="text-sm text-red-700">
-                {{ error }}
+                {{ error() }}
               </p>
             </div>
           }
@@ -204,11 +204,11 @@
       
       <!-- Botón de validación -->
       <button
-        [disabled]="!isCodeComplete() || isValidating"
+        [disabled]="!isCodeComplete()"
         (click)="validateCode()"
         class="
           w-full h-14
-          bg-gradient-to-r from-orange-500 to-red-500
+          bg-linear-to-r from-orange-500 to-red-500
           text-white text-lg font-bold
           rounded-xl
           shadow-lg shadow-orange-500/30

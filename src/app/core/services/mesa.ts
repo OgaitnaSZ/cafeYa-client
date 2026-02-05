@@ -9,7 +9,7 @@ import { TokenService } from './token';
   providedIn: 'root',
 })
 export class MesaService {
-  private apiUrl = `${environment.apiUrl}hospedaje/`;
+  private apiUrl = `${environment.apiUrl}mesa/`;
 
   // Inject
   private http = inject(HttpClient);
@@ -42,7 +42,7 @@ export class MesaService {
     this.loading.set(true);
     this.error.set(null);
     
-    this.http.post(`${this.apiUrl}mesa/${mesa.mesa_id}/validar`, {}, { headers: this.tokenService.createAuthHeaders()}).pipe(
+    this.http.post(`${this.apiUrl}${mesa.mesa_id}/validar`, mesa, { headers: this.tokenService.createAuthHeaders()}).pipe(
         tap(() => {
           this.success.set("Mesa validada con exito")
         }),
