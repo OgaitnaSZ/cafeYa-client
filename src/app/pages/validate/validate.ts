@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
-
 @Component({
   selector: 'app-validate',
   imports: [],
@@ -12,7 +10,6 @@ export class Validate {
   @ViewChildren('digit1, digit2, digit3, digit4') digitInputs!: QueryList<ElementRef>;
   
   mesaId: string = '';
-  mesaNumber: string = '';
   code: string[] = ['', '', '', ''];
   error: string = '';
   isValidating: boolean = false;
@@ -25,9 +22,9 @@ export class Validate {
 
   ngOnInit(): void {
     this.mesaId = this.route.snapshot.params['id'];
-    this.mesaNumber = this.mesaId || '?';
 
     // Verificar que sea un numero y que exista en la BD
+    
     
     // Auto-focus en primer input
     setTimeout(() => {
