@@ -3,3 +3,8 @@ export interface Mesa {
     numero: number;
     codigo: string;
 }
+
+export interface MesaValidate {
+    mesa_id: string;
+    codigo: string;
+}

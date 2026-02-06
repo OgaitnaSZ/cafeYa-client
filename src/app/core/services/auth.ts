@@ -1,5 +1,5 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { User, UserRegister } from '../interfaces/user.model';
+import { User } from '../interfaces/user.model';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -73,7 +73,7 @@ export class Auth {
   }
 
   // Registro
-  register(usuario: UserRegister): void {
+  register(usuario: User): void {
     this.loading.set(true);
     this.error.set(null);
 

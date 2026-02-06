@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, inject } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, ElementRef, inject, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MesaService } from '../../core/services/mesa';
 import { Mesa } from '../../core/interfaces/mesa.model';
@@ -27,8 +27,16 @@ export class Validate {
   isValidating: boolean = false;
   showHelpModal: boolean = false;
 
+  constructor() {
+    effect(() => {
+      if (this.mesaService.success()) {
+        this.router.navigate(['login']);
+        this.mesaService.resetSuccess();
+      }
+    });
+  }
+
   ngOnInit(): void {
-    console.log('Validate component initialized');
     this.mesaService.mesa.set(null);
     this.mesaId = this.route.snapshot.params['id'];
 
@@ -65,7 +73,7 @@ export class Validate {
     value = value.toUpperCase();
     event.target.value = value;
   
-    // ✅ Asignar a la posición correcta (nextIndex - 1)
+    // Asignar a la posición correcta (nextIndex - 1)
     this.code[nextIndex - 1] = value;
     
     // Mover al siguiente input si hay valor
@@ -102,19 +110,13 @@ export class Validate {
     this.error.set('');
     
     const fullCode = this.code.join('');
-
-    this.mesa.set({ mesa_id: this.mesaId, numero: this.mesa()?.numero || 0, codigo: fullCode });
   
-    this.mesaService.validar(<Mesa>this.mesa())
+    this.mesaService.validar({ mesa_id: this.mesaId, codigo: fullCode });
   }
 
   clearCode(): void {
     this.code = ['', '', '', ''];
     const inputs = this.digitInputs.toArray();
     inputs[0]?.nativeElement.focus();
-  }
-
-  goBack(): void {
-    this.router.navigate(['/']);
   }
 }

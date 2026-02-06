@@ -1,7 +1,7 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, of, tap } from 'rxjs';
-import { Mesa } from '../interfaces/mesa.model';
+import { Mesa, MesaValidate } from '../interfaces/mesa.model';
 import { environment } from '../../../environments/environment';
 import { TokenService } from './token';
 
@@ -38,20 +38,27 @@ export class MesaService {
     ).subscribe();
   }
 
-  validar(mesa: Mesa): void {
+  validar(mesa: MesaValidate): void {
     this.loading.set(true);
     this.error.set(null);
     
-    this.http.post(`${this.apiUrl}${mesa.mesa_id}/validar`, mesa, { headers: this.tokenService.createAuthHeaders()}).pipe(
+    this.http.post(`${this.apiUrl}validar`, mesa, { headers: this.tokenService.createAuthHeaders()}).pipe(
         tap(() => {
           this.success.set("Mesa validada con exito")
         }),
         catchError(err => {
-          this.error.set('Error al validar mesa');
-          console.error(err);
+          const errorMessage = err.error?.error || err.error?.message || 'Error al validar mesa';
+          this.error.set(errorMessage);
+          console.error(err.error);
           return of(null);
         }),
         finalize(() => this.loading.set(false))
     ).subscribe();
+  }
+
+  // Helpers
+  // Resetea el estado de éxito
+  resetSuccess(): void {
+    this.success.set(null);
   }
 }
