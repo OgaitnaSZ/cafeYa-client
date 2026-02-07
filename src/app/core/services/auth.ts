@@ -54,12 +54,14 @@ export class Auth {
       if (token && user) {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('mesa', JSON.stringify(mesa));
       } else {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        localStorage.removeItem('mesa');
       }
+
+      if (mesa) localStorage.setItem('mesa', JSON.stringify(mesa));
+      else localStorage.removeItem('mesa');
+
     });
   }
 
@@ -106,6 +108,7 @@ export class Auth {
   logout() {
     this.token.set(null);
     this.user.set(null);
+    this.mesa.set(null);
     this.router.navigate(['/']);
   }
 
