@@ -21,11 +21,7 @@ export interface MesaSession {
  *     - Controlar Codigo de mesa periodicamente, si expira, eliminar la sesión de la mesa
  * 
  * - Flujo:
- *   - Usuario escanea QR de la mesa (Se guarda en LocalStorage el ID de la mesa (no se borra almenos que vuelva a escanear otro QR))
- *       - Cuando el usuario accede a /validate controla si el ID de la URL coincide con el guardado
- *           - Si coincide, valida el codigo guardado, si es valido redirige al login, sino, pide el nuevo codigo de la mesa
- *           - Si no coincide, pide el codigo del nuevo ID de la mesa
- * 
+ *   - Usuario escanea QR de la mesa y accede a /validate/:id para colocar el codigo de la mesa
  *   - Si el codigo es valido, se guarda la sesión de la mesa (mesa_id, validatedAt, codigoExpiresAt)
  * 
  *   - Redirige al login

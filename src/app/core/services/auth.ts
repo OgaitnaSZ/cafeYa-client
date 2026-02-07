@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { TokenService } from './token';
 import { catchError, finalize, of, tap } from 'rxjs';
+import { Mesa, MesaValidate } from '../interfaces/mesa.model';
 
 interface LoginResponse {
   data: {
@@ -18,9 +19,10 @@ interface LoginResponse {
 })
 
 export class Auth {
-  private apiUrl = `${environment.apiUrl}auth/`;
+  private authUrl = `${environment.apiUrl}auth/`;
+  private mesaUrl = `${environment.apiUrl}mesa/`;
 
-    // Inject
+  // Inject
   private http = inject(HttpClient);
   private router = inject(Router);
   private tokenService = inject(TokenService);
@@ -28,65 +30,75 @@ export class Auth {
   // Signals de estado
   user = signal<User | null>(this.getStoredUser());
   token = signal<string | null>(this.getStoredToken());
-  loading = signal(false);
-  error = signal<string | null>(null);
-  success = signal<string | null>(null);
+  loadingUser = signal(false);
+  errorUser = signal<string | null>(null);
+  successUser = signal<string | null>(null);
+
+  mesa = signal<Mesa | null>(this.getStoredMesa());
+  loadingMesa = signal(false);
+  errorMesa = signal<string | null>(null);
+  successMesa = signal<string | null>(null);
 
   // Computed
   readonly isLoggedIn = computed(() => !!this.token());
   readonly currentUser = computed(() => this.user());
+  readonly currentMesa = computed(() => this.mesa());
 
   constructor() {
     // Efecto para mantener sincronizado localStorage
     effect(() => {
       const token = this.token();
       const user = this.user();
+      const mesa = this.mesa();
   
       if (token && user) {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('mesa', JSON.stringify(mesa));
       } else {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('mesa');
       }
     });
   }
 
   // Login
   login(email: string, password: string): void {
-    this.loading.set(true);
-    this.error.set(null);
+    this.loadingUser.set(true);
+    this.errorUser.set(null);
 
-    this.http.post<LoginResponse>(`${this.apiUrl}login`, { email, password }).pipe(
+    this.http.post<LoginResponse>(`${this.authUrl}login`, { email, password }).pipe(
       tap((data) => {
-        this.success.set("Login exitoso");
+        this.successUser.set("Login exitoso");
         this.user.set(data.data.user);
         this.token.set(data.data.token);
       }),
       catchError(err => {
-        this.error.set('Error al iniciar session');
+        this.errorUser.set('Error al iniciar session');
         console.error(err);
         return of(null);
       }),
-      finalize(() => this.loading.set(false))
+      finalize(() => this.loadingUser.set(false))
     ).subscribe();
   }
 
-  // Registro
-  register(usuario: User): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.http.post(`${this.apiUrl}register`, usuario).pipe(
-      tap(() => {
-        this.success.set("Registro exitoso");
-      }),
-      catchError(err => {
-        this.error.set('Error al registrar usuario');
-        console.error(err);
-        return of(null);
-      }),
-      finalize(() => this.loading.set(false))
+  authMesa(mesa: MesaValidate): void {
+    this.loadingMesa.set(true);
+    this.errorMesa.set(null);
+    
+    this.http.post<Mesa>(`${this.mesaUrl}validar`, mesa, { headers: this.tokenService.createAuthHeaders()}).pipe(
+        tap((data) => {
+          this.successMesa.set("Mesa validada con exito");
+          this.mesa.set(data);
+        }),
+        catchError(err => {
+          const errorMessage = err.error?.error || err.error?.message || 'Error al validar mesa';
+          this.errorMesa.set(errorMessage);
+          console.error(err.error);
+          return of(null);
+        }),
+        finalize(() => this.loadingMesa.set(false))
     ).subscribe();
   }
 
@@ -94,7 +106,11 @@ export class Auth {
   logout() {
     this.token.set(null);
     this.user.set(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
+  }
+
+  logoutMesa() {
+    this.mesa.set(null);
   }
 
   // Helpers
@@ -118,7 +134,27 @@ export class Auth {
       return null;
     }
   
-    return stored; // ✅ no uses JSON.parse aquí
+    return stored;
+  }
+
+  private getStoredMesa(): Mesa | null {
+    const stored = localStorage.getItem('mesa');
+    if (!stored || stored === 'undefined' || stored === 'null') {
+      return null;
+    }
+
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.error('Error al parsear mesa almacenada:', e);
+      return null;
+    }
+  }
+
+  // Resetea el estado de éxito
+  resetSuccess(tipo: string): void {
+    if (tipo === 'user') this.successUser.set(null);
+    if (tipo === 'mesa') this.successMesa.set(null);
   }
 
   // Accesores públicos (solo lectura)
@@ -128,5 +164,9 @@ export class Auth {
 
   get getUser() {
     return this.user.asReadonly();
+  }
+
+  get getMesa() {
+    return this.mesa.asReadonly();
   }
 }

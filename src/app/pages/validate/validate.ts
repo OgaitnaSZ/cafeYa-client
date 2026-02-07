@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, inject, effect } from '@angular/core';
+import { Component, ViewChildren, QueryList, ElementRef, inject, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MesaService } from '../../core/services/mesa';
-import { Mesa } from '../../core/interfaces/mesa.model';
+import { Auth } from '../../core/services/auth';
 
 @Component({
   selector: 'app-validate',
@@ -15,11 +14,11 @@ export class Validate {
   // Servicios
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  public mesaService = inject(MesaService);
+  public auth = inject(Auth);
 
   // Signals
-  mesa = this.mesaService.mesa;
-  error = this.mesaService.error;
+  mesa = this.auth.getMesa;
+  error = this.auth.errorMesa;
 
   // Variables
   mesaId: string = '';
@@ -29,15 +28,16 @@ export class Validate {
 
   constructor() {
     effect(() => {
-      if (this.mesaService.success()) {
+      if (this.auth.successMesa()) {
         this.router.navigate(['login']);
-        this.mesaService.resetSuccess();
+        this.auth.resetSuccess('mesa');
       }
     });
   }
 
   ngOnInit(): void {
-    this.mesaService.mesa.set(null);
+    this.auth.mesa.set(null);
+    this.auth.logoutMesa();
     this.mesaId = this.route.snapshot.params['id'];
 
     // Verificar que sea un numero y que exista en la BD
@@ -45,7 +45,6 @@ export class Validate {
       const id = params.get('id');
       if (id) {
         this.mesaId = id;
-        this.mesaService.getMesa(this.mesaId);
       } else {
         this.error.set('ID de mesa inválido.');
       }
@@ -111,7 +110,7 @@ export class Validate {
     
     const fullCode = this.code.join('');
   
-    this.mesaService.validar({ mesa_id: this.mesaId, codigo: fullCode });
+    this.auth.authMesa({ mesa_id: this.mesaId, codigo: fullCode });
   }
 
   clearCode(): void {
