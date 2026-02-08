@@ -1,6 +1,7 @@
 import { Component, ViewChildren, QueryList, ElementRef, inject, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Auth } from '../../core/services/auth';
+import { MesaService } from '../../core/services/mesa';
 
 @Component({
   selector: 'app-validate',
@@ -15,11 +16,13 @@ export class Validate {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   public auth = inject(Auth);
+  public mesaService = inject(MesaService);
 
   // Signals
   mesa = this.auth.getMesa;
   error = this.auth.errorMesa;
   loading = this.auth.loadingMesa;
+  mesaDetails = this.mesaService.mesa;
 
   // Variables
   mesaId: string = '';
@@ -46,6 +49,9 @@ export class Validate {
       if (id && this.isUUID(id)) {
         this.invalidIdError = false;
         this.mesaId = id;
+
+        // Opcional: Obtener detalles de la mesa para mostrar en el modal de ayuda
+        this.mesaService.getMesa(id);
       } else {
         this.error.set('ID de mesa inválido. Vuelve a scanear el código QR.');
         this.invalidIdError = true;

@@ -20,7 +20,7 @@ export class App {
       .subscribe((event: NavigationEnd) => {
         const url = event.urlAfterRedirects;
         
-        const shouldHide = url.startsWith('/scan') || url.startsWith('/validate');
+        const shouldHide = url.startsWith('/login') || url.startsWith('/validate');
         
         this.hideBottomBar.set(shouldHide);
       });
