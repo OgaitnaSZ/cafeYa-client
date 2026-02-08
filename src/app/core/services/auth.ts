@@ -19,7 +19,7 @@ interface LoginResponse {
 })
 
 export class Auth {
-  private authUrl = `${environment.apiUrl}auth/`;
+  private authUrl = `${environment.apiUrl}cliente/`;
   private mesaUrl = `${environment.apiUrl}mesa/`;
 
   // Inject
@@ -66,11 +66,11 @@ export class Auth {
   }
 
   // Login
-  login(email: string, password: string): void {
+  login(nombre: string, email: string, telefono: string): void {
     this.loadingUser.set(true);
     this.errorUser.set(null);
 
-    this.http.post<LoginResponse>(`${this.authUrl}login`, { email, password }).pipe(
+    this.http.post<LoginResponse>(`${this.authUrl}crear`, { nombre, email, telefono }).pipe(
       tap((data) => {
         this.successUser.set("Login exitoso");
         this.user.set(data.data.user);
