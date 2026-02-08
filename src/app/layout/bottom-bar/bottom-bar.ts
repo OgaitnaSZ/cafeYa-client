@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Auth } from '../../core/services/auth';
 
 @Component({
   selector: 'app-bottom-bar',
@@ -8,5 +9,6 @@ import { RouterLink } from '@angular/router';
   styleUrl: './bottom-bar.css',
 })
 export class BottomBar {
-  activeSession: boolean = false;
+  // Servicios
+  public auth = inject(Auth);
 }

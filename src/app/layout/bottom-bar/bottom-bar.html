@@ -1,4 +1,4 @@
-@if(activeSession){
+@if(auth.isLoggedIn()){
     <div class="w-full grid grid-cols-4 bg-white">
         <button class="h-16 flex justify-center items-center">
             <span class="material-symbols-outlined text-amber-600 opacity-100 selected">table_restaurant</span>
@@ -16,7 +16,7 @@
 } @else {
     <div class="w-full flex justify-center">
         <button class="h-20 w-20 rounded-full bg-amber-600 flex justify-center items-center -mt-10 shadow-lg" routerLink="/menu">
-            <span class="material-symbols-outlined text-gray-950" style="font-size: 44px !important;">menu_book</span>
+            <span class="material-symbols-outlined text-gray-50" style="font-size: 44px !important;">menu_book</span>
         </button>
     </div>
 }

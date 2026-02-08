@@ -8,7 +8,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   // Verificar Mesa
-  if (!authService.currentMesa()){
+  if (!authService.hasMesa()){
     authService.errorMesa.set('No tienes una mesa asignada. Por favor, vuelva a scanear el QR de la mesa.');
     router.navigate(['/validate/1'], { 
       queryParams: { returnUrl: state.url } 
@@ -17,13 +17,12 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 
   // Verificar Usuario
-  if (!authService.isLoggedIn()) {
+  if (!authService.isAuthenticated()) {
     router.navigate(['/login'], { 
       queryParams: { returnUrl: state.url } 
     });
     return false;
   }
-
 
   return true;
 };

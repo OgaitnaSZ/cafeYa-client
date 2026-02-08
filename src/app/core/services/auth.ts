@@ -37,8 +37,14 @@ export class Auth {
   errorMesa = signal<string | null>(null);
   successMesa = signal<string | null>(null);
 
-  // Computed
-  readonly isLoggedIn = computed(() => !!this.token());
+  // Computed Estados intermedios
+  readonly isAuthenticated = computed(() => !!this.user() && !!this.token());
+  readonly hasMesa = computed(() => !!this.mesa());
+
+  // Computed Estado completo
+  readonly isLoggedIn = computed(() => this.isAuthenticated() && this.hasMesa());
+
+  // Computed útiles
   readonly currentUser = computed(() => this.user());
   readonly currentMesa = computed(() => this.mesa());
 
