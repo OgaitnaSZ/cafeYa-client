@@ -8,10 +8,8 @@ import { catchError, finalize, of, tap } from 'rxjs';
 import { Mesa, MesaValidate } from '../interfaces/mesa.model';
 
 interface LoginResponse {
-  data: {
-    token: string;
-    user: User;
-  };
+  token: string;
+  user: User;
 }
 
 @Injectable({
@@ -72,15 +70,16 @@ export class Auth {
 
     this.http.post<LoginResponse>(`${this.authUrl}crear`, { nombre, email, telefono }).pipe(
       tap((data) => {
+        console.log('Respuesta de login:', data);
         this.successUser.set("Login exitoso");
-        this.user.set(data.data.user);
-        this.token.set(data.data.token);
+        this.user.set(data.user);
+        this.token.set(data.token);
       }),
       catchError(err => {
         this.errorUser.set('Error al iniciar session');
         console.error(err);
         return of(null);
-      }),
+      }), 
       finalize(() => this.loadingUser.set(false))
     ).subscribe();
   }
