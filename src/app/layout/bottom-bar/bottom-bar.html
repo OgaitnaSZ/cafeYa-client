@@ -1,16 +1,16 @@
 @if(auth.isLoggedIn()){
     <div class="w-full grid grid-cols-4 bg-white">
-        <button class="h-16 flex justify-center items-center">
-            <span class="material-symbols-outlined text-amber-600 opacity-100 selected">table_restaurant</span>
+        <button class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/table">
+            <span class="material-symbols-outlined">table_restaurant</span>
         </button>
-        <button class="h-16 flex justify-center items-center">
-            <span class="material-symbols-outlined text-gray-800 opacity-25">assignment</span>
+        <button class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/orders">
+            <span class="material-symbols-outlined">assignment</span>
         </button>
-        <button class="h-16 flex justify-center items-center">
-            <span class="material-symbols-outlined text-gray-800 opacity-25">menu_book_2</span>
+        <button class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/menu">
+            <span class="material-symbols-outlined">menu_book_2</span>
         </button>
-        <button class="h-16 flex justify-center items-center">
-            <span class="material-symbols-outlined text-gray-800 opacity-25">garden_cart</span>
+        <button class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/cart">
+            <span class="material-symbols-outlined">garden_cart</span>
         </button>
     </div>
 } @else {
