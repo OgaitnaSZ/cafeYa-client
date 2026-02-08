@@ -9,6 +9,7 @@ import { noAuthGuard } from './noAuth.guard';
 export const routes: Routes = [
     { path: '', component: Home },
     { path: 'validate/:id', component: Validate },
+    { path: 'validate', component: Validate },
     { path: 'login', component: Login, canActivate: [noAuthGuard] },
     { path: 'menu', component: Menu, canActivate: [authGuard] },
     { path: '**', redirectTo: '' }

@@ -19,11 +19,12 @@ export class Validate {
   // Signals
   mesa = this.auth.getMesa;
   error = this.auth.errorMesa;
+  loading = this.auth.loadingMesa;
 
   // Variables
   mesaId: string = '';
   code: string[] = ['', '', '', ''];
-  isValidating: boolean = false;
+  invalidIdError: boolean = false;
   showHelpModal: boolean = false;
 
   constructor() {
@@ -40,13 +41,14 @@ export class Validate {
     this.auth.logoutMesa();
     this.mesaId = this.route.snapshot.params['id'];
 
-    // Verificar que sea un numero y que exista en la BD
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
-      if (id) {
+      if (id && this.isUUID(id)) {
+        this.invalidIdError = false;
         this.mesaId = id;
       } else {
-        this.error.set('ID de mesa inválido.');
+        this.error.set('ID de mesa inválido. Vuelve a scanear el código QR.');
+        this.invalidIdError = true;
       }
     });
 
@@ -105,12 +107,13 @@ export class Validate {
   async validateCode(): Promise<void> {
     if (!this.isCodeComplete()) return;
     
-    this.isValidating = true;
+    this.loading.set(true);
     this.error.set('');
     
     const fullCode = this.code.join('');
   
     this.auth.authMesa({ mesa_id: this.mesaId, codigo: fullCode });
+    this.loading.set(false);
   }
 
   clearCode(): void {
@@ -118,4 +121,12 @@ export class Validate {
     const inputs = this.digitInputs.toArray();
     inputs[0]?.nativeElement.focus();
   }
+
+  // Utils
+  private isUUID(value: string): boolean {
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(value);
+  }
+
 }
