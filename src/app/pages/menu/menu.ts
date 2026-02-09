@@ -5,10 +5,12 @@ import { Product, Categoria } from '../../core/interfaces/product';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product';
 import { CartService } from '../../core/services/cart';
+import { Header } from './header/header';
+import { ProductsListList } from './products-list-list/products-list-list';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, Header, ProductsListList],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
@@ -161,33 +163,16 @@ export class Menu {
     
     if (!product.disponibilidad) return;
 
-    // TODO: Implementar servicio de carrito
     this.cartService.addToCart(product);
-    this.showAddedToCartFeedback(product);
   }
 
   addToCartFromModal(): void {
     const product = this.selectedProduct();
     if (!product || !product.disponibilidad) return;
 
-    // TODO: Implementar servicio de carrito
-    console.log('Agregando al carrito:', {
-      product,
-      quantity: this.modalQuantity(),
-      notes: this.modalNotes()
-    });
-
     this.cartService.addToCart(product, this.modalQuantity());
     this.closeProductDetail();
-    
-    this.showAddedToCartFeedback(product);
   }
-
-  private showAddedToCartFeedback(product: Product): void {
-    // TODO: Implementar snackbar
-    console.log(`${product.nombre} agregado al carrito`);
-  }
-
 
   // MODAL DE DETALLE
   openProductDetail(product: Product): void {
