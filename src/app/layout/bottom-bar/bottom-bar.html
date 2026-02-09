@@ -12,6 +12,21 @@
         <button class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/cart">
             <span class="material-symbols-outlined">garden_cart</span>
         </button>
+        @if(cartService.itemCount() > 0) {
+        <span 
+            class="
+                absolute right-5 top-3
+                min-w-5 h-5
+                px-1.5
+                bg-red-500 text-white
+                text-xs font-bold
+                rounded-full
+                flex items-center justify-center
+            "
+            >
+            {{ cartService.itemCount() }}
+            </span>
+        }
     </div>
 } @else {
     <div class="w-full flex justify-center">

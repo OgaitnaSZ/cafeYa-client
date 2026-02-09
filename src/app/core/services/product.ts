@@ -44,8 +44,17 @@ export class ProductService {
       categorias: this.http.get<Categoria[]>(`${this.apiUrl}categorias`)
     }).pipe(
       tap(({ productos, categorias }) => {
-        console.log('Datos obtenidos:', { productos, categorias });
-        this.productos.set(productos);
+        const categoriaMap = new Map<number, Categoria>(
+          categorias.map(cat => [cat.categoria_id, cat])
+        );
+        
+        //Asignar emoji a cada producto basándose en su categoria_id
+        const productosConEmoji = productos.map(producto => ({
+          ...producto,
+          emoji: categoriaMap.get(producto.categoria_id)?.emoji || '🍽️'
+        }));
+        
+        this.productos.set(productosConEmoji);
         this.todasLasCategorias.set(categorias);
       }),
       catchError(err => {
@@ -55,5 +64,10 @@ export class ProductService {
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();
+  }
+
+  // Helper para obtener categoría por ID
+  getCategoriaById(id: number): Categoria | undefined {
+    return this.todasLasCategorias().find(cat => cat.categoria_id === id);
   }
 }
