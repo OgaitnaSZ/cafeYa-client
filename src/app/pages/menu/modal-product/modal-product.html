@@ -1,0 +1,210 @@
+<div 
+  class="fixed inset-0 bg-black/50 z-50 flex items-end"
+  (click)="onBackdropClick()"
+>
+  <div 
+    class="
+      bg-white
+      rounded-t-3xl
+      w-full
+      max-h-[85vh]
+      overflow-y-auto
+      pb-safe-bottom
+      animate-slide-up
+    "
+    (click)="onContentClick($event)"
+  >
+    <!-- Handle para arrastrar -->
+    <div class="flex justify-center pt-3 pb-2">
+      <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
+    </div>
+    
+    <!-- Botón cerrar (X) -->
+    <button
+      (click)="closeProductDetail()"
+      class="
+        absolute top-4 right-4
+        w-8 h-8
+        bg-gray-100 hover:bg-gray-200
+        rounded-full
+        flex items-center justify-center
+        z-10
+        transition
+      "
+    >
+      <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    
+    <!-- Imagen grande -->
+    <div class="
+      w-full h-64
+      bg-linear-to-br from-orange-100 to-amber-100
+      flex items-center justify-center
+      text-8xl
+    ">
+      {{ selectedProduct()?.emoji || '🍽️' }}
+    </div>
+    
+    <!-- Contenido -->
+    <div class="px-6 py-6">
+      <!-- Badge de disponibilidad y categoría -->
+      <div class="flex items-center gap-2 mb-3">
+        @if(selectedProduct()?.disponibilidad) {
+          <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+            ✓ Disponible
+          </span>
+        } @else {
+          <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
+            ✗ No disponible
+          </span>
+        }
+        
+        @if(categoria()) {
+          <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full">
+            {{ categoria()?.emoji }} {{ categoria()?.nombre }}
+          </span>
+        }
+      </div>
+      
+      <!-- Nombre -->
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">
+        {{ selectedProduct()?.nombre }}
+      </h2>
+      
+      <!-- Descripción -->
+      <p class="text-gray-600 mb-4 leading-relaxed">
+        {{ selectedProduct()?.descripcion }}
+      </p>
+      
+      <!-- Precio -->
+      <div class="flex items-baseline gap-2 mb-6">
+        <span class="text-3xl font-bold text-orange-600">
+          ${{ selectedProduct()?.precio_unitario | number }}
+        </span>
+        <span class="text-sm text-gray-500">
+          precio unitario
+        </span>
+      </div>
+      
+      <!-- Cantidad -->
+      <div class="mb-6">
+        <label class="block text-sm font-semibold text-gray-700 mb-3">
+          Cantidad
+        </label>
+        <div class="flex items-center gap-4">
+          <button
+            (click)="decreaseQuantity()"
+            [disabled]="modalQuantity() <= 1"
+            class="
+              w-12 h-12
+              bg-gray-100 text-gray-700
+              rounded-xl
+              flex items-center justify-center
+              active:bg-gray-200
+              disabled:opacity-30 disabled:cursor-not-allowed
+              transition
+            "
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/>
+            </svg>
+          </button>
+          
+          <span class="text-2xl font-bold text-gray-900 min-w-10 text-center">
+            {{ modalQuantity() }}
+          </span>
+          
+          <button
+            (click)="increaseQuantity()"
+            class="
+              w-12 h-12
+              bg-orange-100 text-orange-600
+              rounded-xl
+              flex items-center justify-center
+              active:bg-orange-200
+              transition
+            "
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Notas especiales -->
+      <div class="mb-6">
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          Notas especiales (opcional)
+        </label>
+        <textarea
+          [(ngModel)]="modalNotes"
+          [maxlength]="100"
+          [class.border-orange-500]="modalNotes().length >= 90"
+          placeholder="Ej: Sin azúcar, extra caliente..."
+          rows="3"
+          maxlength="100"
+          class="
+            w-full
+            px-4 py-3
+            text-sm
+            bg-gray-50
+            border border-gray-200
+            rounded-xl
+            focus:border-orange-500 focus:bg-white focus:outline-none
+            resize-none
+            transition
+          "
+        ></textarea>
+        <div class="flex justify-between items-center mt-1">
+          <p class="text-xs text-gray-500">
+            Máximo 100 caracteres
+          </p>
+          <p class="text-xs text-gray-400">
+            {{ modalNotes().length }}/100
+          </p>
+        </div>
+      </div>
+      
+      <!-- Botones de acción -->
+      <div class="flex gap-3">
+        <button
+          (click)="closeProductDetail()"
+          class="
+            flex-1 h-14
+            bg-gray-100 text-gray-700
+            text-base font-bold
+            rounded-xl
+            active:bg-gray-200
+            transition
+          "
+        >
+          Cancelar
+        </button>
+        
+        <button
+          [disabled]="!selectedProduct()?.disponibilidad"
+          (click)="addToCartFromModal()"
+          class="
+            flex-2 h-14
+            bg-linear-to-r from-orange-500 to-red-500
+            text-white text-base font-bold
+            rounded-xl
+            shadow-lg shadow-orange-500/30
+            active:scale-95
+            disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed
+            transition-all
+            flex items-center justify-center gap-2
+          "
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+          Agregar ${{ modalTotal() | number }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

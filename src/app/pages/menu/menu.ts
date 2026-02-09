@@ -7,10 +7,11 @@ import { ProductService } from '../../core/services/product';
 import { CartService } from '../../core/services/cart';
 import { Header } from './header/header';
 import { ProductsListList } from './products-list-list/products-list-list';
+import { ModalProduct } from './modal-product/modal-product';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, FormsModule, RouterLink, Header, ProductsListList],
+  imports: [CommonModule, FormsModule, RouterLink, Header, ProductsListList, ModalProduct],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
@@ -31,8 +32,6 @@ export class Menu {
   
   // Modal
   selectedProduct = signal<Product | null>(null);
-  modalQuantity = signal(1);
-  modalNotes = signal('');
   
   // Carrito 
   cartItemCount = computed(() => this.cartService.itemCount());
@@ -78,13 +77,6 @@ export class Menu {
     return count;
   });
 
-  // COMPUTED: Total del modal
-  modalTotal = computed(() => {
-    const product = this.selectedProduct();
-    if (!product) return 0;
-    return product.precio_unitario * this.modalQuantity();
-  });
-
   // Opciones de ordenamiento
   sortOptions = [
     { value: 'nombre-asc', label: 'Nombre: A-Z' },
@@ -92,6 +84,18 @@ export class Menu {
     { value: 'precio-asc', label: 'Precio: Menor a mayor' },
     { value: 'precio-desc', label: 'Precio: Mayor a menor' }
   ];
+
+  // Modal
+    openProductDetail(product: Product): void {
+      this.selectedProduct.set(product);
+      document.body.style.overflow = 'hidden';
+    }
+  
+    // Cerrar modal (llamado por el evento del hijo)
+    closeProductDetail(): void {
+      this.selectedProduct.set(null);
+      document.body.style.overflow = 'unset';
+    }
 
   ngOnInit(): void {
     this.productoService.cargarDatos();
@@ -164,39 +168,6 @@ export class Menu {
     if (!product.disponibilidad) return;
 
     this.cartService.addToCart(product);
-  }
-
-  addToCartFromModal(): void {
-    const product = this.selectedProduct();
-    if (!product || !product.disponibilidad) return;
-
-    this.cartService.addToCart(product, this.modalQuantity());
-    this.closeProductDetail();
-  }
-
-  // MODAL DE DETALLE
-  openProductDetail(product: Product): void {
-    this.selectedProduct.set(product);
-    this.modalQuantity.set(1);
-    this.modalNotes.set('');
-    
-    document.body.style.overflow = 'hidden';
-  }
-
-  closeProductDetail(): void {
-    this.selectedProduct.set(null);
-    this.modalQuantity.set(1);
-    this.modalNotes.set('');
-    
-    document.body.style.overflow = 'unset';
-  }
-
-  increaseQuantity(): void {
-    this.modalQuantity.update(q => q + 1);
-  }
-
-  decreaseQuantity(): void {
-    this.modalQuantity.update(q => q > 1 ? q - 1 : 1);
   }
 
   // Helper para obtener categoría de un producto

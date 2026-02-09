@@ -29,17 +29,17 @@ export class CartService {
   }
 
   // Métodos para manipular el carrito
-  addToCart(producto: Product, cantidad: number = 1): void {
+  addToCart(producto: Product, cantidad: number = 1, notas: string = ''): void {
     this.cart.update(cart => {
       const existingItem = cart.find(item => item.producto.producto_id === producto.producto_id);
       if (existingItem) {
         return cart.map(item => 
           item.producto.producto_id === producto.producto_id 
-            ? { ...item, cantidad: item.cantidad + cantidad } 
+            ? { ...item, cantidad: item.cantidad + cantidad, notas: item.notas + (item.notas ? ' | ' : '') + notas } 
             : item
         );
       } else {
-        return [...cart, { producto, cantidad }];
+        return [...cart, { producto, cantidad, notas}];
       }
     });
   }
