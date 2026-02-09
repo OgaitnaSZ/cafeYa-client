@@ -1,1 +1,696 @@
-<p>menu works!</p>
+<div class="h-full flex flex-col bg-gray-50 pb-14">
+  
+  <!-- HEADER STICKY -->
+  <header class="
+    h-14
+    pt-safe-top
+    px-4
+    flex items-center justify-between
+    bg-white
+    border-b border-gray-200
+    sticky top-0
+    z-40
+  ">
+    <button 
+      routerLink="/table"
+      class="w-10 h-10 flex items-center justify-center rounded-full active:bg-gray-100"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    
+    <h1 class="text-lg font-semibold text-gray-900">
+      Nuestro Menú
+    </h1>
+    
+    <!-- Carrito con badge -->
+    <button 
+      routerLink="/cart"
+      class="relative w-10 h-10 flex items-center justify-center rounded-full active:bg-gray-100"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+      @if(cartService.itemCount() > 0) {
+        <span 
+          class="
+            absolute -top-1 -right-1
+            min-w-5 h-5
+            px-1.5
+            bg-red-500 text-white
+            text-xs font-bold
+            rounded-full
+            flex items-center justify-center
+          "
+        >
+          {{ cartService.itemCount() }}
+        </span>
+      }
+    </button>
+  </header>
+
+  <!-- BARRA DE BÚSQUEDA Y CONTROLES -->
+  <div class="bg-white border-b border-gray-200 px-4 py-3 sticky top-14 z-30">
+    <!-- Buscador -->
+    <div class="relative mb-3">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
+      <input
+        type="text"
+        placeholder="Buscar productos..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        class="
+          w-full h-10
+          pl-10 pr-4
+          text-sm
+          bg-gray-50
+          border border-gray-200
+          rounded-xl
+          focus:border-orange-500 focus:bg-white focus:outline-none
+          transition
+        "
+      />
+    </div>
+    
+    <!-- Controles de vista y filtros -->
+    <div class="flex items-center gap-2">
+      <!-- Botón de filtros -->
+      <button
+        (click)="toggleFilters()"
+        class="
+          flex items-center gap-1.5
+          px-3 h-9
+          bg-gray-100 text-gray-700
+          text-sm font-medium
+          rounded-lg
+          active:bg-gray-200
+          transition
+        "
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        Filtros
+        @if(activeFiltersCount() > 0) {
+          <span 
+            class="ml-1 w-5 h-5 bg-orange-500 text-white text-xs rounded-full flex items-center justify-center"
+          >
+            {{ activeFiltersCount() }}
+          </span>
+        }
+      </button>
+      
+      <!-- Botón de ordenamiento -->
+      <button
+        (click)="toggleSort()"
+        class="
+          flex items-center gap-1.5
+          px-3 h-9
+          bg-gray-100 text-gray-700
+          text-sm font-medium
+          rounded-lg
+          active:bg-gray-200
+          transition
+        "
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+        </svg>
+        Ordenar
+      </button>
+      
+      <div class="flex-1"></div>
+      
+      <!-- Toggle vista: Lista / Grilla -->
+      <div class="flex bg-gray-100 rounded-lg p-1">
+        <button
+          (click)="viewMode.set('list')"
+          [class.bg-white]="viewMode() === 'list'"
+          [class.shadow-sm]="viewMode() === 'list'"
+          class="
+            w-8 h-7
+            flex items-center justify-center
+            rounded-md
+            transition
+          "
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <button
+          (click)="viewMode.set('grid')"
+          [class.bg-white]="viewMode() === 'grid'"
+          [class.shadow-sm]="viewMode() === 'grid'"
+          class="
+            w-8 h-7
+            flex items-center justify-center
+            rounded-md
+            transition
+          "
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL DE FILTROS (colapsable) -->
+  @if(showFilters()) {
+    <div class="bg-white border-b border-gray-200 px-4 py-4 space-y-3">
+      <!-- Filtro por categoría -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 mb-2">
+          Categoría
+        </label>
+        <div class="flex flex-wrap gap-2">
+          <button
+            *ngFor="let cat of productoService.todasLasCategorias()"
+            (click)="toggleCategoria(cat.categoria_id)"
+            [class.bg-orange-500]="isCategoriaSelected(cat.categoria_id)"
+            [class.text-white]="isCategoriaSelected(cat.categoria_id)"
+            [class.bg-gray-100]="!isCategoriaSelected(cat.categoria_id)"
+            [class.text-gray-700]="!isCategoriaSelected(cat.categoria_id)"
+            class="
+              px-3 py-1.5
+              text-sm font-medium
+              rounded-full
+              transition
+            "
+          >
+            {{ cat.emoji }} {{ cat.nombre }}
+          </button>
+        </div>
+      </div>
+      
+      <!-- Filtro por rango de precio -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 mb-2">
+          Rango de precio
+        </label>
+        <div class="flex gap-2 items-center">
+          <input
+            type="number"
+            placeholder="Mín"
+            [ngModel]="precioMin()"
+            (ngModelChange)="precioMin.set($event)"
+            class="
+              flex-1 h-9
+              px-3
+              text-sm
+              bg-gray-50
+              border border-gray-200
+              rounded-lg
+              focus:border-orange-500 focus:outline-none
+            "
+          />
+          <span class="text-gray-400">-</span>
+          <input
+            type="number"
+            placeholder="Máx"
+            [ngModel]="precioMax()"
+            (ngModelChange)="precioMax.set($event)"
+            class="
+              flex-1 h-9
+              px-3
+              text-sm
+              bg-gray-50
+              border border-gray-200
+              rounded-lg
+              focus:border-orange-500 focus:outline-none
+            "
+          />
+        </div>
+      </div>
+      
+      <!-- Botón limpiar filtros -->
+      @if(activeFiltersCount() > 0) {
+        <button
+          (click)="clearFilters()"
+          class="
+            w-full h-9
+            text-sm font-medium
+            text-orange-600
+            border border-orange-200
+            rounded-lg
+            active:bg-orange-50
+          "
+        >
+          Limpiar filtros
+        </button>
+      }
+    </div>
+  }
+
+  <!-- PANEL DE ORDENAMIENTO (colapsable) -->
+  @if(showSort()) {
+    <div class="bg-white border-b border-gray-200 px-4 py-3">
+      <div class="space-y-2">
+        <button
+          *ngFor="let option of sortOptions"
+          (click)="selectSort(option.value)"
+          class="
+            w-full h-10
+            px-3
+            flex items-center justify-between
+            text-sm
+            rounded-lg
+            active:bg-gray-50
+          "
+          [class.text-orange-600]="sortBy() === option.value"
+          [class.font-semibold]="sortBy() === option.value"
+        >
+          <span>{{ option.label }}</span>
+          @if(sortBy() === option.value) {
+            <svg 
+              class="w-5 h-5" 
+              fill="currentColor" 
+              viewBox="0 0 20 20"
+            >
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+          }
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- LISTA DE PRODUCTOS -->
+  <div class="flex-1 overflow-y-auto px-4 py-4">
+    <!-- Contador de resultados -->
+    <div class="mb-3">
+      <p class="text-sm text-gray-600">
+        {{ filteredProducts().length }} producto{{ filteredProducts().length !== 1 ? 's' : '' }}
+      </p>
+    </div>
+    
+    <!-- VISTA LISTA -->
+    @if(viewMode() === 'list') {
+      <div class="space-y-3">
+        <div
+          *ngFor="let product of filteredProducts()"
+          class="
+            bg-white
+            rounded-2xl
+            overflow-hidden
+            border border-gray-100
+            shadow-sm
+            flex
+          "
+        >
+          <!-- Imagen -->
+           @if (product.imagen_url) {
+            <figure class="w-26">
+              <img 
+                (click)="openProductDetail(product)"
+                [src]="product.imagen_url" 
+                [alt]="product.nombre"
+                class="w-full h-full aspect-square object-cover cursor-pointer"
+              />
+            </figure>
+          } @else {
+            <div 
+              (click)="openProductDetail(product)"
+              class="
+                w-26
+                shrink-0
+                bg-linear-to-br from-orange-100 to-amber-100
+                flex items-center justify-center
+                text-4xl
+                cursor-pointer
+              "
+            >
+              {{ product.emoji || '🍽️' }}
+            </div>
+          }
+          
+          <!-- Info -->
+          <div 
+            (click)="openProductDetail(product)"
+            class="flex-1 p-3 cursor-pointer"
+          >
+            <h3 class="font-semibold text-gray-900 mb-1">
+              {{ product.nombre }}
+            </h3>
+            <p class="text-xs text-gray-600 mb-2 line-clamp-2">
+              {{ product.descripcion }}
+            </p>
+            <div class="flex items-center gap-2">
+              <span class="text-lg font-bold text-orange-600">
+                ${{ product.precio_unitario | number }}
+              </span>
+              @if(!product.disponibilidad) {
+                <span class="text-xs text-red-600 font-medium">
+                  No disponible
+                </span>
+              }
+            </div>
+          </div>
+          
+          <!-- Botón agregar -->
+          <div class="flex items-center pr-3">
+            <button
+              [disabled]="!product.disponibilidad"
+              (click)="addToCart(product, $event)"
+              class="
+                w-10 h-10
+                bg-orange-500 text-white
+                rounded-full
+                flex items-center justify-center
+                shadow-md
+                active:scale-95
+                disabled:opacity-30 disabled:cursor-not-allowed
+                transition
+              "
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+    
+    <!-- VISTA GRILLA -->
+    @if(viewMode() === 'grid') {
+      <div class="grid grid-cols-2 gap-3">
+        <div
+          *ngFor="let product of filteredProducts()"
+          class="
+            bg-white
+            rounded-2xl
+            overflow-hidden
+            border border-gray-100
+            shadow-sm
+          "
+        >
+          <!-- Imagen -->
+          @if (product.imagen_url) {
+            <figure class="h-46 w-full">
+              <img 
+                (click)="openProductDetail(product)"
+                [src]="product.imagen_url" 
+                [alt]="product.nombre"
+                class="w-full h-full aspect-square object-cover cursor-pointer"
+              />
+            </figure>
+          } @else {
+            <div 
+              (click)="openProductDetail(product)"
+              class="
+                aspect-square h-46 w-full
+                bg-linear-to-br from-orange-100 to-amber-100
+                flex items-center justify-center
+                text-5xl
+                cursor-pointer
+              "
+            >
+              {{ product.emoji || '🍽️' }}
+            </div>
+          }
+          
+          <!-- Info -->
+          <div 
+            (click)="openProductDetail(product)"
+            class="p-3 cursor-pointer"
+          >
+            <h3 class="font-semibold text-sm text-gray-900 mb-1 line-clamp-1">
+              {{ product.nombre }}
+            </h3>
+            <p class="text-xs text-gray-600 mb-2 line-clamp-2">
+              {{ product.descripcion }}
+            </p>
+            
+            <div class="flex items-center justify-between">
+              <span class="text-base font-bold text-orange-600">
+                ${{ product.precio_unitario | number }}
+              </span>
+              
+              <button
+                [disabled]="!product.disponibilidad"
+                (click)="addToCart(product, $event)"
+                class="
+                  w-8 h-8
+                  bg-orange-500 text-white
+                  rounded-full
+                  flex items-center justify-center
+                  shadow-md
+                  active:scale-95
+                  disabled:opacity-30 disabled:cursor-not-allowed
+                  transition
+                "
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+              </button>
+            </div>
+            
+            @if(product.disponibilidad) {
+              <span 
+                class="block text-xs text-green-600 font-medium mt-2"
+              >
+                Disponible
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+    }
+    
+    <!-- Estado vacío -->
+    @if(filteredProducts().length === 0) {
+      <div class="text-center py-16">
+        <div class="text-6xl mb-4">🔍</div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+          No encontramos productos
+        </h3>
+        <p class="text-gray-600 mb-4">
+          Intentá con otros filtros o búsqueda
+        </p>
+        <button
+          (click)="clearFilters()"
+          class="
+            px-6 py-2
+            bg-orange-500 text-white
+            rounded-xl
+            font-medium
+          "
+        >
+          Limpiar filtros
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- MODAL DE DETALLE DEL PRODUCTO (Bottom Sheet) -->
+@if(selectedProduct()) {
+  <div 
+    class="fixed inset-0 bg-black/50 z-50 flex items-end"
+    (click)="closeProductDetail()"
+  >
+    <div 
+      class="
+        bg-white
+        rounded-t-3xl
+        w-full
+        max-h-[85vh]
+        overflow-y-auto
+        pb-safe-bottom
+        animate-slide-up
+      "
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Handle para arrastrar -->
+      <div class="flex justify-center pt-3 pb-2">
+        <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
+      </div>
+      
+      <!-- Imagen grande -->
+      @let product = selectedProduct();
+      @if (product?.imagen_url) {
+        <figure class="h-64 w-full">
+          <img 
+            [src]="product?.imagen_url" 
+            [alt]="product?.nombre"
+            class="w-full h-full aspect-square object-cover cursor-pointer"
+          />
+        </figure>
+      } @else {
+        <div class="
+          w-full h-64
+          bg-linear-to-br from-orange-100 to-amber-100
+          flex items-center justify-center
+          text-8xl
+        ">
+          {{ product?.emoji || '🍽️' }}
+        </div>
+      }
+      
+      <!-- Contenido -->
+      <div class="px-6 py-6">
+        <!-- Badge de disponibilidad y categoría -->
+        @let categoria = product ? getCategoria(product) : null;
+        
+        <div class="flex items-center gap-2 mb-3">
+          @if(product?.disponibilidad) {
+            <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+              ✓ Disponible
+            </span>
+          } @else {
+            <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
+              ✗ No disponible
+            </span>
+          }
+          
+          @if(categoria) {
+            <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full">
+              {{ categoria.emoji }} {{ categoria.nombre }}
+            </span>
+          }
+        </div>
+        
+        <!-- Nombre -->
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">
+          {{ product?.nombre }}
+        </h2>
+        
+        <!-- Descripción -->
+        <p class="text-gray-600 mb-4 leading-relaxed">
+          {{ product?.descripcion }}
+        </p>
+        
+        <!-- Precio -->
+        <div class="flex items-baseline gap-2 mb-6">
+          <span class="text-3xl font-bold text-orange-600">
+            ${{ product?.precio_unitario | number }}
+          </span>
+          <span class="text-sm text-gray-500">
+            precio unitario
+          </span>
+        </div>
+        
+        <!-- Cantidad -->
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-gray-700 mb-3">
+            Cantidad
+          </label>
+          <div class="flex items-center gap-4">
+            <button
+              (click)="decreaseQuantity()"
+              [disabled]="modalQuantity() <= 1"
+              class="
+                w-12 h-12
+                bg-gray-100 text-gray-700
+                rounded-xl
+                flex items-center justify-center
+                active:bg-gray-200
+                disabled:opacity-30 disabled:cursor-not-allowed
+                transition
+              "
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/>
+              </svg>
+            </button>
+            
+            <span class="text-2xl font-bold text-gray-900 min-w-[40px] text-center">
+              {{ modalQuantity() }}
+            </span>
+            
+            <button
+              (click)="increaseQuantity()"
+              class="
+                w-12 h-12
+                bg-orange-100 text-orange-600
+                rounded-xl
+                flex items-center justify-center
+                active:bg-orange-200
+                transition
+              "
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Notas especiales -->
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Notas especiales (opcional)
+          </label>
+          <textarea
+            [ngModel]="modalNotes()"
+            (ngModelChange)="modalNotes.set($event)"
+            placeholder="Ej: Sin azúcar, extra caliente..."
+            rows="3"
+            maxlength="100"
+            class="
+              w-full
+              px-4 py-3
+              text-sm
+              bg-gray-50
+              border border-gray-200
+              rounded-xl
+              focus:border-orange-500 focus:bg-white focus:outline-none
+              resize-none
+              transition
+            "
+          ></textarea>
+          <p class="text-xs text-gray-500 mt-1">
+            Máximo 100 caracteres
+          </p>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="flex gap-3">
+          <button
+            (click)="closeProductDetail()"
+            class="
+              flex-1 h-14
+              bg-gray-100 text-gray-700
+              text-base font-bold
+              rounded-xl
+              active:bg-gray-200
+              transition
+            "
+          >
+            Cancelar
+          </button>
+          
+          <button
+            [disabled]="!product?.disponibilidad"
+            (click)="addToCartFromModal()"
+            class="
+              flex-2 h-14
+              bg-gradient-to-r from-orange-500 to-red-500
+              text-white text-base font-bold
+              rounded-xl
+              shadow-lg shadow-orange-500/30
+              active:scale-95
+              disabled:opacity-50 disabled:shadow-none
+              transition
+              flex items-center justify-center gap-2
+            "
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            Agregar ${{ modalTotal() | number }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
