@@ -244,178 +244,21 @@
       </p>
     </div>
     
-    <!-- VISTA LISTA -->
     @if(viewMode() === 'list') {
-      <div class="space-y-3">
-        <div
-          *ngFor="let product of filteredProducts()"
-          class="
-            bg-white
-            rounded-2xl
-            overflow-hidden
-            border border-gray-100
-            shadow-sm
-            flex
-          "
-        >
-          <!-- Imagen -->
-           @if (product.imagen_url) {
-            <figure class="w-26">
-              <img 
-                (click)="openProductDetail(product)"
-                [src]="product.imagen_url" 
-                [alt]="product.nombre"
-                class="w-full h-full aspect-square object-cover cursor-pointer"
-              />
-            </figure>
-          } @else {
-            <div 
-              (click)="openProductDetail(product)"
-              class="
-                w-26
-                shrink-0
-                bg-linear-to-br from-orange-100 to-amber-100
-                flex items-center justify-center
-                text-4xl
-                cursor-pointer
-              "
-            >
-              {{ product.emoji || '🍽️' }}
-            </div>
-          }
-          
-          <!-- Info -->
-          <div 
-            (click)="openProductDetail(product)"
-            class="flex-1 p-3 cursor-pointer"
-          >
-            <h3 class="font-semibold text-gray-900 mb-1">
-              {{ product.nombre }}
-            </h3>
-            <p class="text-xs text-gray-600 mb-2 line-clamp-2">
-              {{ product.descripcion }}
-            </p>
-            <div class="flex items-center gap-2">
-              <span class="text-lg font-bold text-orange-600">
-                ${{ product.precio_unitario | number }}
-              </span>
-              @if(!product.disponibilidad) {
-                <span class="text-xs text-red-600 font-medium">
-                  No disponible
-                </span>
-              }
-            </div>
-          </div>
-          
-          <!-- Botón agregar -->
-          <div class="flex items-center pr-3">
-            <button
-              [disabled]="!product.disponibilidad"
-              (click)="addToCart(product, $event)"
-              class="
-                w-10 h-10
-                bg-orange-500 text-white
-                rounded-full
-                flex items-center justify-center
-                shadow-md
-                active:scale-95
-                disabled:opacity-30 disabled:cursor-not-allowed
-                transition
-              "
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
+      <app-products-list-list
+        [products]="filteredProducts()"
+        (productClick)="handleProductClick($event)"
+        (addToCartClick)="handleAddToCart($event)"
+      />
     }
     
     <!-- VISTA GRILLA -->
     @if(viewMode() === 'grid') {
-      <div class="grid grid-cols-2 gap-3">
-        <div
-          *ngFor="let product of filteredProducts()"
-          class="
-            bg-white
-            rounded-2xl
-            overflow-hidden
-            border border-gray-100
-            shadow-sm
-        ">
-          <!-- Imagen -->
-          @if (product.imagen_url) {
-            <figure class="h-46 w-full">
-              <img 
-                (click)="openProductDetail(product)"
-                [src]="product.imagen_url" 
-                [alt]="product.nombre"
-                class="w-full h-full aspect-square object-cover cursor-pointer"
-              />
-            </figure>
-          } @else {
-            <div 
-              (click)="openProductDetail(product)"
-              class="
-                aspect-square h-46 w-full
-                bg-linear-to-br from-orange-100 to-amber-100
-                flex items-center justify-center
-                text-5xl
-                cursor-pointer
-              "
-            >
-              {{ product.emoji || '🍽️' }}
-            </div>
-          }
-          
-          <!-- Info -->
-          <div 
-            (click)="openProductDetail(product)"
-            class="p-3 cursor-pointer"
-          >
-            <h3 class="font-semibold text-sm text-gray-900 mb-1 line-clamp-1">
-              {{ product.nombre }}
-            </h3>
-            <p class="text-xs text-gray-600 mb-2 line-clamp-2">
-              {{ product.descripcion }}
-            </p>
-            
-            <div class="flex items-center justify-between">
-              <span class="text-base font-bold text-orange-600">
-                ${{ product.precio_unitario | number }}
-              </span>
-              
-              <button
-                [disabled]="!product.disponibilidad"
-                (click)="addToCart(product, $event)"
-                class="
-                  w-8 h-8
-                  bg-orange-500 text-white
-                  rounded-full
-                  flex items-center justify-center
-                  shadow-md
-                  active:scale-95
-                  disabled:opacity-30 disabled:cursor-not-allowed
-                  transition
-                "
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                </svg>
-              </button>
-            </div>
-            
-            @if(product.disponibilidad) {
-              <span 
-                class="block text-xs text-green-600 font-medium mt-2"
-              >
-                Disponible
-              </span>
-            }
-          </div>
-        </div>
-      </div>
+      <app-products-list-grid
+        [products]="filteredProducts()"
+        (productClick)="handleProductClick($event)"
+        (addToCartClick)="handleAddToCart($event)"
+      />
     }
     
     <!-- Estado vacío -->
@@ -447,7 +290,7 @@
 <!-- MODAL DE DETALLE DEL PRODUCTO (Bottom Sheet) -->
 @if(selectedProduct()) {
   <app-modal-product 
-  [selectedProduct]="selectedProduct()" 
+  [selectedProduct]="selectedProduct()!" 
   [categoria]="getCategoria(selectedProduct()!)"
   (close)="closeProductDetail()"
   ></app-modal-product>

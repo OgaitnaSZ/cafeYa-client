@@ -1,5 +1,4 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Product, Categoria } from '../../core/interfaces/product';
 import { FormsModule } from '@angular/forms';
@@ -8,10 +7,11 @@ import { CartService } from '../../core/services/cart';
 import { Header } from './header/header';
 import { ProductsListList } from './products-list-list/products-list-list';
 import { ModalProduct } from './modal-product/modal-product';
+import { ProductsListGrid } from './products-list-grid/products-list-grid';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, FormsModule, RouterLink, Header, ProductsListList, ModalProduct],
+  imports: [CommonModule, FormsModule, Header, ProductsListList, ProductsListGrid, ModalProduct],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
@@ -84,6 +84,26 @@ export class Menu {
     { value: 'precio-asc', label: 'Precio: Menor a mayor' },
     { value: 'precio-desc', label: 'Precio: Mayor a menor' }
   ];
+
+  // MÉTODOS DE COMUNICACIÓN CON COMPONENTES HIJOS
+  handleProductClick(product: Product): void {
+    this.openProductDetail(product);
+  }
+
+  handleAddToCart(product: Product): void {
+    if (!product.disponibilidad) return;
+
+    this.cartService.addToCart(product, 1, '');
+    
+    // Feedback visual (opcional)
+    this.showAddedFeedback(product);
+  }
+
+  //Mostrar feedback al agregar al carrito
+  private showAddedFeedback(product: Product): void {
+    // TODO: Implementar toast/snackbar
+    console.log(`${product.nombre} agregado al carrito`);
+  }
 
   // Modal
     openProductDetail(product: Product): void {

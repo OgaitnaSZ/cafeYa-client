@@ -44,12 +44,39 @@ export class CartService {
     });
   }
 
-  removeFromCart(productId: string): void {
-    this.cart.update(cart => cart.filter(item => item.producto.producto_id !== productId));
+  updateQuantity(producto: Product, newQuantity: number): void {
+    if (newQuantity <= 0) {
+      this.removeFromCart(producto);
+      return;
+    }
+
+    this.cart.update(cart => 
+      cart.map(item => 
+        item.producto.producto_id === producto.producto_id 
+          ? { ...item, cantidad: newQuantity }
+          : item
+      )
+    );
   }
 
-  resetCart(): void {
+  removeFromCart(producto: Product): void {
+    this.cart.update(cart => 
+      cart.filter(item => item.producto.producto_id !== producto.producto_id)
+    );
+  }
+
+  clearCart(): void {
     this.cart.set([]);
+  }
+
+  getCartTotal(): number {
+    return this.cart().reduce((sum, item) => 
+      sum + (item.producto.precio_unitario * item.cantidad), 0
+    );
+  }
+
+  getCartItemCount(): number {
+    return this.cart().reduce((sum, item) => sum + item.cantidad, 0);
   }
 
   private getStoredCart(): CartItem[] {

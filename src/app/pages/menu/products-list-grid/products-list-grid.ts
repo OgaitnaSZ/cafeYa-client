@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Product } from '../../../core/interfaces/product';
 
 @Component({
-  selector: 'app-products-list-list',
+  selector: 'app-products-list-grid',
   imports: [CommonModule],
-  templateUrl: './products-list-list.html',
-  styleUrl: './products-list-list.css',
+  templateUrl: './products-list-grid.html',
+  styleUrl: './products-list-grid.css',
 })
-export class ProductsListList {
-// INPUTS
+export class ProductsListGrid {
+  // INPUTS
   @Input({ required: true }) products: Product[] = [];
 
   // OUTPUTS
