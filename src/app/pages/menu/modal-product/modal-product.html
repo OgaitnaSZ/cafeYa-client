@@ -38,14 +38,24 @@
     </button>
     
     <!-- Imagen grande -->
-    <div class="
-      w-full h-64
-      bg-linear-to-br from-orange-100 to-amber-100
-      flex items-center justify-center
-      text-8xl
-    ">
-      {{ selectedProduct()?.emoji || '🍽️' }}
-    </div>
+     @if (selectedProduct()?.imagen_url) {
+      <figure class="h-64 w-full">
+        <img 
+          [src]="selectedProduct()?.imagen_url" 
+          [alt]="selectedProduct()?.nombre"
+          class="w-full h-full aspect-square object-cover cursor-pointer"
+        />
+      </figure>
+     }@else {
+       <div class="
+         w-full h-64
+         bg-linear-to-br from-orange-100 to-amber-100
+         flex items-center justify-center
+         text-8xl
+       ">
+         {{ selectedProduct()?.emoji || '🍽️' }}
+       </div>
+     }
     
     <!-- Contenido -->
     <div class="px-6 py-6">
