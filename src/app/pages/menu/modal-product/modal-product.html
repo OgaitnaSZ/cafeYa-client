@@ -38,11 +38,11 @@
     </button>
     
     <!-- Imagen grande -->
-     @if (selectedProduct()?.imagen_url) {
+     @if (selectedProduct().imagen_url) {
       <figure class="h-64 w-full">
         <img 
-          [src]="selectedProduct()?.imagen_url" 
-          [alt]="selectedProduct()?.nombre"
+          [src]="selectedProduct().imagen_url" 
+          [alt]="selectedProduct().nombre"
           class="w-full h-full aspect-square object-cover cursor-pointer"
         />
       </figure>
@@ -53,7 +53,7 @@
          flex items-center justify-center
          text-8xl
        ">
-         {{ selectedProduct()?.emoji || '🍽️' }}
+         {{ selectedProduct().emoji || '🍽️' }}
        </div>
      }
     
@@ -61,7 +61,7 @@
     <div class="px-6 py-6">
       <!-- Badge de disponibilidad y categoría -->
       <div class="flex items-center gap-2 mb-3">
-        @if(selectedProduct()?.disponibilidad) {
+        @if(selectedProduct().disponibilidad) {
           <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
             ✓ Disponible
           </span>
@@ -80,18 +80,18 @@
       
       <!-- Nombre -->
       <h2 class="text-2xl font-bold text-gray-900 mb-2">
-        {{ selectedProduct()?.nombre }}
+        {{ selectedProduct().nombre }}
       </h2>
       
       <!-- Descripción -->
       <p class="text-gray-600 mb-4 leading-relaxed">
-        {{ selectedProduct()?.descripcion }}
+        {{ selectedProduct().descripcion }}
       </p>
       
       <!-- Precio -->
       <div class="flex items-baseline gap-2 mb-6">
         <span class="text-3xl font-bold text-orange-600">
-          ${{ selectedProduct()?.precio_unitario | number }}
+          ${{ selectedProduct().precio_unitario | number }}
         </span>
         <span class="text-sm text-gray-500">
           precio unitario
@@ -195,7 +195,7 @@
         </button>
         
         <button
-          [disabled]="!selectedProduct()?.disponibilidad"
+          [disabled]="!selectedProduct().disponibilidad"
           (click)="addToCartFromModal()"
           class="
             flex-2 h-14

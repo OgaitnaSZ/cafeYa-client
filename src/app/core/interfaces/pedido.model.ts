@@ -4,7 +4,9 @@ export interface ProductoPedido {
   precio_unitario: number;
 }
 
-export interface CreatePedidoDTO {
+export interface Pedido {
+  pedido_id?: string; 
+  numero_pedido?: string;
   cliente_id: string;
   cliente_nombre: string;
   mesa_id: string;
@@ -19,18 +21,8 @@ export interface CreatePagoDTO {
 }
 
 export interface PedidoResponse {
-  pedido: {
-    pedido_id: string;
-    cliente_id: string;
-    nombre_cliente: string;
-    mesa_id: string;
-    nota: string | null;
-    precio_total: number;
-    estado: string;
-    created_at: Date;
-    pedido_padre: string | null;
-  };
-  productos: any[];
+  pedido: Pedido;
+  productos: ProductoPedido[];
 }
 
 export interface PagoResponse {

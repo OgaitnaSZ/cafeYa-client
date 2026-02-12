@@ -1,1 +1,522 @@
-<p>orders works!</p>
+<div class="h-full flex flex-col bg-gray-50 pb-14">
+
+  <!-- HEADER -->
+  <header class="
+    h-14
+    pt-safe-top
+    px-4
+    flex items-center justify-between
+    bg-white
+    border-b border-gray-100
+    sticky top-0
+    z-10
+  ">
+    <h1 class="text-lg font-semibold text-gray-900">
+      Mis Pedidos
+    </h1>
+
+    <!-- Badge de pedidos activos -->
+    @if(pedidosActivos().length > 0) {
+      <span class="
+        px-3 py-1
+        bg-orange-100 text-orange-700
+        text-xs font-semibold
+        rounded-full
+        flex items-center gap-1.5
+      ">
+        <span class="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
+        {{ pedidosActivos().length }} en curso
+      </span>
+    } @else {
+      <span class="
+        px-3 py-1
+        bg-green-100 text-green-700
+        text-xs font-semibold
+        rounded-full
+      ">
+        Todo al día
+      </span>
+    }
+  </header>
+
+  <!-- CONTENIDO -->
+  <div class="flex-1 overflow-y-auto">
+    
+    <!-- ESTADO VACÍO -->
+    @if(pedidos().length === 0) {
+      <div class="h-full flex flex-col items-center justify-center px-4 py-16">
+        <div class="
+          w-32 h-32
+          bg-gray-100
+          rounded-full
+          flex items-center justify-center
+          mb-6
+        ">
+          <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+        </div>
+        
+        <h2 class="text-xl font-bold text-gray-900 mb-2">
+          Sin pedidos aún
+        </h2>
+        
+        <p class="text-gray-600 text-center mb-8">
+          Empezá a pedir para ver tu historial aquí
+        </p>
+        
+        <button
+          (click)="goToMenu()"
+          class="
+            px-8 h-12
+            bg-gradient-to-r from-orange-500 to-red-500
+            text-white font-bold
+            rounded-xl
+            shadow-lg shadow-orange-500/30
+            active:scale-95
+            transition
+          "
+        >
+          Ver menú
+        </button>
+      </div>
+    }
+
+    <!-- LISTA DE PEDIDOS -->
+    @if(pedidos().length > 0) {
+      <div class="px-4 py-4 space-y-3">
+        <div class="max-w-md mx-auto space-y-3">
+          
+          <!-- Info de mesa -->
+          <div class="
+            bg-gradient-to-r from-orange-50 to-amber-50
+            border border-orange-200
+            rounded-xl
+            px-4 py-3
+            flex items-center gap-3
+          ">
+            <div class="
+              w-10 h-10
+              bg-orange-500
+              rounded-xl
+              flex items-center justify-center
+              text-white font-bold
+              shadow-md
+            ">
+              {{ mesaNumber() }}
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">
+                Mesa {{ mesaNumber() }}
+              </p>
+              <p class="text-xs text-gray-600">
+                {{ pedidos().length }} pedido{{ pedidos().length !== 1 ? 's' : '' }} realizados
+              </p>
+            </div>
+          </div>
+
+          <!-- Cards de pedidos -->
+          @for(pedido of pedidos(); track pedido.id) {
+            <div 
+              (click)="openPedidoDetail(pedido)"
+              class="
+                bg-white
+                rounded-2xl
+                border border-gray-200
+                shadow-sm
+                overflow-hidden
+                active:scale-[0.98]
+                transition-transform
+                cursor-pointer
+              "
+            >
+              <!-- Header del pedido -->
+              <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-bold text-gray-900">
+                      Pedido #{{ pedido.numero }}
+                    </h3>
+                    <!-- Badge de estado -->
+                    <span 
+                      [class]="getEstadoBadgeClass(pedido.estado)"
+                      class="px-2 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wide"
+                    >
+                      {{ getEstadoLabel(pedido.estado) }}
+                    </span>
+                  </div>
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </div>
+                <p class="text-xs text-gray-500">
+                  {{ formatDate(pedido.fecha) }}
+                </p>
+              </div>
+
+              <!-- Contenido del pedido -->
+              <div class="px-4 py-3">
+                <!-- Items (preview) -->
+                <div class="space-y-1.5 mb-3">
+                  @for(item of pedido.items.slice(0, 3); track item.producto.producto_id) {
+                    <div class="flex items-center justify-between text-sm">
+                      <div class="flex items-center gap-2 flex-1">
+                        <span class="
+                          w-5 h-5
+                          bg-gray-100
+                          rounded
+                          flex items-center justify-center
+                          text-xs font-semibold text-gray-600
+                        ">
+                          {{ item.cantidad }}
+                        </span>
+                        <span class="text-gray-700 truncate">
+                          {{ item.producto.nombre }}
+                        </span>
+                      </div>
+                      <span class="text-gray-500 text-xs shrink-0 ml-2">
+                        ${{ item.producto.precio_unitario * item.cantidad | number }}
+                      </span>
+                    </div>
+                  }
+                  
+                  <!-- Indicador de más items -->
+                  @if(pedido.items.length > 3) {
+                    <p class="text-xs text-gray-500 mt-1">
+                      + {{ pedido.items.length - 3 }} producto{{ pedido.items.length - 3 !== 1 ? 's' : '' }} más
+                    </p>
+                  }
+                </div>
+
+                <!-- Footer: Total y acciones -->
+                <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <div>
+                    <p class="text-xs text-gray-500">Total</p>
+                    <p class="text-lg font-bold text-orange-600">
+                      ${{ pedido.total | number }}
+                    </p>
+                  </div>
+
+                  <!-- Botón de calificar (solo si está entregado y no calificado) -->
+                  @if(pedido.estado === 'entregado' && !pedido.calificado) {
+                    <button
+                      (click)="goToRating(pedido, $event)"
+                      class="
+                        px-4 h-9
+                        bg-amber-500 text-white
+                        text-sm font-semibold
+                        rounded-lg
+                        flex items-center gap-1.5
+                        shadow-sm
+                        active:scale-95
+                        transition
+                      "
+                    >
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                      Calificar
+                    </button>
+                  }
+
+                  <!-- Indicador de calificado -->
+                  @if(pedido.calificado) {
+                    <div class="flex items-center gap-1 text-amber-500">
+                      @for(star of [1,2,3,4,5]; track star) {
+                        <svg 
+                          class="w-4 h-4"
+                          [class.fill-amber-400]="star <= pedido.calificacion!"
+                          [class.fill-gray-200]="star > pedido.calificacion!"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Barra de progreso (solo para pedidos activos) -->
+              @if(pedido.estado !== 'entregado') {
+                <div class="h-1 bg-gray-100">
+                  <div 
+                    class="h-full transition-all duration-500"
+                    [class.bg-yellow-500]="pedido.estado === 'pendiente'"
+                    [class.bg-blue-500]="pedido.estado === 'en_preparacion'"
+                    [style.width]="getProgresoWidth(pedido.estado)"
+                  ></div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- MODAL DE DETALLE DEL PEDIDO -->
+@if(selectedPedido()) {
+  <div 
+    class="fixed inset-0 bg-black/50 z-50 flex items-end"
+    (click)="closePedidoDetail()"
+  >
+    <div 
+      class="
+        bg-white
+        rounded-t-3xl
+        w-full
+        max-h-[85vh]
+        overflow-y-auto
+        pb-safe-bottom
+        animate-slide-up
+      "
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Handle -->
+      <div class="flex justify-center pt-3 pb-2">
+        <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
+      </div>
+
+      <!-- Botón cerrar -->
+      <button
+        (click)="closePedidoDetail()"
+        class="
+          absolute top-4 right-4
+          w-8 h-8
+          bg-gray-100 hover:bg-gray-200
+          rounded-full
+          flex items-center justify-center
+          z-10
+          transition
+        "
+      >
+        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <!-- Header del pedido -->
+      <div class="px-6 py-4 border-b border-gray-100">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-2xl font-bold text-gray-900">
+            Pedido #{{ selectedPedido()!.numero }}
+          </h2>
+          <span 
+            [class]="getEstadoBadgeClass(selectedPedido()!.estado)"
+            class="px-3 py-1.5 text-xs font-bold rounded-full uppercase"
+          >
+            {{ getEstadoLabel(selectedPedido()!.estado) }}
+          </span>
+        </div>
+
+        <div class="flex items-center gap-4 text-sm text-gray-600">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            {{ formatDate(selectedPedido()!.fecha) }}
+          </div>
+          <div class="w-1 h-1 bg-gray-300 rounded-full"></div>
+          <div class="flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Mesa {{ mesaNumber() }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline de estado (solo para pedidos activos) -->
+      @if(selectedPedido()!.estado !== 'entregado') {
+        <div class="px-6 py-5 bg-gray-50 border-b border-gray-100">
+          <div class="flex items-center justify-between relative">
+            <!-- Línea de fondo -->
+            <div class="absolute top-5 left-0 right-0 h-0.5 bg-gray-200"></div>
+            <!-- Línea de progreso -->
+            <div 
+              class="absolute top-5 left-0 h-0.5 bg-blue-500 transition-all duration-500"
+              [style.width]="getProgresoWidth(selectedPedido()!.estado)"
+            ></div>
+
+            <!-- Steps -->
+            <div class="flex items-center justify-between w-full relative z-10">
+              <!-- Pendiente -->
+              <div class="flex flex-col items-center">
+                <div class="
+                  w-10 h-10
+                  rounded-full
+                  flex items-center justify-center
+                  bg-yellow-500 text-white
+                  shadow-md
+                ">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <p class="text-xs font-medium text-gray-600 mt-2">Recibido</p>
+              </div>
+
+              <!-- En preparación -->
+              <div class="flex flex-col items-center">
+                <div 
+                  class="
+                    w-10 h-10
+                    rounded-full
+                    flex items-center justify-center
+                    shadow-md
+                    transition-colors
+                  "
+                  [class.bg-blue-500]="selectedPedido()!.estado === 'en_preparacion'"
+                  [class.text-white]="selectedPedido()!.estado === 'en_preparacion'"
+                  [class.bg-gray-200]="selectedPedido()!.estado === 'pendiente'"
+                  [class.text-gray-400]="selectedPedido()!.estado === 'pendiente'"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                  </svg>
+                </div>
+                <p class="text-xs font-medium text-gray-600 mt-2">Cocinando</p>
+              </div>
+
+              <!-- Entregado -->
+              <div class="flex flex-col items-center">
+                <div class="
+                  w-10 h-10
+                  bg-gray-200 text-gray-400
+                  rounded-full
+                  flex items-center justify-center
+                  shadow-md
+                ">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <p class="text-xs font-medium text-gray-600 mt-2">Entregado</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Lista de items -->
+      <div class="px-6 py-5">
+        <h3 class="font-bold text-gray-900 mb-4">Productos</h3>
+        
+        <div class="space-y-3">
+          @for(item of selectedPedido()!.items; track item.producto.producto_id) {
+            <div class="
+              flex items-start gap-3
+              p-3
+              bg-gray-50
+              rounded-xl
+            ">
+              <!-- Cantidad -->
+              <div class="
+                w-8 h-8
+                bg-orange-500 text-white
+                rounded-lg
+                flex items-center justify-center
+                font-bold text-sm
+                shrink-0
+              ">
+                {{ item.cantidad }}
+              </div>
+
+              <!-- Info del producto -->
+              <div class="flex-1 min-w-0">
+                <h4 class="font-semibold text-gray-900 mb-0.5">
+                  {{ item.producto.nombre }}
+                </h4>
+                @if(item.notas) {
+                  <p class="text-xs text-gray-600 mb-1">
+                    📝 {{ item.notas }}
+                  </p>
+                }
+                <p class="text-xs text-gray-500">
+                  ${{ item.producto.precio_unitario | number }} c/u
+                </p>
+              </div>
+
+              <!-- Precio total del item -->
+              <div class="text-right shrink-0">
+                <p class="font-bold text-gray-900">
+                  ${{ item.producto.precio_unitario * item.cantidad | number }}
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Resumen de pago -->
+      <div class="px-6 py-5 border-t border-gray-100 bg-gray-50">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-600">Subtotal</span>
+            <span class="font-semibold text-gray-900">
+              ${{ selectedPedido()!.total | number }}
+            </span>
+          </div>
+
+          <!-- Método de pago -->
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-600">Método de pago</span>
+            <span class="font-medium text-gray-700">
+              {{ getMetodoPagoLabel(selectedPedido()!.metodoPago) }}
+            </span>
+          </div>
+
+          <div class="border-t border-gray-200 my-2"></div>
+
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-gray-900">Total</span>
+            <span class="text-2xl font-black text-orange-600">
+              ${{ selectedPedido()!.total | number }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="px-6 py-4 flex gap-3">
+        <button
+          (click)="closePedidoDetail()"
+          class="
+            flex-1 h-12
+            bg-gray-100 text-gray-700
+            font-bold
+            rounded-xl
+            active:bg-gray-200
+            transition
+          "
+        >
+          Cerrar
+        </button>
+
+        @if(selectedPedido()!.estado === 'entregado' && !selectedPedido()!.calificado) {
+          <button
+            (click)="goToRatingFromModal()"
+            class="
+              flex-[2] h-12
+              bg-gradient-to-r from-amber-500 to-yellow-500
+              text-white
+              font-bold
+              rounded-xl
+              active:scale-95
+              transition
+              flex items-center justify-center gap-2
+            "
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+            Calificar pedido
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}

@@ -1,14 +1,13 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, finalize, firstValueFrom, of, tap } from 'rxjs';
+import { catchError, finalize, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Categoria, Product } from '../interfaces/product';
-import { ProductoPedido, CreatePedidoDTO, CreatePagoDTO, PedidoResponse, PagoResponse } from '../interfaces/pedido.model';
+import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse } from '../interfaces/pedido.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class Pedido {
+export class PedidoService {
   private apiUrlPedido = `${environment.apiUrl}pedido/`;
   private apiUrlPago = `${environment.apiUrl}pago/`;
 
@@ -16,9 +15,10 @@ export class Pedido {
   private http = inject(HttpClient);
 
   // Signals de estado
-  pedidoNuevo = signal<PedidoResponse | null>(null);
+  pedidoStorage = signal<PedidoResponse | null>(this.getStoredPedido());
+  pedidoNuevo = signal<Pedido | null>(null);
   pedidosMesa = signal<Pedido[]>([]);
-  pedido = signal<PedidoResponse | null>(null);
+  pedido = signal<Pedido | null>(null);
   loadingPedido = signal(false);
   errorPedido = signal<string | null>(null);
   successPedido = signal<string | null>(null);
@@ -27,42 +27,18 @@ export class Pedido {
   errorPago = signal<string | null>(null);
   successPago = signal<string | null>(null);
 
-  createPedido(pedidoData: CreatePedidoDTO): void {
-    this.loadingPedido.set(true);
-    this.errorPedido.set(null);
+  constructor() {
+    // Efecto para mantener sincronizado localStorage
+    effect(() => {
+      const pedido = this.pedidoStorage();
+  
+      if (pedido) {
+        localStorage.setItem('pedido', JSON.stringify(pedido));
+      } else {
+        localStorage.removeItem('pedido');
+      }
 
-    this.http.post<PedidoResponse>(`${this.apiUrlPedido}crear`, pedidoData).pipe(
-      tap((data) => {
-        console.log('Respuesta de crear pedido:', data);
-        this.successPedido.set("Pedido creado exitosamente");
-        this.pedido.set(data);
-
-      }),
-      catchError(err => {
-        this.errorPedido.set('Error al crear pedido');
-        console.error(err);
-        return of(null);
-      }), 
-      finalize(() => this.loadingPedido.set(false))
-    ).subscribe();
-  }
-
-  createPago(pagoData: CreatePagoDTO): void {
-    this.loadingPago.set(true);
-    this.errorPago.set(null);
-
-    this.http.post<PagoResponse>(`${this.apiUrlPago}crear`, pagoData).pipe(
-      tap((data) => {
-        console.log('Respuesta de crear pago:', data);
-        this.successPago.set("Pago creado exitosamente");
-      }),
-      catchError(err => {
-        this.errorPago.set('Error al crear pago');
-        console.error(err);
-        return of(null);
-      }), 
-      finalize(() => this.loadingPago.set(false))
-    ).subscribe();
+    });
   }
 
   getPedidosByMesa(idMesa: string): void {
@@ -82,20 +58,72 @@ export class Pedido {
     ).subscribe();
   }
 
-  getPedidoById(idPedido: string): void {
+  // Helpers
+  private getStoredPedido(): PedidoResponse | null {
+    const stored = localStorage.getItem('pedido');
+    if (!stored || stored === 'undefined' || stored === 'null') {
+      return null;
+    }
+  
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.error('Error al parsear pedido almacenado:', e);
+      return null;
+    }
+  }
+
+
+
+  createPedidoConPago(pedidoData: Pedido, metodoPago: 'efectivo' | 'app' | 'tarjeta'): Observable<{pedido: Pedido, pago: any}> {
     this.loadingPedido.set(true);
     this.errorPedido.set(null);
-    
-    this.http.get<PedidoResponse>(`${this.apiUrlPedido}pedidos/${idPedido}`).pipe(
-      tap((data) => {
-        this.pedido.set(data)
+  
+    return this.http.post<PedidoResponse>(`${this.apiUrlPedido}crear`, pedidoData).pipe(
+      tap((response) => {
+        this.pedidoNuevo.set(response.pedido);
+        this.successPedido.set("Pedido creado con éxito");
+        console.log("Pedido creado:", response);
+      }),
+      // Encadenar la creación del pago
+      switchMap((pedidoResponse) => {
+        const pagoData: CreatePagoDTO = {
+          pedido_id: <string>pedidoResponse.pedido.pedido_id,
+          medio_pago: metodoPago
+        };
+
+        console.log("Datos para pago:", pagoData);
+        
+        return this.createPagoInternal(pagoData).pipe(
+          map(pagoResponse => ({
+            pedido: pedidoResponse.pedido,
+            pago: pagoResponse
+          }))
+        );
       }),
       catchError(err => {
-        this.errorPedido.set('Error al obtener pedido');
+        this.errorPedido.set('Error al procesar pedido y pago');
         console.error(err);
-        return of(null);
+        return throwError(() => err);
       }),
       finalize(() => this.loadingPedido.set(false))
-    ).subscribe();
+    );
+  }
+  
+  private createPagoInternal(pagoData: CreatePagoDTO): Observable<PagoResponse> {
+    this.loadingPago.set(true);
+    this.errorPago.set(null);
+  
+    return this.http.post<PagoResponse>(`${this.apiUrlPago}crear`, pagoData).pipe(
+      tap((data) => {
+        this.successPago.set("Pago creado exitosamente");
+      }),
+      catchError(err => {
+        this.errorPago.set('Error al crear pago');
+        console.error(err);
+        return throwError(() => err);
+      }),
+      finalize(() => this.loadingPago.set(false))
+    );
   }
 }

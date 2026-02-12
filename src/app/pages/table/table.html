@@ -1,1 +1,409 @@
-<p>table works!</p>
+<div class="h-full flex flex-col bg-gray-50">
+
+  <!-- HEADER -->
+  <header class="
+    h-14
+    pt-safe-top
+    px-4
+    flex items-center justify-between
+    bg-white
+    border-b border-gray-100
+    sticky top-0
+    z-10
+  ">
+    <h1 class="text-lg font-semibold text-gray-900">
+      Mi Mesa
+    </h1>
+
+    <!-- Badge de estado -->
+    <span class="
+      px-3 py-1
+      bg-green-100 text-green-700
+      text-xs font-semibold
+      rounded-full
+      flex items-center gap-1.5
+    ">
+      <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+      Sesión activa
+    </span>
+  </header>
+
+  <!-- CONTENIDO -->
+  <div class="flex-1 overflow-y-auto px-4 py-5 space-y-4 pb-20">
+    <div class="max-w-md mx-auto space-y-4">
+
+      <!-- CARD PRINCIPAL DE LA MESA -->
+      <div class="
+        bg-linear-to-br from-orange-500 to-red-500
+        rounded-3xl
+        p-6
+        shadow-xl shadow-orange-500/30
+        text-white
+        relative
+        overflow-hidden
+      ">
+        <!-- Decoración de fondo -->
+        <div class="
+          absolute -top-8 -right-8
+          w-40 h-40
+          bg-white/10
+          rounded-full
+        "></div>
+        <div class="
+          absolute -bottom-10 -left-6
+          w-32 h-32
+          bg-white/10
+          rounded-full
+        "></div>
+
+        <!-- Contenido de la card -->
+        <div class="relative z-10">
+          <p class="text-white/70 text-sm font-medium mb-1">
+            CafeYa — Café & Brunch
+          </p>
+
+          <!-- Número de mesa grande -->
+          <div class="flex items-end gap-3 mb-4">
+            <div>
+              <p class="text-white/70 text-xs mb-1">Número de mesa</p>
+              <h2 class="text-7xl font-black leading-none">
+                {{ mesaNumber() }}
+              </h2>
+            </div>
+          </div>
+
+          <!-- Info de sesión -->
+          <div class="flex items-center gap-4 pt-4 border-t border-white/20">
+            <div>
+              <p class="text-white/70 text-xs">Código</p>
+              <p class="font-bold text-lg tracking-widest">
+                {{ mesaCode() }}
+              </p>
+            </div>
+            <div class="w-px h-10 bg-white/20"></div>
+            <div>
+              <p class="text-white/70 text-xs">Sesión iniciada</p>
+              <p class="font-semibold text-sm">
+                {{ sessionStartTime() }}
+              </p>
+            </div>
+            <div class="w-px h-10 bg-white/20"></div>
+            <div>
+              <p class="text-white/70 text-xs">Duración</p>
+              <p class="font-semibold text-sm">
+                {{ sessionDuration() }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESUMEN DE CONSUMO -->
+      <div class="
+        bg-white
+        rounded-2xl
+        border border-gray-100
+        shadow-sm
+        overflow-hidden
+      ">
+        <div class="px-5 py-4 border-b border-gray-100">
+          <h3 class="font-bold text-gray-900">
+            Resumen de la sesión
+          </h3>
+        </div>
+
+        <div class="px-5 py-4 space-y-3">
+          <!-- Pedidos realizados -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-blue-100 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+              </div>
+              <span class="text-sm text-gray-700">Pedidos realizados</span>
+            </div>
+            <span class="font-bold text-gray-900">
+              {{ totalPedidos() }}
+            </span>
+          </div>
+
+          <!-- Items consumidos -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-amber-100 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+              </div>
+              <span class="text-sm text-gray-700">Items consumidos</span>
+            </div>
+            <span class="font-bold text-gray-900">
+              {{ totalItems() }}
+            </span>
+          </div>
+
+          <!-- Separador -->
+          <div class="border-t border-gray-100 my-1"></div>
+
+          <!-- Total acumulado -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <span class="text-sm font-semibold text-gray-900">Total acumulado</span>
+            </div>
+            <span class="text-xl font-black text-orange-600">
+              ${{ totalAcumulado() | number }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PEDIDOS ACTIVOS (si hay) -->
+      @if(pedidosActivos().length > 0) {
+        <div class="
+          bg-white
+          rounded-2xl
+          border border-orange-200
+          shadow-sm
+          overflow-hidden
+        ">
+          <div class="
+            px-5 py-4
+            border-b border-orange-100
+            bg-orange-50
+            flex items-center justify-between
+          ">
+            <h3 class="font-bold text-gray-900 flex items-center gap-2">
+              <span class="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
+              Pedidos en curso
+            </h3>
+            <span class="
+              px-2.5 py-1
+              bg-orange-500 text-white
+              text-xs font-bold
+              rounded-full
+            ">
+              {{ pedidosActivos().length }}
+            </span>
+          </div>
+
+          <div class="divide-y divide-gray-100">
+            @for(pedido of pedidosActivos(); track pedido.id) {
+              <div class="px-5 py-3 flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-semibold text-gray-900">
+                    Pedido #{{ pedido.id }}
+                  </p>
+                  <p class="text-xs text-gray-500">
+                    {{ pedido.items.length }} item{{ pedido.items.length !== 1 ? 's' : '' }} · ${{ pedido.total | number }}
+                  </p>
+                </div>
+                <!-- Badge de estado -->
+                <span 
+                  [class]="getEstadoBadgeClass(pedido.estado)"
+                  class="px-2.5 py-1 text-xs font-semibold rounded-full"
+                >
+                  {{ getEstadoLabel(pedido.estado) }}
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ACCIONES -->
+      <div class="space-y-3">
+        <!-- Llamar al mozo -->
+        <button
+          (click)="callWaiter()"
+          [disabled]="waiterCalled()"
+          class="
+            w-full h-14
+            flex items-center justify-between
+            px-5
+            bg-white
+            border-2 border-blue-200
+            rounded-2xl
+            shadow-sm
+            active:scale-[0.98]
+            disabled:opacity-60 disabled:cursor-not-allowed
+            transition-all
+          "
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+              </svg>
+            </div>
+            <div class="text-left">
+              <p class="font-semibold text-gray-900 text-sm">
+                {{ waiterCalled() ? '¡Mozo en camino!' : 'Llamar al mozo' }}
+              </p>
+              <p class="text-xs text-gray-500">
+                {{ waiterCalled() ? 'Ya avisamos, esperá un momento' : 'Te atenderemos en breve' }}
+              </p>
+            </div>
+          </div>
+          @if(!waiterCalled()) {
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          } @else {
+            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          }
+        </button>
+
+        <!-- Cerrar sesión -->
+        <button
+          (click)="confirmCloseSession()"
+          class="
+            w-full h-14
+            flex items-center justify-between
+            px-5
+            bg-white
+            border-2 border-red-200
+            rounded-2xl
+            shadow-sm
+            active:scale-[0.98]
+            transition-all
+          "
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+              <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+            </div>
+            <div class="text-left">
+              <p class="font-semibold text-red-700 text-sm">
+                Cerrar sesión
+              </p>
+              <p class="text-xs text-gray-500">
+                Terminá tu estadía en la mesa
+              </p>
+            </div>
+          </div>
+          <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CONFIRMAR CERRAR SESIÓN -->
+@if(showCloseConfirm()) {
+  <div 
+    class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4"
+    (click)="showCloseConfirm.set(false)"
+  >
+    <div 
+      class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Ícono -->
+      <div class="
+        w-16 h-16
+        bg-red-100
+        rounded-full
+        flex items-center justify-center
+        mx-auto mb-4
+      ">
+        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        </svg>
+      </div>
+
+      <h3 class="text-xl font-bold text-gray-900 text-center mb-2">
+        ¿Cerrar sesión?
+      </h3>
+
+      <p class="text-gray-600 text-center text-sm mb-2">
+        Se cerrará tu sesión en la Mesa {{ mesaNumber() }}
+      </p>
+
+      <!-- Advertencia si hay pedidos activos -->
+      @if(pedidosActivos().length > 0) {
+        <div class="
+          bg-amber-50
+          border border-amber-200
+          rounded-xl
+          p-3
+          mb-5
+          flex items-start gap-2
+        ">
+          <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <p class="text-xs text-amber-800">
+            Tenés {{ pedidosActivos().length }} pedido{{ pedidosActivos().length !== 1 ? 's' : '' }} 
+            en curso. El mozo se encargará de completarlos.
+          </p>
+        </div>
+      } @else {
+        <div class="mb-5"></div>
+      }
+
+      <!-- Resumen rápido -->
+      <div class="
+        bg-gray-50
+        rounded-xl
+        p-4
+        mb-5
+        flex items-center justify-between
+      ">
+        <div class="text-sm text-gray-600">
+          Total de la sesión
+        </div>
+        <div class="text-xl font-black text-orange-600">
+          ${{ totalAcumulado() | number }}
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex gap-3">
+        <button
+          (click)="showCloseConfirm.set(false)"
+          class="
+            flex-1 h-12
+            bg-gray-100 text-gray-700
+            font-bold
+            rounded-xl
+            active:bg-gray-200
+            transition
+          "
+        >
+          Cancelar
+        </button>
+
+        <button
+          (click)="closeSession()"
+          class="
+            flex-[2] h-12
+            bg-red-500 text-white
+            font-bold
+            rounded-xl
+            active:bg-red-600
+            transition
+            flex items-center justify-center gap-2
+          "
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </div>
+}
