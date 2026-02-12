@@ -29,7 +29,7 @@ export class Checkout {
   notaGeneral = signal(''); // Nota general del pedido
   selectedPayment = signal<MetodoPago | null>(null); // Método de pago
 
-  pedidoPadreId = this.pedidoService.pedidoStorage()?.pedido.pedido_id;
+  pedidoPadre = this.pedidoService.pedidoPadre();
 
   // Estados
   isProcessing = signal(false);
@@ -77,9 +77,10 @@ export class Checkout {
   
     try {
       const productos = this.cartItems().map(item => ({
-        producto_id: item.producto.producto_id,
+        producto: item.producto,
         cantidad: item.cantidad,
-        precio_unitario: Number(item.producto.precio_unitario)
+        precio_unitario: Number(item.producto.precio_unitario),
+        notas: item.notas
       }));
   
       const pedidoData = {
@@ -88,7 +89,7 @@ export class Checkout {
         mesa_id: <string>this.mesa()?.mesa_id,
         productos: productos,
         nota: this.notaGeneral() || '',
-        ...(this.pedidoPadreId && { pedido_padre_id: this.pedidoPadreId })
+        ...(this.pedidoPadre?.pedido_id && { pedido_padre_id: this.pedidoPadre?.pedido_id })
       };
   
       // ✨ Una sola llamada que maneja todo el flujo

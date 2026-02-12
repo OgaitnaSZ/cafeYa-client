@@ -1,31 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Pedido, PedidoData } from '../../core/interfaces/pedido.model';
+import { Auth } from '../../core/services/auth';
+import { MesaService } from '../../core/services/mesa';
+import { PedidoService } from '../../core/services/pedido';
 
-type EstadoPedido = 'pendiente' | 'en_preparacion' | 'entregado';
-type MetodoPago = 'efectivo' | 'tarjeta' | 'mercadopago';
-
-interface CartItem {
-  producto: {
-    producto_id: string;
-    nombre: string;
-    precio_unitario: number;
-  };
-  cantidad: number;
-  notas: string;
-}
-
-interface Pedido {
-  id: string;
-  numero: string;
-  items: CartItem[];
-  total: number;
-  estado: EstadoPedido;
-  fecha: Date;
-  metodoPago: MetodoPago;
-  calificado: boolean;
-  calificacion?: number;
-}
+type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
+type MetodoPago = 'efectivo' | 'app' | 'tarjeta';
 
 @Component({
   selector: 'app-orders',
@@ -34,106 +16,54 @@ interface Pedido {
   styleUrl: './orders.css',
 })
 export class Orders {
-private router = inject(Router);
+  // Servicios
+  private router = inject(Router);
+  public auth = inject(Auth);
+  public mesaService = inject(MesaService);
+  public pedidosService = inject(PedidoService);
+
+  // Signals
+  mesa = this.auth.getMesa;
+  error = this.auth.errorMesa;
+  loading = this.auth.loadingMesa;
+  mesaDetails = this.mesaService.mesa;
 
   // Datos de mesa
-  mesaNumber = signal('5');
+  pedidos = this.pedidosService.pedidosMesa;
+  mesaNumber = this.mesaService.mesa()?.numero;
 
   // Modal
-  selectedPedido = signal<Pedido | undefined>(undefined);
-
-  // Pedidos (simulados - en producción vendrían de un servicio)
-  pedidos = signal<Pedido[]>([
-    {
-      id: '003',
-      numero: '003',
-      items: [
-        {
-          producto: { producto_id: '1', nombre: 'Café con leche', precio_unitario: 1200 },
-          cantidad: 2,
-          notas: 'Sin azúcar'
-        },
-        {
-          producto: { producto_id: '2', nombre: 'Medialunas x3', precio_unitario: 900 },
-          cantidad: 1,
-          notas: ''
-        }
-      ],
-      total: 3300,
-      estado: 'en_preparacion',
-      fecha: new Date(Date.now() - 10 * 60000), // Hace 10 min
-      metodoPago: 'mercadopago',
-      calificado: false
-    },
-    {
-      id: '002',
-      numero: '002',
-      items: [
-        {
-          producto: { producto_id: '3', nombre: 'Tostado mixto', precio_unitario: 2500 },
-          cantidad: 1,
-          notas: 'Bien tostado'
-        }
-      ],
-      total: 2500,
-      estado: 'entregado',
-      fecha: new Date(Date.now() - 30 * 60000), // Hace 30 min
-      metodoPago: 'efectivo',
-      calificado: false
-    },
-    {
-      id: '001',
-      numero: '001',
-      items: [
-        {
-          producto: { producto_id: '4', nombre: 'Jugo de naranja', precio_unitario: 1800 },
-          cantidad: 2,
-          notas: ''
-        },
-        {
-          producto: { producto_id: '1', nombre: 'Café con leche', precio_unitario: 1200 },
-          cantidad: 1,
-          notas: 'Extra caliente'
-        }
-      ],
-      total: 4800,
-      estado: 'entregado',
-      fecha: new Date(Date.now() - 60 * 60000), // Hace 1 hora
-      metodoPago: 'tarjeta',
-      calificado: true,
-      calificacion: 5
-    }
-  ]);
+  selectedPedido = signal<PedidoData | undefined>(undefined);
 
   // COMPUTED
   pedidosActivos = computed(() =>
-    this.pedidos().filter(p => p.estado !== 'entregado')
+    this.pedidos().filter(p => p.estado !== 'Entregado')
   );
 
   // HELPERS
   getEstadoBadgeClass(estado: EstadoPedido): string {
     const classes: Record<EstadoPedido, string> = {
-      pendiente: 'bg-yellow-100 text-yellow-700',
-      en_preparacion: 'bg-blue-100 text-blue-700',
-      entregado: 'bg-green-100 text-green-700'
+      "Pendiente": 'bg-yellow-100 text-yellow-700',
+      "En preparacion": 'bg-blue-100 text-blue-700',
+      "Entregado": 'bg-green-100 text-green-700'
     };
     return classes[estado];
   }
 
   getEstadoLabel(estado: EstadoPedido): string {
     const labels: Record<EstadoPedido, string> = {
-      pendiente: '⏳ Pendiente',
-      en_preparacion: '👨‍🍳 Preparando',
-      entregado: '✓ Entregado'
+      "Pendiente": '⏳ Pendiente',
+      "En preparacion": '👨‍🍳 Preparando',
+      "Entregado": '✓ Entregado'
     };
     return labels[estado];
   }
 
   getProgresoWidth(estado: EstadoPedido): string {
     const widths: Record<EstadoPedido, string> = {
-      pendiente: '33%',
-      en_preparacion: '66%',
-      entregado: '100%'
+      "Pendiente": '33%',
+      "En preparacion": '66%',
+      "Entregado": '100%'
     };
     return widths[estado];
   }
@@ -142,7 +72,7 @@ private router = inject(Router);
     const labels: Record<MetodoPago, string> = {
       efectivo: 'Efectivo',
       tarjeta: 'Tarjeta',
-      mercadopago: 'Mercado Pago'
+      app: 'App'
     };
     return labels[metodo];
   }
@@ -167,7 +97,7 @@ private router = inject(Router);
   }
 
   // MODAL
-  openPedidoDetail(pedido: Pedido): void {
+  openPedidoDetail(pedido: PedidoData): void {
     this.selectedPedido.set(pedido);
     document.body.style.overflow = 'hidden';
   }
@@ -184,14 +114,14 @@ private router = inject(Router);
 
   goToRating(pedido: Pedido, event: Event): void {
     event.stopPropagation();
-    this.router.navigate(['/rating', pedido.id]);
+    this.router.navigate(['/rating', pedido.pedido_id]);
   }
 
   goToRatingFromModal(): void {
     const pedido = this.selectedPedido();
     if (pedido) {
       this.closePedidoDetail();
-      this.router.navigate(['/rating', pedido.id]);
+      this.router.navigate(['/rating', pedido.pedido_id]);
     }
   }
 }

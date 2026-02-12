@@ -1,8 +1,8 @@
-import { Injectable, effect, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse } from '../interfaces/pedido.model';
+import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse, PedidoData } from '../interfaces/pedido.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,65 +15,62 @@ export class PedidoService {
   private http = inject(HttpClient);
 
   // Signals de estado
-  pedidoStorage = signal<PedidoResponse | null>(this.getStoredPedido());
   pedidoNuevo = signal<Pedido | null>(null);
-  pedidosMesa = signal<Pedido[]>([]);
   pedido = signal<Pedido | null>(null);
+  pedidosMesa = signal<PedidoData[]>(this.getStoredPedidos());
   loadingPedido = signal(false);
   errorPedido = signal<string | null>(null);
   successPedido = signal<string | null>(null);
 
+  // Estados
   loadingPago = signal(false);
   errorPago = signal<string | null>(null);
   successPago = signal<string | null>(null);
 
+  // Computed para obtener el último pedido
+  ultimoPedido = computed(() => {
+    const pedidos = this.pedidosMesa();
+    return pedidos.length > 0 ? pedidos[pedidos.length - 1] : null;
+  });
+
+  // Computed para obtener el pedido padre (primer pedido de la sesión)
+  pedidoPadre = computed(() => {
+    const pedidos = this.pedidosMesa();
+    return pedidos.length > 0 ? pedidos[0] : null;
+  });
+
+  // Computed para el total de la sesión
+  totalSesion = computed(() => {
+    return this.pedidosMesa().reduce((total, pedido) => total + pedido.monto_final, 0);
+  });
+
   constructor() {
     // Efecto para mantener sincronizado localStorage
     effect(() => {
-      const pedido = this.pedidoStorage();
-  
-      if (pedido) {
-        localStorage.setItem('pedido', JSON.stringify(pedido));
+      const pedidos = this.pedidosMesa();
+      
+      if (pedidos.length > 0) {
+        localStorage.setItem('pedidosMesa', JSON.stringify(pedidos));
       } else {
-        localStorage.removeItem('pedido');
+        localStorage.removeItem('pedidosMesa');
       }
-
     });
   }
 
-  getPedidosByMesa(idMesa: string): void {
-    this.loadingPedido.set(true);
-    this.errorPedido.set(null);
-    
-    this.http.get<Pedido[]>(`${this.apiUrlPedido}pedidos/mesa/${idMesa}`).pipe(
-      tap((data) => {
-        this.pedidosMesa.set(data)
-      }),
-      catchError(err => {
-        this.errorPedido.set('Error al obtener mesa');
-        console.error(err);
-        return of(null);
-      }),
-      finalize(() => this.loadingPedido.set(false))
-    ).subscribe();
-  }
-
   // Helpers
-  private getStoredPedido(): PedidoResponse | null {
-    const stored = localStorage.getItem('pedido');
+  private getStoredPedidos(): PedidoData[] {
+    const stored = localStorage.getItem('pedidosData');
     if (!stored || stored === 'undefined' || stored === 'null') {
-      return null;
+      return [];
     }
   
     try {
       return JSON.parse(stored);
     } catch (e) {
-      console.error('Error al parsear pedido almacenado:', e);
-      return null;
+      console.error('Error al parsear pedidos almacenados:', e);
+      return [];
     }
   }
-
-
 
   createPedidoConPago(pedidoData: Pedido, metodoPago: 'efectivo' | 'app' | 'tarjeta'): Observable<{pedido: Pedido, pago: any}> {
     this.loadingPedido.set(true);
@@ -83,7 +80,6 @@ export class PedidoService {
       tap((response) => {
         this.pedidoNuevo.set(response.pedido);
         this.successPedido.set("Pedido creado con éxito");
-        console.log("Pedido creado:", response);
       }),
       // Encadenar la creación del pago
       switchMap((pedidoResponse) => {
@@ -91,8 +87,6 @@ export class PedidoService {
           pedido_id: <string>pedidoResponse.pedido.pedido_id,
           medio_pago: metodoPago
         };
-
-        console.log("Datos para pago:", pagoData);
         
         return this.createPagoInternal(pagoData).pipe(
           map(pagoResponse => ({
@@ -126,4 +120,33 @@ export class PedidoService {
       finalize(() => this.loadingPago.set(false))
     );
   }
+  // Helpers
+    // Limpiar todos los pedidos de la sesión
+    limpiarSesion(): void {
+      this.pedidosMesa.set([]);
+      this.errorPedido.set(null);
+      this.successPedido.set(null);
+      this.errorPago.set(null);
+      this.successPago.set(null);
+    }
+  
+    // Obtener pedidos por cliente
+    getPedidosByCliente(clienteId: string): PedidoData[] {
+      return this.pedidosMesa().filter(p => p.cliente_id === clienteId);
+    }
+  
+    // Obtener pedidos hijos (que tienen pedido_padre_id)
+    getPedidosHijos(): PedidoData[] {
+      return this.pedidosMesa().filter(p => p.pedido_padre_id);
+    }
+  
+    // Verificar si hay pedidos en la sesión
+    hayPedidosEnSesion(): boolean {
+      return this.pedidosMesa().length > 0;
+    }
+  
+    // Obtener pedido por ID
+    getPedidoById(pedidoId: string): PedidoData | undefined {
+      return this.pedidosMesa().find(p => p.pedido_id === pedidoId);
+    }
 }

@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CartService } from '../../core/services/cart';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CartItem, Product } from '../../core/interfaces/product';
 import { CommonModule } from '@angular/common';
 
@@ -13,7 +13,6 @@ import { CommonModule } from '@angular/common';
 export class Cart {
   // Servicios
   private cartService = inject(CartService);
-  private router = inject(Router);
 
   // Estado del carrito
   cartItems = this.cartService.cart;
