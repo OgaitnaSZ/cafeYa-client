@@ -23,6 +23,7 @@ export class Orders {
   public pedidosService = inject(PedidoService);
 
   // Signals
+  user = this.auth.user;
   mesa = this.auth.getMesa;
   error = this.auth.errorMesa;
   loading = this.auth.loadingMesa;
@@ -30,7 +31,6 @@ export class Orders {
 
   // Datos de mesa
   pedidos = this.pedidosService.pedidosMesa;
-  mesaNumber = this.mesaService.mesa()?.numero;
 
   // Modal
   selectedPedido = signal<PedidoData | undefined>(undefined);
@@ -77,17 +77,19 @@ export class Orders {
     return labels[metodo];
   }
 
-  formatDate(date: Date): string {
+  formatDate(dateInput: Date | string): string {
+    const date = new Date(dateInput); // 🔥 conversión clave
+  
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-
+  
     if (diffMins < 1) return 'Hace un momento';
     if (diffMins < 60) return `Hace ${diffMins} min`;
     
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `Hace ${diffHours}h`;
-
+  
     return date.toLocaleDateString('es-AR', {
       day: '2-digit',
       month: '2-digit',
@@ -95,6 +97,7 @@ export class Orders {
       minute: '2-digit'
     });
   }
+
 
   // MODAL
   openPedidoDetail(pedido: PedidoData): void {
