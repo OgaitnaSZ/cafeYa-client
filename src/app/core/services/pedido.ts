@@ -50,22 +50,27 @@ export class PedidoService {
       const pedidos = this.pedidosMesa();
       
       if (pedidos.length > 0) {
-        localStorage.setItem('pedidosMesa', JSON.stringify(pedidos));
+        localStorage.setItem("pedidosMesa", JSON.stringify(pedidos));
+        console.log('💾 Pedidos guardados en localStorage:', pedidos.length);
       } else {
-        localStorage.removeItem('pedidosMesa');
+        localStorage.removeItem("pedidosMesa");
+        console.log('🗑️ Pedidos eliminados de localStorage');
       }
     });
   }
 
   // Helpers
   private getStoredPedidos(): PedidoData[] {
-    const stored = localStorage.getItem('pedidosData');
+    const stored = localStorage.getItem("pedidosMesa");
+    
     if (!stored || stored === 'undefined' || stored === 'null') {
       return [];
     }
   
     try {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      console.log('📂 Pedidos cargados desde localStorage:', parsed.length);
+      return parsed;
     } catch (e) {
       console.error('Error al parsear pedidos almacenados:', e);
       return [];
@@ -87,13 +92,38 @@ export class PedidoService {
           pedido_id: <string>pedidoResponse.pedido.pedido_id,
           medio_pago: metodoPago
         };
-        
+
         return this.createPagoInternal(pagoData).pipe(
           map(pagoResponse => ({
             pedido: pedidoResponse.pedido,
             pago: pagoResponse
           }))
         );
+      }),
+      tap(({ pedido, pago }) => {
+        const nuevoPedidoData: PedidoData = {
+          // Datos del pedido
+          pedido_id: pedido.pedido_id!,
+          numero_pedido: pedido.numero_pedido!,
+          cliente_id: pedido.cliente_id,
+          cliente_nombre: pedido.cliente_nombre!,
+          mesa_id: pedido.mesa_id,
+          nota: pedido.nota || '',
+          precio_total: Number(pedido.precio_total),
+          estado: this.mapEstado(pedido.estado!),
+          productos: pedidoData.productos,
+          pedido_padre_id: pedido.pedido_padre_id || undefined,
+          
+          // Datos del pago
+          pago_id: pago.pago_id,
+          medio_pago: pago.medio_de_pago!,
+          monto: Number(pago.monto),
+          IVA: Number(pago.IVA),
+          monto_final: Number(pago.monto_final),
+          fecha_pago: new Date(pago.created_at)
+        };
+
+        this.pedidosMesa.update(pedidos => [...pedidos, nuevoPedidoData]);
       }),
       catchError(err => {
         this.errorPedido.set('Error al procesar pedido y pago');
@@ -121,32 +151,41 @@ export class PedidoService {
     );
   }
   // Helpers
-    // Limpiar todos los pedidos de la sesión
-    limpiarSesion(): void {
-      this.pedidosMesa.set([]);
-      this.errorPedido.set(null);
-      this.successPedido.set(null);
-      this.errorPago.set(null);
-      this.successPago.set(null);
+    private mapEstado(estado: string): 'Pendiente' | 'En preparacion' | 'Entregado' {
+    switch(estado) {
+      case 'Pendiente':
+        return 'Pendiente';
+      case 'En_preparacion':
+      case 'En preparacion':
+        return 'En preparacion';
+      case 'Entregado':
+        return 'Entregado';
+      default:
+        return 'Pendiente';
     }
+  }
+
+  limpiarSesion(): void {
+    this.pedidosMesa.set([]);
+    this.errorPedido.set(null);
+    this.successPedido.set(null);
+    this.errorPago.set(null);
+    this.successPago.set(null);
+  }
   
-    // Obtener pedidos por cliente
-    getPedidosByCliente(clienteId: string): PedidoData[] {
-      return this.pedidosMesa().filter(p => p.cliente_id === clienteId);
-    }
-  
-    // Obtener pedidos hijos (que tienen pedido_padre_id)
-    getPedidosHijos(): PedidoData[] {
-      return this.pedidosMesa().filter(p => p.pedido_padre_id);
-    }
-  
-    // Verificar si hay pedidos en la sesión
-    hayPedidosEnSesion(): boolean {
-      return this.pedidosMesa().length > 0;
-    }
-  
-    // Obtener pedido por ID
-    getPedidoById(pedidoId: string): PedidoData | undefined {
-      return this.pedidosMesa().find(p => p.pedido_id === pedidoId);
-    }
+  getPedidosByCliente(clienteId: string): PedidoData[] {
+    return this.pedidosMesa().filter(p => p.cliente_id === clienteId);
+  }
+
+  getPedidosHijos(): PedidoData[] {
+    return this.pedidosMesa().filter(p => p.pedido_padre_id);
+  }
+
+  hayPedidosEnSesion(): boolean {
+    return this.pedidosMesa().length > 0;
+  }
+
+  getPedidoById(pedidoId: string): PedidoData | undefined {
+    return this.pedidosMesa().find(p => p.pedido_id === pedidoId);
+  }
 }

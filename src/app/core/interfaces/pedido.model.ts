@@ -25,7 +25,7 @@ export interface CreatePagoDTO {
 export interface PagoResponse {
   pago_id: string;
   pedido_id: string;
-  medio_de_pago: string;
+  medio_de_pago: 'efectivo' | 'app' | 'tarjeta' ;
   monto: number;
   IVA: number;
   monto_final: number;
