@@ -39,6 +39,25 @@ export class PedidoService {
     return pedidos.length > 0 ? pedidos[0] : null;
   });
 
+  // Computed para los totales pedidos
+  readonly totalPedidos = computed(() =>
+    this.pedidosMesa().length
+  );
+
+  // Computed para los totales pedidos pendientes
+  readonly totalPedidosPendientes = computed(() =>
+    this.pedidosMesa()
+      .filter(pedido => pedido.estado === 'Pendiente')
+      .length
+  );
+
+  // Computed para los totales pedidos pendientes
+  readonly totalPedidosServidos = computed(() =>
+    this.pedidosMesa()
+      .filter(pedido => pedido.estado === 'Entregado')
+      .length
+  );
+
   // Computed para el total de la sesión
   totalSesion = computed(() => {
     return this.pedidosMesa().reduce((total, pedido) => total + pedido.monto_final, 0);
@@ -51,10 +70,8 @@ export class PedidoService {
       
       if (pedidos.length > 0) {
         localStorage.setItem("pedidosMesa", JSON.stringify(pedidos));
-        console.log('💾 Pedidos guardados en localStorage:', pedidos.length);
       } else {
         localStorage.removeItem("pedidosMesa");
-        console.log('🗑️ Pedidos eliminados de localStorage');
       }
     });
   }
