@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { CartService } from '../../core/services/cart';
+import { PedidoService } from '../../core/services/pedido';
 
 @Component({
   selector: 'app-bottom-bar',
@@ -13,4 +14,5 @@ export class BottomBar {
   // Servicios
   public auth = inject(Auth);
   public cartService = inject(CartService);
+  public pedidoService = inject(PedidoService);
 }

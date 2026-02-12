@@ -181,7 +181,7 @@ export class PedidoService {
     return this.pedidosMesa().filter(p => p.pedido_padre_id);
   }
 
-  hayPedidosEnSesion(): boolean {
+  public hayPedidosEnSesion(): boolean {
     return this.pedidosMesa().length > 0;
   }
 

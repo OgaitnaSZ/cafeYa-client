@@ -1,37 +1,63 @@
 @if(auth.isLoggedIn()){
     <div class="w-full grid grid-cols-4 bg-white">
-        <button class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/table">
-            <span class="material-symbols-outlined">table_restaurant</span>
-        </button>
-        <button class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/orders">
-            <span class="material-symbols-outlined">assignment</span>
-        </button>
-        <button class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/menu">
-            <span class="material-symbols-outlined">menu_book_2</span>
-        </button>
-        <button class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/cart">
-            <span class="material-symbols-outlined">garden_cart</span>
-        </button>
-        @if(cartService.itemCount() > 0) {
-        <span 
-            class="
-                absolute right-5 top-3
-                min-w-5 h-5
-                px-1.5
-                bg-red-500 text-white
-                text-xs font-bold
-                rounded-full
-                flex items-center justify-center
-            "
-            >
-            {{ cartService.itemCount() }}
-            </span>
-        }
+        <div class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/table">
+            <button>
+                <span class="material-symbols-outlined">table_restaurant</span>
+            </button>
+        </div>
+
+        <div class="flex justify-center items-center">
+            @if(pedidoService.hayPedidosEnSesion()) {
+                <span 
+                    class="
+                        absolute mb-6 ms-6
+                        min-w-3 h-3
+                        px-1.5
+                        bg-red-500 text-white
+                        text-xs font-bold
+                        rounded-full
+                        flex items-center justify-center
+                    "
+                ></span>
+            }
+            <button class="opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/orders">
+                <span class="material-symbols-outlined">assignment</span>
+            </button>
+        </div>
+
+        <div class="h-16 flex justify-center items-center">
+            <button class="opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/menu">
+                <span class="material-symbols-outlined">menu_book_2</span>
+            </button>
+        </div>
+        
+        <div class="h-16 flex justify-center items-center">
+            @if(cartService.itemCount() > 0) {
+                <span 
+                    class="
+                        absolute mb-6 ms-6
+                        min-w-5 h-5
+                        px-1.5
+                        bg-red-500 text-white
+                        text-xs font-bold
+                        rounded-full
+                        flex items-center justify-center
+                    "
+                    >
+                    {{ cartService.itemCount() }}
+                </span>
+            }
+            <button class="opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/cart">
+                <span class="material-symbols-outlined">garden_cart</span>
+            </button>
+        </div>
     </div>
 } @else {
     <div class="w-full flex justify-center">
-        <button class="h-20 w-20 rounded-full bg-amber-600 flex justify-center items-center -mt-10 shadow-lg" routerLink="/menu">
-            <span class="material-symbols-outlined text-gray-50" style="font-size: 44px !important;">menu_book</span>
-        </button>
+        <div class="h-20 w-20 rounded-full bg-amber-600 flex justify-center items-center -mt-10 shadow-lg" routerLink="/menu">
+            <button>
+
+            </button><span class="material-symbols-outlined text-gray-50" style="font-size: 44px !important;">menu_book</span>
+        </div>
     </div>
 }
