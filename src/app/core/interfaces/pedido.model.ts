@@ -44,6 +44,7 @@ export interface PedidoData {
   estado: 'Pendiente' | 'En preparacion' | 'Entregado';
   productos: CartItem[];
   pedido_padre_id?: string; // Opcional
+  calificacion?: Calificacion;
   
   // Datos del pago
   pago_id: string;
@@ -53,3 +54,11 @@ export interface PedidoData {
   IVA: number;
   fecha_pago: Date;
 }
+
+export interface Calificacion {
+  calificacion_id?: string;
+  pedido_id: string;
+  puntuacion: number;
+  nombre_cliente: string;
+  resena: string;
+};

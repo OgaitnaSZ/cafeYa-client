@@ -2,7 +2,8 @@ import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse, PedidoData } from '../interfaces/pedido.model';
+import { CalificacionService } from './calificacion';
+import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse, PedidoData, Calificacion } from '../interfaces/pedido.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ export class PedidoService {
 
   // Inject
   private http = inject(HttpClient);
+  private calificacionService = inject(CalificacionService);
 
   // Signals de estado
   pedidoNuevo = signal<Pedido | null>(null);
@@ -167,6 +169,46 @@ export class PedidoService {
       finalize(() => this.loadingPago.set(false))
     );
   }
+
+    /**
+   * Agregar calificación a un pedido en el array local
+   */
+  agregarCalificacion(pedidoId: string, calificacion: Calificacion): void {
+    this.pedidosMesa.update(pedidos => 
+      pedidos.map(p => 
+        p.pedido_id === pedidoId
+          ? {
+              ...p,
+              calificacion: {
+                pedido_id: pedidoId,
+                calificacion_id: calificacion.calificacion_id,
+                puntuacion: calificacion.puntuacion,
+                resena: calificacion.resena,
+                nombre_cliente: calificacion.nombre_cliente
+              }
+            }
+          : p
+      )
+    );
+    
+    console.log('⭐ Calificación agregada al pedido:', pedidoId);
+  }
+
+  /**
+   * Verificar si un pedido está calificado
+   */
+  pedidoEstaCalificado(pedidoId: string): boolean {
+    const pedido = this.getPedidoById(pedidoId);
+    return !!pedido?.calificacion;
+  }
+
+  /**
+   * Obtener calificación de un pedido
+   */
+  getCalificacion(pedidoId: string): PedidoData['calificacion'] | undefined {
+    return this.getPedidoById(pedidoId)?.calificacion;
+  }
+
   // Helpers
     private mapEstado(estado: string): 'Pendiente' | 'En preparacion' | 'Entregado' {
     switch(estado) {

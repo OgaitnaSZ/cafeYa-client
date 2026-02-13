@@ -5,13 +5,15 @@ import { Pedido, PedidoData } from '../../core/interfaces/pedido.model';
 import { Auth } from '../../core/services/auth';
 import { MesaService } from '../../core/services/mesa';
 import { PedidoService } from '../../core/services/pedido';
+import { Rating } from '../../layout/components/rating/rating';
+import { CalificacionService } from '../../core/services/calificacion';
 
 type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
 type MetodoPago = 'efectivo' | 'app' | 'tarjeta';
 
 @Component({
   selector: 'app-orders',
-  imports: [CommonModule],
+  imports: [CommonModule, Rating],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -21,6 +23,7 @@ export class Orders {
   public auth = inject(Auth);
   public mesaService = inject(MesaService);
   public pedidosService = inject(PedidoService);
+  public calificacionService = inject(CalificacionService);
 
   // Signals
   user = this.auth.user;
@@ -34,6 +37,9 @@ export class Orders {
 
   // Modal
   selectedPedido = signal<PedidoData | undefined>(undefined);
+
+  showRatingModal = signal(false);
+  pedidoToRate = signal<PedidoData | undefined>(undefined);
 
   // COMPUTED
   pedidosActivos = computed(() =>
@@ -110,21 +116,39 @@ export class Orders {
     document.body.style.overflow = 'unset';
   }
 
-  // NAVEGACIÓN
-  goToMenu(): void {
-    this.router.navigate(['/menu']);
+  goToRating(pedido: PedidoData, event: Event): void {
+    event.stopPropagation();
+    this.pedidoToRate.set(pedido);
+    this.showRatingModal.set(true);
+    document.body.style.overflow = 'hidden';
   }
 
-  goToRating(pedido: Pedido, event: Event): void {
-    event.stopPropagation();
-    this.router.navigate(['/rating', pedido.pedido_id]);
+    closeRatingModal(): void {
+    this.showRatingModal.set(false);
+    this.pedidoToRate.set(undefined);
+    document.body.style.overflow = 'unset';
+  }
+
+  handleRatingSubmitted(calificacion: any): void {
+    console.log('✅ Calificación recibida en padre:', calificacion);
+    
+    // Actualizar el pedido en el servicio
+    const pedido = this.pedidoToRate();
+    if (pedido) {
+      this.calificacionService.createCalificacion(calificacion);
+    }
   }
 
   goToRatingFromModal(): void {
     const pedido = this.selectedPedido();
     if (pedido) {
       this.closePedidoDetail();
-      this.router.navigate(['/rating', pedido.pedido_id]);
+      this.goToRating(pedido, new Event('click'));
     }
+  }
+
+  // NAVEGACIÓN
+  goToMenu(): void {
+    this.router.navigate(['/menu']);
   }
 }
