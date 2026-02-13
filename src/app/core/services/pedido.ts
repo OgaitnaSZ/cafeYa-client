@@ -1,8 +1,7 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, finalize, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, finalize, map, Observable, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { CalificacionService } from './calificacion';
 import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse, PedidoData, Calificacion } from '../interfaces/pedido.model';
 
 @Injectable({
@@ -14,7 +13,6 @@ export class PedidoService {
 
   // Inject
   private http = inject(HttpClient);
-  private calificacionService = inject(CalificacionService);
 
   // Signals de estado
   pedidoNuevo = signal<Pedido | null>(null);

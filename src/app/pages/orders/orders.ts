@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Pedido, PedidoData } from '../../core/interfaces/pedido.model';
+import { PedidoData } from '../../core/interfaces/pedido.model';
 import { Auth } from '../../core/services/auth';
 import { MesaService } from '../../core/services/mesa';
 import { PedidoService } from '../../core/services/pedido';
@@ -41,11 +41,6 @@ export class Orders {
   showRatingModal = signal(false);
   pedidoToRate = signal<PedidoData | undefined>(undefined);
 
-  // COMPUTED
-  pedidosActivos = computed(() =>
-    this.pedidos().filter(p => p.estado !== 'Entregado')
-  );
-
   // HELPERS
   getEstadoBadgeClass(estado: EstadoPedido): string {
     const classes: Record<EstadoPedido, string> = {
@@ -84,7 +79,7 @@ export class Orders {
   }
 
   formatDate(dateInput: Date | string): string {
-    const date = new Date(dateInput); // 🔥 conversión clave
+    const date = new Date(dateInput);
   
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
@@ -123,20 +118,20 @@ export class Orders {
     document.body.style.overflow = 'hidden';
   }
 
-    closeRatingModal(): void {
+  closeRatingModal(): void {
     this.showRatingModal.set(false);
     this.pedidoToRate.set(undefined);
     document.body.style.overflow = 'unset';
   }
 
   handleRatingSubmitted(calificacion: any): void {
-    console.log('✅ Calificación recibida en padre:', calificacion);
-    
-    // Actualizar el pedido en el servicio
     const pedido = this.pedidoToRate();
-    if (pedido) {
-      this.calificacionService.createCalificacion(calificacion);
-    }
+    if (!pedido) return;
+  
+    this.pedidosService.agregarCalificacion(
+      pedido.pedido_id, 
+      calificacion
+    );
   }
 
   goToRatingFromModal(): void {

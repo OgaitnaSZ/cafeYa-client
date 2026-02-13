@@ -73,14 +73,14 @@ export class Rating {
       this.error.set('Por favor, seleccioná una puntuación');
       return;
     }
-
+  
     if (!this.resena().trim()) {
       this.error.set('Por favor, escribí un comentario');
       return;
     }
-
+  
     this.loading.set(true);
-
+  
     const calificacionData = {
       pedido_id: this.pedido.pedido_id,
       puntuacion: this.puntuacion(),
@@ -88,7 +88,20 @@ export class Rating {
       nombre_cliente: this.nombreCliente
     };
 
-    this.calificacionService.createCalificacion(calificacionData);
+    this.calificacionService.createCalificacion(calificacionData).subscribe({
+      next: (calificacionResponse) => {
+        this.ratingSubmitted.emit(calificacionResponse);
+        
+        // Cerrar el modal
+        this.close.emit();
+        
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set('Error al enviar la calificación');
+        this.loading.set(false);
+      }
+    });
   }
 
   // Cerrar modal

@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, finalize, tap, throwError } from 'rxjs';
+import { Observable, catchError, finalize, map, of, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Calificacion } from '../interfaces/pedido.model';
 
@@ -17,12 +17,12 @@ export class CalificacionService {
   error = signal<string | null>(null);
   success = signal<string | null>(null);
 
-  createCalificacion(data: Calificacion): void {
+  createCalificacion(data: Calificacion): Observable<Calificacion> {
     this.loading.set(true);
     this.error.set(null);
     this.success.set(null);
-
-    this.http.post<Calificacion>(`${this.apiUrl}crear`, data).pipe(
+  
+    return this.http.post<Calificacion>(`${this.apiUrl}crear`, data).pipe(
       tap((response) => {
         this.success.set('Calificación enviada exitosamente');
         this.calificacion.set(response);
@@ -32,11 +32,6 @@ export class CalificacionService {
         return throwError(() => err);
       }),
       finalize(() => this.loading.set(false))
-    ).subscribe();
-  }
-
-  // Obtener calificación de un pedido
-  getCalificacionByPedido(pedidoId: string): Observable<Calificacion> {
-    return this.http.get<Calificacion>(`${this.apiUrl}pedido/${pedidoId}`);
+    );
   }
 }
