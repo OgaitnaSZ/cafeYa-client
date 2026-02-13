@@ -12,47 +12,31 @@ export class CalificacionService {
   private http = inject(HttpClient);
 
   // Estados
+  calificacion = signal<Calificacion | null>(null);
   loading = signal(false);
   error = signal<string | null>(null);
   success = signal<string | null>(null);
 
-  createCalificacion(data: Calificacion): Observable<Calificacion> {
+  createCalificacion(data: Calificacion): void {
     this.loading.set(true);
     this.error.set(null);
     this.success.set(null);
 
-    return this.http.post<Calificacion>(`${this.apiUrl}crear`, data).pipe(
+    this.http.post<Calificacion>(`${this.apiUrl}crear`, data).pipe(
       tap((response) => {
         this.success.set('Calificación enviada exitosamente');
-        console.log('⭐ Calificación creada:', response);
+        this.calificacion.set(response);
       }),
       catchError(err => {
         this.error.set('Error al enviar calificación');
-        console.error('❌ Error al calificar:', err);
         return throwError(() => err);
       }),
       finalize(() => this.loading.set(false))
-    );
+    ).subscribe();
   }
 
-  /**
-   * Obtener calificación de un pedido
-   */
+  // Obtener calificación de un pedido
   getCalificacionByPedido(pedidoId: string): Observable<Calificacion> {
     return this.http.get<Calificacion>(`${this.apiUrl}pedido/${pedidoId}`);
-  }
-
-  /**
-   * Verificar si un pedido tiene calificación
-   */
-  pedidoTieneCalificacion(pedidoId: string): Observable<boolean> {
-    return this.http.get<{tiene_calificacion: boolean}>(`${this.apiUrl}verificar/${pedidoId}`)
-      .pipe(
-        tap(response => console.log(`Pedido ${pedidoId} calificado:`, response.tiene_calificacion)),
-        catchError(() => {
-          // Si hay error, asumir que no tiene calificación
-          return throwError(() => false);
-        })
-      ) as any;
   }
 }

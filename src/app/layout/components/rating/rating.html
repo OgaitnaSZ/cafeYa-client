@@ -39,7 +39,7 @@
     </button>
 
     <!-- CONTENIDO -->
-    @if(!showSuccess()) {
+    @if(success() !== 'Calificación enviada exitosamente') {
       <div class="px-6 py-6">
         <!-- Header -->
         <div class="text-center mb-6">
@@ -128,6 +128,10 @@
           </p>
         </div>
 
+        @if (error()){
+          <p class="text-red-500">{{error()}}</p>
+        }
+
         <!-- Botones -->
         <div class="flex gap-3">
           <button
@@ -145,11 +149,11 @@
           </button>
 
           <button
-            [disabled]="puntuacion() === 0 || !resena().trim() || isSubmitting()"
+            [disabled]="puntuacion() === 0 || !resena().trim() || loading()"
             (click)="submitRating()"
             class="
-              flex-[2] h-12
-              bg-gradient-to-r from-amber-500 to-yellow-500
+              flex-2 h-12
+              bg-linear-to-r from-amber-500 to-yellow-500
               text-white font-bold
               rounded-xl
               shadow-lg shadow-amber-500/30
@@ -159,7 +163,7 @@
               flex items-center justify-center gap-2
             "
           >
-            @if(isSubmitting()) {
+            @if(loading()) {
               <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               <span>Enviando...</span>
             } @else {
@@ -174,7 +178,7 @@
     }
 
     <!-- PANTALLA DE ÉXITO -->
-    @if(showSuccess()) {
+    @if(success() === 'Calificación enviada exitosamente') {
       <div class="px-6 py-12 text-center">
         <!-- Ícono de éxito -->
         <div class="
