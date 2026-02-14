@@ -149,13 +149,13 @@
             @for(duracion of duracionOptions; track duracion.value) {
               <button
                 type="button"
-                (click)="selectDuracion(duracion_minutos.value)"
-                [class.bg-orange-500]="formLogin.get('duracion_minutos')?.value === duracion_minutos.value"
-                [class.text-white]="formLogin.get('duracion_minutos')?.value === duracion_minutos.value"
-                [class.border-orange-500]="formLogin.get('duracion_minutos')?.value === duracion_minutos.value"
-                [class.bg-white]="formLogin.get('duracion_minutos')?.value !== duracion_minutos.value"
-                [class.text-orange-500]="formLogin.get('duracion_minutos')?.value !== duracion_minutos.value"
-                [class.border-orange-200]="formLogin.get('duracion_minutos')?.value !== duracion_minutos.value"
+                (click)="selectDuracion(duracion.value)"
+                [class.bg-orange-500]="formLogin.get('duracion_minutos')?.value === duracion.value"
+                [class.text-white]="formLogin.get('duracion_minutos')?.value === duracion.value"
+                [class.border-orange-500]="formLogin.get('duracion_minutos')?.value === duracion.value"
+                [class.bg-white]="formLogin.get('duracion_minutos')?.value !== duracion.value"
+                [class.text-orange-500]="formLogin.get('duracion_minutos')?.value !== duracion.value"
+                [class.border-orange-200]="formLogin.get('duracion_minutos')?.value !== duracion.value"
                 class="
                   flex-1
                   aspect-square
