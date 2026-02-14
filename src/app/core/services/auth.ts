@@ -144,6 +144,12 @@ export class Auth {
     this.mesaSession.set(null);
   }
 
+  logoutUser(){
+    this.token.set(null);
+    this.user.set(null); 
+    this.router.navigate(['/login']);
+  }
+
   // Helpers
   private getStoredUser(): User | null {
     const stored = localStorage.getItem('user');

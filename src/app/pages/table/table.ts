@@ -142,13 +142,4 @@ export class Table {
   confirmCloseSession(): void {
     this.showCloseConfirm.set(true);
   }
-
-  closeSession(): void {
-    // Limpiar localStorage
-    localStorage.removeItem('mesaSession');
-    localStorage.removeItem('userSession');
-
-    // Navegar a la home
-    this.router.navigate(['/']);
-  }
 }

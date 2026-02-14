@@ -266,8 +266,46 @@
           }
         </button>
 
+        <!-- Cambiar usuario -->
+        <button
+          [disabled]="pedidosService.totalPedidosPendientes() > 1"
+          (click)="this.auth.logoutUser()"
+          class="
+            w-full h-14
+            flex items-center justify-between
+            px-5
+            bg-white
+            border-2 border-yellow-200
+            rounded-2xl
+            shadow-sm
+            active:scale-[0.98]
+            disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed
+            transition-all
+          "
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
+              <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+            </div>
+            <div class="text-left">
+              <p class="font-semibold text-yellow-700 text-sm">
+                Cambiar usuario
+              </p>
+              <p class="text-xs text-gray-500">
+                Cambiá tus datos.
+              </p>
+            </div>
+          </div>
+          <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+
         <!-- Cerrar sesión -->
         <button
+          pedidosService.totalPedidosPendientes()
           (click)="confirmCloseSession()"
           class="
             w-full h-14
@@ -278,6 +316,7 @@
             rounded-2xl
             shadow-sm
             active:scale-[0.98]
+            disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed
             transition-all
           "
         >
@@ -337,28 +376,6 @@
         Se cerrará tu sesión en la Mesa {{ mesa()?.numero }}
       </p>
 
-      <!-- Advertencia si hay pedidos activos -->
-      @if(pedidosService.totalPedidosPendientes() > 0) {
-        <div class="
-          bg-amber-50
-          border border-amber-200
-          rounded-xl
-          p-3
-          mb-5
-          flex items-start gap-2
-        ">
-          <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          <p class="text-xs text-amber-800">
-            Tenés {{ pedidosService.totalPedidosPendientes() }} pedido{{ pedidosService.totalPedidosPendientes() !== 1 ? 's' : '' }} 
-            en curso. El mozo se encargará de completarlos.
-          </p>
-        </div>
-      } @else {
-        <div class="mb-5"></div>
-      }
-
       <!-- Resumen rápido -->
       <div class="
         bg-gray-50
@@ -392,9 +409,9 @@
         </button>
 
         <button
-          (click)="closeSession()"
+          (click)="this.auth.logout()"
           class="
-            flex-[2] h-12
+            flex-2 h-12
             bg-red-500 text-white
             font-bold
             rounded-xl
