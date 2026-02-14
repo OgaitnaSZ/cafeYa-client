@@ -23,6 +23,7 @@ export class Destacados {
   }
 
   openProductDetail(product: Product): void {
+    console.log(product);
     // Abrir modal
   }
 }
