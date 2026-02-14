@@ -81,21 +81,26 @@
               </p>
             </div>
             <div class="w-px h-10 bg-white/20"></div>
-            <div>
-              <p class="text-white/70 text-xs">Sesión iniciada</p>
-              <p class="font-semibold text-sm">
-                {{ sessionStartTime() }}
-              </p>
-            </div>
-            <div class="w-px h-10 bg-white/20"></div>
-            <div>
-              <p class="text-white/70 text-xs">Duración</p>
-              <p class="font-semibold text-sm">
-                {{ sessionDuration() }}
-              </p>
+              <div>
+                <p class="text-white/70 text-xs">Sesión iniciada</p>
+                <p class="font-semibold text-sm">
+                  {{ sessionStartTimeFormatted() }}
+                </p>
+              </div>
+              <div class="w-px h-10 bg-white/20"></div>
+              <div>
+                <p class="text-white/70 text-xs">Duración</p>
+                <p class="font-semibold text-sm">
+                  {{ duracionEstimada() }}
+                </p>
+              </div>
+              <div class="w-34 mt-3 pt-3 border-t border-white/20">
+                <p class="text-white/70 text-xs text-end">
+                  {{ sessionElapsedText() }}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
       </div>
 
       <!-- RESUMEN DE CONSUMO -->

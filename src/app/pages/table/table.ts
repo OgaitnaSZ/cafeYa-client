@@ -6,13 +6,6 @@ import { MesaService } from '../../core/services/mesa';
 import { PedidoService } from '../../core/services/pedido';
 
 type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
-interface PedidoResumen {
-  id: string;
-  items: any[];
-  total: number;
-  estado: EstadoPedido;
-  fecha: Date;
-}
 @Component({
   selector: 'app-table',
   imports: [CommonModule],
@@ -27,23 +20,87 @@ export class Table {
   public pedidosService = inject(PedidoService);
 
   // Signals
-  user = this.auth.user;
-  mesa = this.auth.getMesa;
+  mesa = this.auth.currentMesa;
+  user = this.auth.currentUser;
   pedidos = this.pedidosService.pedidosMesa;
 
   // Datos de la mesa (desde localStorage o sesión)
-  sessionStartTime = signal('14:32');
-  sessionDuration = signal('00:45');
+  private durationTimer: any;
+  currentTime = signal(Date.now());
+  mesaSession = this.auth.currentMesaSession;
 
   // Estado UI
   showCloseConfirm = signal(false);
   waiterCalled = signal(false);
   private waiterCooldownTimer: any;
-  private durationTimer: any;
+
+  duracionEstimada = computed(() => {
+    const user = this.user();
+    return user?.duracion_minutos || 45; 
+  });
+
+  sessionStartTimeFormatted = computed(() => {
+    const session = this.mesaSession();
+    if (!session) return '--:--';
+    
+    const date = new Date(session.sessionStartTime);
+    return date.toLocaleTimeString('es-AR', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  });
+
+  sessionDurationFormatted = computed(() => {
+    const session = this.mesaSession();
+    if (!session) return '00:00';
+    
+    const now = this.currentTime();
+    const diffMs = now - session.sessionStartTime;
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    const hours = Math.floor(diffMins / 60);
+    const mins = diffMins % 60;
+    
+    return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+  });
+
+  sessionElapsedText = computed(() => {
+    const session = this.mesaSession();
+    if (!session) return 'Sin sesión';
+    
+    const now = this.currentTime();
+    const diffMs = now - session.sessionStartTime;
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 1) return 'Hace menos de 1 min';
+    if (diffMins < 60) return `Hace ${diffMins} min`;
+    
+    const hours = Math.floor(diffMins / 60);
+    const mins = diffMins % 60;
+    
+    if (hours === 1) return `Hace 1 hora y ${mins} min`;
+    return `Hace ${hours} horas y ${mins} min`;
+  });
+
+  ngOnInit(): void {
+    if (!this.mesaSession()) {
+      console.warn('No hay sesión activa');
+      this.router.navigate(['/']);
+      return;
+    }
+
+    this.startDurationTimer();
+  }
 
   ngOnDestroy(): void {
     clearInterval(this.durationTimer);
     clearTimeout(this.waiterCooldownTimer);
+  }
+
+  private startDurationTimer(): void {
+    this.durationTimer = setInterval(() => {
+      this.currentTime.set(Date.now());
+    }, 60000);
   }
 
   // BADGE HELPERS

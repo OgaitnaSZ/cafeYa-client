@@ -10,6 +10,7 @@ export interface LoginResponse {
 
 export interface MesaSession {
   mesa: Mesa;
+  sessionStartTime: number;
   validatedAt: number;
   codigoExpiresAt: number;
 }

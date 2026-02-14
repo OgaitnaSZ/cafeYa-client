@@ -3,4 +3,5 @@ export interface User {
     nombre: string;
     email: string;
     telefono: string;
+    duracion_minutos: number;
 }

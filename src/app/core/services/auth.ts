@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TokenService } from './token';
 import { catchError, finalize, of, tap } from 'rxjs';
 import { Mesa, MesaValidate } from '../interfaces/mesa.model';
+import { MesaSession } from '../interfaces/auth.model';
 
 interface LoginResponse {
   token: string;
@@ -33,6 +34,7 @@ export class Auth {
   successUser = signal<string | null>(null);
 
   mesa = signal<Mesa | null>(this.getStoredMesa());
+  mesaSession = signal<MesaSession | null>(this.getStoredMesaSession());
   loadingMesa = signal(false);
   errorMesa = signal<string | null>(null);
   successMesa = signal<string | null>(null);
@@ -47,6 +49,12 @@ export class Auth {
   // Computed útiles
   readonly currentUser = computed(() => this.user());
   readonly currentMesa = computed(() => this.mesa());
+  readonly currentMesaSession = computed(() => this.mesaSession());
+
+  readonly sessionStartTime = computed(() => {
+    const session = this.mesaSession();
+    return session ? new Date(session.sessionStartTime) : null;
+  });
 
   constructor() {
     // Efecto para mantener sincronizado localStorage
@@ -54,6 +62,7 @@ export class Auth {
       const token = this.token();
       const user = this.user();
       const mesa = this.mesa();
+      const mesaSession = this.mesaSession();
   
       if (token && user) {
         localStorage.setItem('token', token);
@@ -66,11 +75,13 @@ export class Auth {
       if (mesa) localStorage.setItem('mesa', JSON.stringify(mesa));
       else localStorage.removeItem('mesa');
 
+      if (mesaSession) localStorage.setItem('mesaSession', JSON.stringify(mesaSession));
+      else  localStorage.removeItem('mesaSession');
     });
   }
 
   // Login
-  login(nombre: string, email: string, telefono: string): void {
+  login(nombre: string, email: string, telefono: string, duracion_minutos: number): void {
     this.loadingUser.set(true);
     this.errorUser.set(null);
 
@@ -98,6 +109,16 @@ export class Auth {
         tap((data) => {
           this.successMesa.set("Mesa validada con exito");
           this.mesa.set(data);
+
+          const now = Date.now();
+          const session: MesaSession = {
+            mesa: data,
+            sessionStartTime: now, // ← Guardar hora de inicio
+            validatedAt: now,
+            codigoExpiresAt: now + (5 * 60 * 60 * 1000) // 5 horas
+          };
+          
+          this.mesaSession.set(session);
         }),
         catchError(err => {
           const errorMessage = err.error?.error || err.error?.message || 'Error al validar mesa';
@@ -114,11 +135,13 @@ export class Auth {
     this.token.set(null);
     this.user.set(null);
     this.mesa.set(null);
+    this.mesaSession.set(null); 
     this.router.navigate(['/']);
   }
 
   logoutMesa() {
     this.mesa.set(null);
+    this.mesaSession.set(null);
   }
 
   // Helpers
@@ -159,6 +182,20 @@ export class Auth {
     }
   }
 
+  private getStoredMesaSession(): MesaSession | null {
+    const stored = localStorage.getItem('mesaSession');
+    if (!stored || stored === 'undefined' || stored === 'null') {
+      return null;
+    }
+  
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.error('Error al parsear sesión de mesa:', e);
+      return null;
+    }
+  }
+
   // Resetea el estado de éxito
   resetSuccess(tipo: string): void {
     if (tipo === 'user') this.successUser.set(null);
@@ -176,5 +213,9 @@ export class Auth {
 
   get getMesa() {
     return this.mesa.asReadonly();
+  }
+
+  get getMesaSession() {
+    return this.mesaSession.asReadonly();
   }
 }
