@@ -2,7 +2,7 @@ import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, of, tap } from 'rxjs';
 import { Mesa } from '../interfaces/mesa.model';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 import { TokenService } from './token';
 
 @Injectable({
