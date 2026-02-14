@@ -211,30 +211,6 @@
                 Pagás al mozo cuando te atienda
               </p>
             </div>
-
-            <!-- Checkmark -->
-            @if(selectedPayment() === 'efectivo') {
-                <p class="text-gray-700 mb-2">
-                    Tu pedido está siendo preparado.
-                </p>
-                <p class="text-sm text-gray-600">
-                    💰 Un mozo te cobrará cuando te lo lleve a la mesa.
-                </p>
-            } @else if(selectedPayment() === 'app') {
-                <p class="text-gray-700 mb-2">
-                    Tu pedido está siendo preparado.
-                </p>
-                <p class="text-sm text-gray-600">
-                    📱 Un mozo te acercará el QR de Mercado Pago para que pagues.
-                </p>
-            } @else {
-                <p class="text-gray-700 mb-2">
-                    Tu pedido está siendo preparado.
-                </p>
-                <p class="text-sm text-gray-600">
-                    💳 Un mozo te acercará el dispositivo para pagar con tarjeta.
-                </p>
-            }
           </button>
 
           <!-- Opción: QR / App -->
