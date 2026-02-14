@@ -7,7 +7,7 @@
       <!-- Logo pequeño -->
       <div class="flex justify-center mb-6">
         <img 
-          src="/images/logo_iso.png" 
+          src="/images/Logo_iso.png" 
           alt="CafeYa" 
           class="w-16 h-16 rounded-full shadow-md"
         />
@@ -149,13 +149,13 @@
             @for(duracion of duracionOptions; track duracion.value) {
               <button
                 type="button"
-                (click)="selectDuracion(duracion.value)"
-                [class.bg-orange-500]="formLogin.get('duracion')?.value === duracion.value"
-                [class.text-white]="formLogin.get('duracion')?.value === duracion.value"
-                [class.border-orange-500]="formLogin.get('duracion')?.value === duracion.value"
-                [class.bg-white]="formLogin.get('duracion')?.value !== duracion.value"
-                [class.text-orange-500]="formLogin.get('duracion')?.value !== duracion.value"
-                [class.border-orange-200]="formLogin.get('duracion')?.value !== duracion.value"
+                (click)="selectDuracion(duracion_minutos.value)"
+                [class.bg-orange-500]="formLogin.get('duracion_minutos')?.value === duracion_minutos.value"
+                [class.text-white]="formLogin.get('duracion_minutos')?.value === duracion_minutos.value"
+                [class.border-orange-500]="formLogin.get('duracion_minutos')?.value === duracion_minutos.value"
+                [class.bg-white]="formLogin.get('duracion_minutos')?.value !== duracion_minutos.value"
+                [class.text-orange-500]="formLogin.get('duracion_minutos')?.value !== duracion_minutos.value"
+                [class.border-orange-200]="formLogin.get('duracion_minutos')?.value !== duracion_minutos.value"
                 class="
                   flex-1
                   aspect-square
