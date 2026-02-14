@@ -106,16 +106,16 @@ export class Menu {
   }
 
   // Modal
-    openProductDetail(product: Product): void {
-      this.selectedProduct.set(product);
-      document.body.style.overflow = 'hidden';
-    }
-  
-    // Cerrar modal (llamado por el evento del hijo)
-    closeProductDetail(): void {
-      this.selectedProduct.set(null);
-      document.body.style.overflow = 'unset';
-    }
+  openProductDetail(product: Product): void {
+    this.selectedProduct.set(product);
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Cerrar modal (llamado por el evento del hijo)
+  closeProductDetail(): void {
+    this.selectedProduct.set(null);
+    document.body.style.overflow = 'unset';
+  }
 
   ngOnInit(): void {
     this.productoService.cargarDatos();

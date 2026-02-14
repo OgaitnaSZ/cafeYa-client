@@ -70,4 +70,25 @@ export class ProductService {
   getCategoriaById(id: number): Categoria | undefined {
     return this.todasLasCategorias().find(cat => cat.categoria_id === id);
   }
+
+  getProductosDestacados(): void {
+    this.loading.set(true);
+    this.error.set(null);
+
+    console.log("cargando...");
+
+    this.http.get<Product[]>(`${this.apiUrl}destacados`).pipe(
+      tap((data) => {
+        this.productos.set(data);
+        console.log(data);
+        this.success.set("Productos obtenidos correctamente");
+      }),
+      catchError(err => {
+        this.error.set('Error al obtener productos destacados');
+        console.error(err);
+        return of(null);
+      }),
+      finalize(() => this.loading.set(false))
+    ).subscribe();
+  }
 }

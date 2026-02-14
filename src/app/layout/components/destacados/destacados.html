@@ -1,56 +1,49 @@
 <section class="px-4 py-8">
     <div class="max-w-md mx-auto">
-        <h2 class="text-xl font-bold text-center mb-6 text-gray-900">
-        Lo más pedido
-        </h2>
-        
+        <h2 class="text-xl font-bold text-center mb-6 text-gray-900">Lo más pedido</h2>
+    @if(productos().length > 0){
         <div class="grid grid-cols-2 gap-4">
-        <!-- Producto destacado 1 -->
-        <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-            <div class="aspect-square bg-orange-200 flex items-center justify-center text-5xl">
-            ☕
-            </div>
-            <div class="p-3">
-            <h3 class="font-semibold text-sm mb-1">Café con leche</h3>
-            <p class="text-orange-600 font-bold text-sm">$1.200</p>
-            </div>
+            @for(producto of productos() ; track producto.producto_id){
+                <div 
+                class="bg-white rounded-xl overflow-hidden shadow-sm"
+                (click)="openProductDetail(product)">
+                    @if (producto.imagen_url) {
+                    <figure class="h-46 w-full">
+                        <img 
+                        [src]="producto.imagen_url" 
+                        [alt]="producto.nombre"
+                        class="w-full h-full aspect-square object-cover cursor-pointer"
+                        />
+                    </figure>
+                    } @else {
+                    <div 
+                        class="
+                        aspect-square h-46 w-full
+                        bg-linear-to-br from-orange-100 to-amber-100
+                        flex items-center justify-center
+                        text-5xl
+                        cursor-pointer
+                        "
+                    >
+                        {{ producto.emoji || '🍽️' }}
+                    </div>
+                    }
+                    <div class="p-3">
+                        <h3 class="font-semibold text-sm mb-1">{{ producto.nombre }}</h3>
+                        <div class="flex gap-2 items-end">
+                            <p class="text-orange-600 font-semibold text-base">${{ producto.precio_unitario }}</p>
+                            <p class="text-gray-400 text-sm line-through">${{ producto.precio_unitario * 1.2 }}</p>
+                        </div>
+                    </div>
+                </div> 
+            }
         </div>
-        
-        <!-- Producto destacado 2 -->
-        <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-            <div class="aspect-square bg-amber-200 flex items-center justify-center text-5xl">
-            🥐
-            </div>
-            <div class="p-3">
-            <h3 class="font-semibold text-sm mb-1">Medialunas x3</h3>
-            <p class="text-orange-600 font-bold text-sm">$900</p>
-            </div>
-        </div>
-        
-        <!-- Producto destacado 3 -->
-        <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-            <div class="aspect-square bg-red-200 flex items-center justify-center text-5xl">
-            🥪
-            </div>
-            <div class="p-3">
-            <h3 class="font-semibold text-sm mb-1">Tostado mixto</h3>
-            <p class="text-orange-600 font-bold text-sm">$2.500</p>
-            </div>
-        </div>
-        
-        <!-- Producto destacado 4 -->
-        <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-            <div class="aspect-square bg-yellow-200 flex items-center justify-center text-5xl">
-            🧃
-            </div>
-            <div class="p-3">
-            <h3 class="font-semibold text-sm mb-1">Jugo exprimido</h3>
-            <p class="text-orange-600 font-bold text-sm">$1.800</p>
-            </div>
-        </div>
-        </div>
-        
-        <div class="mt-6 text-center">
+    } @else{
+        <p class="text-center text-xs text-gray-500">No hay productos destacados</p>
+    }
+    </div>
+
+    <div class="mt-6 text-center">
         <button 
             routerLink="/menu"
             class="
@@ -60,6 +53,5 @@
         >
             Ver menú completo →
         </button>
-        </div>
     </div>
 </section>

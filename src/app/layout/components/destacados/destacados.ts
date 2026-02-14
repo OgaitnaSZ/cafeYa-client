@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ProductService } from '../../../core/services/product';
+import { Product } from '../../../core/interfaces/product';
 
 @Component({
   selector: 'app-destacados',
@@ -8,5 +10,19 @@ import { RouterLink } from '@angular/router';
   styleUrl: './destacados.css',
 })
 export class Destacados {
+  // Servicios
+  public productoService = inject(ProductService);
 
+  // Signals
+  productos = this.productoService.productos;
+  error = this.productoService.error;
+  loading = this.productoService.loading;
+
+  ngOnInit(){
+    this.productoService.getProductosDestacados();
+  }
+
+  openProductDetail(product: Product): void {
+    // Abrir modal
+  }
 }
