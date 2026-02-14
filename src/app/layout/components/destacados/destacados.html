@@ -6,7 +6,7 @@
             @for(producto of productos() ; track producto.producto_id){
                 <div 
                 class="bg-white rounded-xl overflow-hidden shadow-sm"
-                (click)="openProductDetail(product)">
+                (click)="openProductDetail(producto)">
                     @if (producto.imagen_url) {
                     <figure class="h-46 w-full">
                         <img 
