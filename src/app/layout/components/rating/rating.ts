@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, inject, Input, Output, signal } from '@angular/core';
+import { Component, effect, EventEmitter, inject, input, Input, output, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CalificacionService } from '../../../core/services/calificacion';
@@ -9,10 +9,11 @@ import {
   Check,
   X
 } from 'lucide-angular';
+import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 
 @Component({
   selector: 'app-rating',
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, BottomSheet],
   templateUrl: './rating.html',
   styleUrl: './rating.css',
 })
@@ -22,7 +23,6 @@ export class Rating {
   @Input() nombreCliente: string = 'Cliente';
 
   // OUTPUTS
-  @Output() close = new EventEmitter<void>();
   @Output() ratingSubmitted = new EventEmitter<any>();
 
   constructor() {
@@ -40,6 +40,8 @@ export class Rating {
   loading =  this.calificacionService.loading;
   success = this.calificacionService.success;
   error = this.calificacionService.error;
+  isOpen = input<boolean>(true);
+  close = output<void>();
 
   // Rating
   resena = signal('');
@@ -108,11 +110,6 @@ export class Rating {
         this.loading.set(false);
       }
     });
-  }
-
-  // Cerrar modal
-  closeModal(): void {
-    this.close.emit();
   }
 
   // Prevenir cierre al hacer click en el contenido
