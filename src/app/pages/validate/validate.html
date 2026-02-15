@@ -27,9 +27,7 @@
           rounded-full
           flex items-center justify-center
         ">
-          <svg class="w-10 h-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-          </svg>
+          <lucide-icon [img]="AlertCircle" class="w-10 h-10 text-red-600" ></lucide-icon>
         </div>
 
         <!-- Título -->
@@ -49,9 +47,10 @@
           rounded-full
           flex items-center justify-center
         ">
-          <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+          <lucide-icon 
+            [img]="CheckCircle2" 
+            class="w-10 h-10 text-green-600"
+          ></lucide-icon>
         </div>
 
         <!-- Título -->
@@ -195,9 +194,7 @@
                   flex items-start gap-2
                 "
               >
-                <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
+                <lucide-icon [img]="AlertCircle" class="w-5 h-5 text-red-500 shrink-0 mt-0.5" ></lucide-icon>
                 <p class="text-sm text-red-700">
                   {{ error() }}
                 </p>

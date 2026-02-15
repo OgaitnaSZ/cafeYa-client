@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../../core/interfaces/product';
+import { LucideAngularModule, Plus } from 'lucide-angular';
 
 @Component({
   selector: 'app-products-list-grid',
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './products-list-grid.html',
   styleUrl: './products-list-grid.css',
 })
@@ -30,4 +31,7 @@ export class ProductsListGrid {
   trackByProductId(index: number, product: Product): string {
     return product.producto_id;
   }
+
+  // Icons
+  readonly Plus = Plus;
 }

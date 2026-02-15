@@ -15,9 +15,7 @@
       routerLink="/menu"
       class="w-10 h-10 flex items-center justify-center rounded-full active:bg-gray-100"
     >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-      </svg>
+      <lucide-icon [img]="ChevronLeft" class="w-6 h-6" stroke="currentColor"></lucide-icon>
     </button>
     
     <h1 class="text-lg font-semibold text-gray-900">
@@ -49,9 +47,7 @@
         flex items-center justify-center
         mb-6
       ">
-        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-        </svg>
+        <lucide-icon [img]="ShoppingCart" class="w-16 h-16 text-gray-400" stroke="currentColor"></lucide-icon>
       </div>
       
       <h2 class="text-xl font-bold text-gray-900 mb-2">
@@ -149,9 +145,7 @@
                   shrink-0
                 "
               >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                </svg>
+                <lucide-icon [img]="Trash2" class="w-5 h-5" stroke="currentColor"></lucide-icon>
               </button>
             </div>
 
@@ -186,9 +180,7 @@
                     transition
                   "
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/>
-                  </svg>
+                  <lucide-icon [img]="Minus" class="w-4 h-4" stroke="currentColor"></lucide-icon>
                 </button>
                 
                 <span class="text-base font-bold text-gray-900 min-w-8 text-center">
@@ -206,9 +198,7 @@
                     transition
                   "
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                  </svg>
+                  <lucide-icon [img]="Plus" class="w-4 h-4" stroke="currentColor"></lucide-icon>
                 </button>
               </div>
 
@@ -241,9 +231,7 @@
           transition
         "
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-        </svg>
+        <lucide-icon [img]="Plus" class="w-5 h-5" stroke="currentColor"></lucide-icon>
         Agregar más productos
       </button>
     </div>
@@ -276,9 +264,7 @@
           class="text-orange-600 font-medium flex items-center gap-1"
         >
           ${{ getTipAmount() | number }}
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-          </svg>
+          <lucide-icon [img]="ChevronDown" class="w-4 h-4" stroke="currentColor"></lucide-icon>
         </button>
       </div>
 
@@ -338,9 +324,7 @@
         flex items-center justify-center gap-2
       "
     >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-      </svg>
+      <lucide-icon [img]="Banknote" class="w-6 h-6" ></lucide-icon>
       Continuar al pago
     </button>
   </div>
@@ -372,9 +356,7 @@
         mx-auto
         mb-4
       ">
-        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-        </svg>
+        <lucide-icon [img]="Trash2" class="w-8 h-8 text-red-600" stroke="currentColor"></lucide-icon>
       </div>
       
       <h3 class="text-xl font-bold text-gray-900 mb-2">

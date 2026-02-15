@@ -8,10 +8,11 @@ import { Header } from './header/header';
 import { ProductsListList } from './products-list-list/products-list-list';
 import { ModalProduct } from './modal-product/modal-product';
 import { ProductsListGrid } from './products-list-grid/products-list-grid';
+import { LucideAngularModule, Search, Funnel, ArrowDownWideNarrow, List, LayoutGrid, Check } from 'lucide-angular';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, FormsModule, Header, ProductsListList, ProductsListGrid, ModalProduct],
+  imports: [CommonModule, FormsModule, Header, ProductsListList, ProductsListGrid, ModalProduct, LucideAngularModule],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
@@ -195,4 +196,12 @@ export class Menu {
     return this.productoService.todasLasCategorias()
       .find(cat => cat.categoria_id === product.categoria_id);
   }
+
+  // Icons
+  readonly Search = Search;
+  readonly Funnel = Funnel;
+  readonly ArrowDownWideNarrow = ArrowDownWideNarrow;
+  readonly List = List;
+  readonly LayoutGrid = LayoutGrid;
+  readonly Check = Check;
 }

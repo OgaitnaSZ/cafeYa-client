@@ -6,12 +6,21 @@ import { CartService } from '../../core/services/cart';
 import { PedidoService } from '../../core/services/pedido';
 import { Auth } from '../../core/services/auth';
 import { firstValueFrom } from 'rxjs';
+import { 
+  Banknote,
+  Check,
+  ChevronLeft,
+  Clipboard,
+  Info,
+  LucideAngularModule,
+  QrCode, 
+ } from 'lucide-angular';
 
 type MetodoPago = 'efectivo' | 'app' | 'tarjeta';
 
 @Component({
   selector: 'app-checkout',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css',
 })
@@ -112,4 +121,12 @@ export class Checkout {
       this.isProcessing.set(false);
     }
   }
+
+  // Icons
+  readonly ChevronLeft = ChevronLeft;
+  readonly Banknote = Banknote;
+  readonly QrCode = QrCode;
+  readonly Check = Check;
+  readonly Info = Info;
+  readonly Clipboard = Clipboard;
 }

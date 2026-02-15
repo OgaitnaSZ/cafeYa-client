@@ -7,13 +7,27 @@ import { MesaService } from '../../core/services/mesa';
 import { PedidoService } from '../../core/services/pedido';
 import { Rating } from '../../layout/components/rating/rating';
 import { CalificacionService } from '../../core/services/calificacion';
+import { 
+  ChevronRight,
+  CircleCheckBig,
+  Clipboard,
+  Clock,
+  Check,
+  ChefHat,
+  CookingPot,
+  LucideAngularModule,
+  MapPin,
+  Star,
+  X,
+  Hourglass, 
+ } from 'lucide-angular';
 
 type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
 type MetodoPago = 'efectivo' | 'app' | 'tarjeta';
 
 @Component({
   selector: 'app-orders',
-  imports: [CommonModule, Rating],
+  imports: [CommonModule, Rating, LucideAngularModule],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -42,6 +56,15 @@ export class Orders {
   pedidoToRate = signal<PedidoData | undefined>(undefined);
 
   // HELPERS
+  getEstadoIcon(estado: EstadoPedido) {
+    const icons: Record<EstadoPedido, any> = {
+      "Pendiente": this.Hourglass,
+      "En preparacion": this.ChefHat,
+      "Entregado": this.Check
+    };
+    return icons[estado];
+  }
+  
   getEstadoBadgeClass(estado: EstadoPedido): string {
     const classes: Record<EstadoPedido, string> = {
       "Pendiente": 'bg-yellow-100 text-yellow-700',
@@ -50,12 +73,12 @@ export class Orders {
     };
     return classes[estado];
   }
-
+  
   getEstadoLabel(estado: EstadoPedido): string {
     const labels: Record<EstadoPedido, string> = {
-      "Pendiente": '⏳ Pendiente',
-      "En preparacion": '👨‍🍳 Preparando',
-      "Entregado": '✓ Entregado'
+      "Pendiente": 'Pendiente',
+      "En preparacion": 'Preparando',
+      "Entregado": 'Entregado'
     };
     return labels[estado];
   }
@@ -146,4 +169,17 @@ export class Orders {
   goToMenu(): void {
     this.router.navigate(['/menu']);
   }
+
+  // Icons
+  readonly Clipboard = Clipboard;
+  readonly ChevronRight = ChevronRight;
+  readonly Star = Star;
+  readonly MapPin = MapPin;
+  readonly X = X;
+  readonly Clock = Clock;
+  readonly CookingPot = CookingPot;
+  readonly CircleCheckBig = CircleCheckBig;
+  readonly ChefHat = ChefHat;
+  readonly Check = Check;
+  readonly Hourglass = Hourglass;
 }

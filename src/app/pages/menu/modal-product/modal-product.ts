@@ -3,11 +3,12 @@ import { CartService } from '../../../core/services/cart';
 import { Categoria, Product } from '../../../core/interfaces/product';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LucideAngularModule, Minus, Plus, ShoppingCart, X } from 'lucide-angular';
 Input 
 
 @Component({
   selector: 'app-modal-product',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './modal-product.html',
   styleUrl: './modal-product.css',
 })
@@ -78,4 +79,10 @@ export class ModalProduct {
   onContentClick(event: Event): void {
     event.stopPropagation();
   }
+
+  // Icons
+  readonly X = X;
+  readonly Plus = Plus;
+  readonly Minus = Minus;
+  readonly ShoppingCart = ShoppingCart;
 }

@@ -3,10 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CalificacionService } from '../../../core/services/calificacion';
 import { PedidoData } from '../../../core/interfaces/pedido.model';
+import { 
+  LucideAngularModule,
+  Star,
+  Check,
+  X
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-rating',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './rating.html',
   styleUrl: './rating.css',
 })
@@ -113,4 +119,9 @@ export class Rating {
   onContentClick(event: Event): void {
     event.stopPropagation();
   }
+
+  // Icons
+  readonly Star = Star;
+  readonly Check = Check;
+  readonly X = X;
 }

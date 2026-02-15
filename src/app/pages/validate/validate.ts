@@ -2,10 +2,11 @@ import { Component, ViewChildren, QueryList, ElementRef, inject, effect } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { MesaService } from '../../core/services/mesa';
+import { LucideAngularModule, CheckCircle2, AlertCircle  } from 'lucide-angular';
 
 @Component({
   selector: 'app-validate',
-  imports: [],
+  imports: [LucideAngularModule],
   templateUrl: './validate.html',
   styleUrl: './validate.css',
 })
@@ -135,4 +136,8 @@ export class Validate {
     return uuidRegex.test(value);
   }
 
+
+  // Icons
+  readonly CheckCircle2 = CheckCircle2;
+  readonly AlertCircle = AlertCircle;
 }

@@ -4,11 +4,21 @@ import { Router } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { MesaService } from '../../core/services/mesa';
 import { PedidoService } from '../../core/services/pedido';
+import { 
+  LogOut,
+  LucideAngularModule,
+  Clipboard,
+  ShoppingCart,
+  CircleDollarSign,
+  Headset,
+  Check,
+  ChevronRight
+} from 'lucide-angular';
 
 type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
 @Component({
   selector: 'app-table',
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './table.html',
   styleUrl: './table.css',
 })
@@ -142,4 +152,13 @@ export class Table {
   confirmCloseSession(): void {
     this.showCloseConfirm.set(true);
   }
+
+  // Icons
+  readonly LogOut = LogOut;
+  readonly Clipboard = Clipboard;
+  readonly ShoppingCart = ShoppingCart;
+  readonly CircleDollarSign = CircleDollarSign;
+  readonly Headset = Headset;
+  readonly ChevronRight = ChevronRight;
+  readonly Check = Check;
 }

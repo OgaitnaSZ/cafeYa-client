@@ -52,9 +52,7 @@
           flex items-center justify-center
           mb-6
         ">
-          <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-          </svg>
+          <lucide-icon [img]="Clipboard" class="w-16 h-16 text-gray-400" ></lucide-icon>
         </div>
         
         <h2 class="text-xl font-bold text-gray-900 mb-2">
@@ -143,14 +141,16 @@
                     <!-- Badge de estado -->
                     <span 
                       [class]="getEstadoBadgeClass(pedido.estado)"
-                      class="px-2 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wide"
+                      class="px-3 py-1 rounded-full text-sm font-medium inline-flex items-center gap-1.5"
                     >
+                      <lucide-icon 
+                        [img]="getEstadoIcon(pedido.estado)" 
+                        [size]="16"
+                      ></lucide-icon>
                       {{ getEstadoLabel(pedido.estado) }}
                     </span>
                   </div>
-                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                  </svg>
+                  <lucide-icon [img]="ChevronRight" class="w-5 h-5 text-gray-400" ></lucide-icon>
                 </div>
                 <p class="text-xs text-gray-500">
                   {{ formatDate(pedido.fecha_pago) }}
@@ -215,9 +215,7 @@
                         transition
                       "
                     >
-                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                      </svg>
+                      <lucide-icon [img]="Star" class="w-4 h-4"></lucide-icon>
                       Calificar
                     </button>
                   } 
@@ -225,14 +223,11 @@
                   @if(pedido.estado === 'Entregado' && pedido.calificacion) {
                     <div class="flex items-center gap-1 text-amber-500">
                       @for(star of [1,2,3,4,5]; track star) {
-                        <svg 
-                          class="w-4 h-4"
+                        <lucide-icon 
+                          [img]="Star" class="w-4 h-4"
                           [class.fill-amber-400]="star <= pedido.calificacion.puntuacion"
                           [class.fill-gray-200]="star > pedido.calificacion.puntuacion"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
+                        ></lucide-icon>
                       }
                     </div>
                   }
@@ -294,9 +289,7 @@
           transition
         "
       >
-        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
+        <lucide-icon [img]="X" class="w-5 h-5 text-gray-600" ></lucide-icon>
       </button>
 
       <!-- Header del pedido -->
@@ -315,17 +308,12 @@
 
         <div class="flex items-center gap-4 text-sm text-gray-600">
           <div class="flex items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+            <lucide-icon [img]="Clock" class="w-4 h-4" ></lucide-icon>
             {{ formatDate(selectedPedido()!.fecha_pago) }}
           </div>
           <div class="w-1 h-1 bg-gray-300 rounded-full"></div>
           <div class="flex items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
+          <lucide-icon [img]="MapPin" class="w-4 h-4"></lucide-icon>
             Mesa {{ mesa()?.numero || "0" }}
           </div>
         </div>
@@ -354,9 +342,7 @@
                   bg-yellow-500 text-white
                   shadow-md
                 ">
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                  </svg>
+                  <lucide-icon [img]="Clock" class="w-5 h-5" fill="currentColor" [strokeWidth]="0" ></lucide-icon>
                 </div>
                 <p class="text-xs font-medium text-gray-600 mt-2">Recibido</p>
               </div>
@@ -376,9 +362,7 @@
                   [class.bg-gray-200]="selectedPedido()!.estado === 'Pendiente'"
                   [class.text-gray-400]="selectedPedido()!.estado === 'Pendiente'"
                 >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-                  </svg>
+                  <lucide-icon [img]="CookingPot" class="w-5 h-5" ></lucide-icon>
                 </div>
                 <p class="text-xs font-medium text-gray-600 mt-2">Cocinando</p>
               </div>
@@ -392,9 +376,7 @@
                   flex items-center justify-center
                   shadow-md
                 ">
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
+                  <lucide-icon [img]="CircleCheckBig" class="w-5 h-5" ></lucide-icon>
                 </div>
                 <p class="text-xs font-medium text-gray-600 mt-2">Entregado</p>
               </div>
@@ -517,9 +499,7 @@
               flex items-center justify-center gap-2
             "
           >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-            </svg>
+            <lucide-icon [img]="Star" class="w-5 h-5"></lucide-icon>
             Calificar pedido
           </button>
         }

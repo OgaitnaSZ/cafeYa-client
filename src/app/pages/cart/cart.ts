@@ -3,10 +3,20 @@ import { CartService } from '../../core/services/cart';
 import { RouterLink } from '@angular/router';
 import { CartItem, Product } from '../../core/interfaces/product';
 import { CommonModule } from '@angular/common';
+import { 
+  Banknote,
+  ChevronDown,
+  ChevronLeft,
+  LucideAngularModule, 
+  Minus, 
+  Plus, 
+  ShoppingCart, 
+  Trash2
+ } from 'lucide-angular';
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, LucideAngularModule],
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
@@ -92,4 +102,13 @@ export class Cart {
   trackByProductId(index: number, item: CartItem): string {
     return item.producto.producto_id;
   }
+
+  // Icons
+  readonly Trash2 = Trash2;
+  readonly ChevronLeft = ChevronLeft;
+  readonly ShoppingCart = ShoppingCart;
+  readonly Minus = Minus;
+  readonly Plus = Plus;
+  readonly ChevronDown = ChevronDown;
+  readonly Banknote = Banknote;
 }

@@ -15,9 +15,7 @@
       routerLink="/cart"
       class="w-10 h-10 flex items-center justify-center rounded-full active:bg-gray-100"
     >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-      </svg>
+      <lucide-icon [img]="ChevronLeft" class="w-6 h-6" ></lucide-icon>
     </button>
     
     <h1 class="text-lg font-semibold text-gray-900">
@@ -186,16 +184,12 @@
                 transition-colors
               "
             >
-              <svg 
+              <lucide-icon 
+                [img]="Banknote" 
+                class="w-6 h-6" 
                 [class.text-white]="selectedPayment() === 'efectivo'"
                 [class.text-gray-600]="selectedPayment() !== 'efectivo'"
-                class="w-6 h-6" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-              </svg>
+              ></lucide-icon>
             </div>
 
             <!-- Info -->
@@ -211,6 +205,19 @@
                 Pagás al mozo cuando te atienda
               </p>
             </div>
+
+            <!-- Checkmark -->
+            @if(selectedPayment() === 'efectivo') {
+              <div class="
+                w-6 h-6
+                bg-orange-500 text-white
+                rounded-full
+                flex items-center justify-center
+              ">
+                <lucide-icon [img]="Check" class="w-4 h-4" ></lucide-icon>
+              </div>
+            }
+
           </button>
 
           <!-- Opción: QR / App -->
@@ -241,16 +248,12 @@
                 transition-colors
               "
             >
-              <svg 
-                [class.text-white]="selectedPayment() === 'app'"
-                [class.text-gray-600]="selectedPayment() !== 'app'"
-                class="w-6 h-6" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
-              </svg>
+                <lucide-icon 
+                  [img]="QrCode" 
+                  class="w-6 h-6" 
+                  [class.text-white]="selectedPayment() === 'app'"
+                  [class.text-gray-600]="selectedPayment() !== 'app'"
+                ></lucide-icon>
             </div>
 
             <!-- Info -->
@@ -275,9 +278,7 @@
                 rounded-full
                 flex items-center justify-center
               ">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                </svg>
+                <lucide-icon [img]="Check" class="w-4 h-4" ></lucide-icon>
               </div>
             }
           </button>
@@ -359,9 +360,7 @@
           <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           <span>Procesando...</span>
         } @else {
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
+          <lucide-icon [img]="Check" class="w-6 h-6" ></lucide-icon>
           <span>Confirmar pedido</span>
         }
       </button>
@@ -394,9 +393,7 @@
         mx-auto
         mb-6
       ">
-        <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-        </svg>
+        <lucide-icon [img]="Check" class="w-10 h-10 text-green-600" ></lucide-icon>
       </div>
 
       <!-- Título -->
@@ -446,9 +443,7 @@
         mb-6
         flex items-start gap-3
       ">
-        <svg class="w-5 h-5 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
+        <lucide-icon [img]="Info" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5" ></lucide-icon>
         <p class="text-xs text-blue-800">
           Podés seguir el estado de tu pedido en tiempo real desde la sección "Mis Pedidos".
         </p>
@@ -468,9 +463,7 @@
           flex items-center justify-center gap-2
         "
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-        </svg>
+        <lucide-icon [img]="Clipboard" class="w-6 h-6" ></lucide-icon>
         Ver resumen de mesa
       </button>
 

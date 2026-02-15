@@ -3,10 +3,17 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { CartService } from '../../core/services/cart';
 import { PedidoService } from '../../core/services/pedido';
+import { 
+  LucideAngularModule,
+  Utensils,
+  ClipboardList,
+  BookOpen,
+  ShoppingCart
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-bottom-bar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, LucideAngularModule],
   templateUrl: './bottom-bar.html',
   styleUrl: './bottom-bar.css',
 })
@@ -15,4 +22,10 @@ export class BottomBar {
   public auth = inject(Auth);
   public cartService = inject(CartService);
   public pedidoService = inject(PedidoService);
+
+  // Icons
+  readonly Utensils = Utensils;
+  readonly ClipboardList = ClipboardList;
+  readonly BookOpen = BookOpen;
+  readonly ShoppingCart = ShoppingCart;
 }

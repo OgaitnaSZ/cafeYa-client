@@ -3,10 +3,11 @@ import { Auth } from '../../core/services/auth';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Lock, AlertCircle, Phone, Mail, User } from 'lucide-angular';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterModule, CommonModule, ReactiveFormsModule],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule, LucideAngularModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -57,4 +58,11 @@ export class Login {
     this.auth.login(nombre, email, telefono, duracion_minutos);
     this.loading.set(false);
   }
+
+  // Icons
+  readonly Lock = Lock;
+  readonly AlertCircle = AlertCircle;
+  readonly Phone = Phone;
+  readonly Mail = Mail;
+  readonly User = User;
 }

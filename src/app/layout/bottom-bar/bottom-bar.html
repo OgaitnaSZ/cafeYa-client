@@ -2,7 +2,7 @@
     <div class="w-full grid grid-cols-4 bg-white">
         <div class="h-16 flex justify-center items-center opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/table">
             <button>
-                <span class="material-symbols-outlined">table_restaurant</span>
+                <lucide-icon [img]="Utensils"></lucide-icon>
             </button>
         </div>
 
@@ -21,13 +21,13 @@
                 ></span>
             }
             <button class="opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/orders">
-                <span class="material-symbols-outlined">assignment</span>
+                <lucide-icon [img]="ClipboardList"></lucide-icon>
             </button>
         </div>
 
         <div class="h-16 flex justify-center items-center">
             <button class="opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/menu">
-                <span class="material-symbols-outlined">menu_book_2</span>
+                <lucide-icon [img]="BookOpen"></lucide-icon>
             </button>
         </div>
         
@@ -36,11 +36,9 @@
                 <span 
                     class="
                         absolute mb-6 ms-6
-                        min-w-5 h-5
-                        px-1.5
+                        w-4 h-4 px-1.5 z-1
                         bg-red-500 text-white
-                        text-xs font-bold
-                        rounded-full
+                        text-xs font-bold rounded-full
                         flex items-center justify-center
                     "
                     >
@@ -48,16 +46,20 @@
                 </span>
             }
             <button class="opacity-25" routerLinkActive="text-amber-600 opacity-100" routerLink="/cart">
-                <span class="material-symbols-outlined">garden_cart</span>
+                <lucide-icon [img]="ShoppingCart"></lucide-icon>
             </button>
         </div>
     </div>
 } @else {
     <div class="w-full flex justify-center">
-        <div class="h-20 w-20 rounded-full bg-amber-600 flex justify-center items-center -mt-10 shadow-lg" routerLink="/menu">
-            <button>
-
-            </button><span class="material-symbols-outlined text-gray-50" style="font-size: 44px !important;">menu_book</span>
+        <div class="h-20 w-20 rounded-full bg-amber-600 flex justify-center items-center -mt-10 shadow-lg">
+            <button routerLink="/menu">
+                <lucide-icon 
+                    [img]="BookOpen" 
+                    class="text-gray-50"
+                    [size]="44"
+                ></lucide-icon>
+            </button>
         </div>
     </div>
 }
