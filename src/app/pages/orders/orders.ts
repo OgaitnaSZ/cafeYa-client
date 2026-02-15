@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { PedidoData } from '../../core/interfaces/pedido.model';
@@ -21,13 +21,14 @@ import {
   X,
   Hourglass, 
  } from 'lucide-angular';
+import { BottomSheet } from '../../layout/components/bottom-sheet/bottom-sheet';
 
 type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
 type MetodoPago = 'efectivo' | 'app' | 'tarjeta';
 
 @Component({
   selector: 'app-orders',
-  imports: [CommonModule, Rating, LucideAngularModule],
+  imports: [CommonModule, Rating, LucideAngularModule, BottomSheet],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -50,6 +51,7 @@ export class Orders {
   pedidos = this.pedidosService.pedidosMesa;
 
   // Modal
+  isOpen = input<boolean>(true);
   selectedPedido = signal<PedidoData | undefined>(undefined);
 
   showRatingModal = signal(false);
@@ -122,18 +124,6 @@ export class Orders {
     });
   }
 
-
-  // MODAL
-  openPedidoDetail(pedido: PedidoData): void {
-    this.selectedPedido.set(pedido);
-    document.body.style.overflow = 'hidden';
-  }
-
-  closePedidoDetail(): void {
-    this.selectedPedido.set(undefined);
-    document.body.style.overflow = 'unset';
-  }
-
   goToRating(pedido: PedidoData, event: Event): void {
     event.stopPropagation();
     this.pedidoToRate.set(pedido);
@@ -160,7 +150,7 @@ export class Orders {
   goToRatingFromModal(): void {
     const pedido = this.selectedPedido();
     if (pedido) {
-      this.closePedidoDetail();
+      this.selectedPedido.set(undefined);
       this.goToRating(pedido, new Event('click'));
     }
   }
