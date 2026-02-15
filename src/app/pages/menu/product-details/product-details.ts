@@ -4,18 +4,20 @@ import { Categoria, Product } from '../../../core/interfaces/product';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, Minus, Plus, ShoppingCart, X } from 'lucide-angular';
+import { BottomSheet } from '../../../layout/components/bottom-sheet/bottom-sheet';
 Input 
 
 @Component({
-  selector: 'app-modal-product',
-  imports: [CommonModule, FormsModule, LucideAngularModule],
-  templateUrl: './modal-product.html',
-  styleUrl: './modal-product.css',
+  selector: 'app-product-details',
+  imports: [CommonModule, FormsModule, LucideAngularModule, BottomSheet],
+  templateUrl: './product-details.html',
+  styleUrl: './product-details.css',
 })
-export class ModalProduct {
+export class ProductDetails {
   // INPUTS
   selectedProduct = input.required<Product>();
   categoria = input<Categoria>();
+  isOpen = input<boolean>(true);
 
   // OUTPUTS
   close = output<void>();
@@ -48,15 +50,8 @@ export class ModalProduct {
   }
 
   closeProductDetail(): void {
-    // Animar antes de cerrar
-    const modal = document.querySelector('.animate-slide-up');
-    modal?.classList.add('animate-slide-down');
-    
-    setTimeout(() => {
-      this.resetModal();
-      this.close.emit();
-      document.body.style.overflow = 'unset';
-    }, 250);
+    this.resetModal();
+    this.close.emit();
   }
 
   increaseQuantity(): void {
@@ -70,14 +65,6 @@ export class ModalProduct {
   private resetModal(): void {
     this.modalQuantity.set(1);
     this.modalNotes.set('');
-  }
-
-  onBackdropClick(): void {
-    this.closeProductDetail();
-  }
-
-  onContentClick(event: Event): void {
-    event.stopPropagation();
   }
 
   // Icons

@@ -273,9 +273,9 @@
 
 <!-- MODAL DE DETALLE DEL PRODUCTO (Bottom Sheet) -->
 @if(selectedProduct()) {
-  <app-modal-product 
-  [selectedProduct]="selectedProduct()!" 
-  [categoria]="getCategoria(selectedProduct()!)"
-  (close)="closeProductDetail()"
-  ></app-modal-product>
+  <app-product-details 
+    [selectedProduct]="selectedProduct()!" 
+    [categoria]="getCategoria(selectedProduct()!)"
+    (close)="this.selectedProduct.set(null)"
+  ></app-product-details>
 }

@@ -6,13 +6,13 @@ import { ProductService } from '../../core/services/product';
 import { CartService } from '../../core/services/cart';
 import { Header } from './header/header';
 import { ProductsListList } from './products-list-list/products-list-list';
-import { ModalProduct } from './modal-product/modal-product';
+import { ProductDetails } from './product-details/product-details';
 import { ProductsListGrid } from './products-list-grid/products-list-grid';
 import { LucideAngularModule, Search, Funnel, ArrowDownWideNarrow, List, LayoutGrid, Check } from 'lucide-angular';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, FormsModule, Header, ProductsListList, ProductsListGrid, ModalProduct, LucideAngularModule],
+  imports: [CommonModule, FormsModule, Header, ProductsListList, ProductsListGrid, ProductDetails, LucideAngularModule],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
@@ -110,12 +110,6 @@ export class Menu {
   openProductDetail(product: Product): void {
     this.selectedProduct.set(product);
     document.body.style.overflow = 'hidden';
-  }
-
-  // Cerrar modal (llamado por el evento del hijo)
-  closeProductDetail(): void {
-    this.selectedProduct.set(null);
-    document.body.style.overflow = 'unset';
   }
 
   ngOnInit(): void {
