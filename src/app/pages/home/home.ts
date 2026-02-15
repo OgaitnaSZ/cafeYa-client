@@ -5,6 +5,10 @@ import { Info } from '../../layout/components/info/info';
 import { 
   LucideAngularModule,
   BookOpen,
+  Zap,
+  QrCode,
+  ChefHat,
+  Sparkles
 } from 'lucide-angular';
 
 @Component({
@@ -22,4 +26,8 @@ export class Home {
 
   // Icons
   readonly BookOpen = BookOpen;
+  readonly Zap = Zap;
+  readonly QrCode = QrCode;
+  readonly ChefHat = ChefHat;
+  readonly Sparkles = Sparkles;
 }

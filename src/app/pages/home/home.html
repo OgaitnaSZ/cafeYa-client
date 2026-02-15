@@ -1,63 +1,90 @@
 <div class="min-h-full">
   
-  <!-- HERO SECTION -->
-  <section class="px-4 pt-12 pb-8 bg-linear-to-b from-amber-100 to-white">
-    <div class="max-w-md mx-auto text-center">
-      <!-- Logo de la cafetería -->
+ <!-- HERO SECTION - Modern Card Design -->
+<section class="px-4 pt-8 pb-8 bg-linear-to-b from-amber-50 to-white">
+  <div class="max-w-md mx-auto">
+    <!-- Logo pequeño arriba -->
+    <div class="flex justify-center mb-2">
       <img 
-        src="/images/logo_iso.png" 
-        alt="CafeYa" 
-        class="w-auto h-24 mx-auto mb-4 rounded-full shadow-lg"
+        src="/images/logo.png" 
+        alt="CafeYa Logo" 
+        class="w-22 h-auto"
       />
-      
-      <!-- Nombre de la cafetería -->
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">
-        Bienvenido a CafeYa
-      </h1>
-      
-      <!-- Subtitle -->
-      <p class="text-lg text-gray-600 mb-8">
-        Pedí desde tu mesa y disfrutá sin esperas
-      </p>
-      
-      <!-- Ilustración o imagen del local -->
-      <div class="
-        w-full h-48 
-        bg-linear-to-br from-amber-200 to-orange-300
-        rounded-2xl
-        mb-8
-        flex items-center justify-center
-        text-6xl
-      ">
-        ☕
+    </div>
+
+    <!-- Card con imagen -->
+    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden mb-6">
+      <!-- Imagen principal -->
+      <div class="relative h-64 overflow-hidden">
+        <img 
+          src="/images/hero_cafe.jpg" 
+          alt="CafeYa Ambiente" 
+          class="w-full h-full object-cover"
+        />
+        <!-- Badge flotante -->
+        <div class="flex items-end gap-1 absolute top-4 right-4 px-4 py-2 bg-orange-500 text-white text-sm font-bold rounded-full shadow-lg">
+          <lucide-icon [img]="Sparkles" class="text-amber-400"></lucide-icon> Nuevo
+        </div>
       </div>
-      
-      <!-- CTA Principal -->
-      <div class="space-y-3">
+
+      <!-- Contenido de la card -->
+      <div class="p-6 text-center">
+        <h1 class="text-3xl font-black text-gray-900 mb-2">
+          Bienvenido a CafeYa
+        </h1>
+        
+        <p class="text-base text-gray-600 mb-6">
+          Pedí desde tu mesa y disfrutá sin esperas
+        </p>
+
+        <!-- Features -->
+        <div class="grid grid-cols-3 gap-3 mb-6">
+          <div class="flex flex-col items-center">
+            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-2">
+              <lucide-icon [img]="Zap" class="test-2xl"></lucide-icon>
+            </div>
+            <p class="text-xs text-gray-600 font-medium">Rápido</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-2">
+              <lucide-icon [img]="ChefHat" class="test-2xl"></lucide-icon>
+            </div>
+            <p class="text-xs text-gray-600 font-medium">Fresco</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-2">
+              <lucide-icon [img]="QrCode" class="test-2xl"></lucide-icon>
+            </div>
+            <p class="text-xs text-gray-600 font-medium">Fácil</p>
+          </div>
+        </div>
+
+        <!-- CTA -->
         <button
           routerLink="/menu"
           class="
-            w-full
-            h-14
+            w-full h-14
             bg-linear-to-r from-orange-500 to-red-500
             text-white text-lg font-bold
             rounded-xl
             shadow-lg shadow-orange-500/30
             active:scale-95
             transition-transform
-            flex items-center justify-center gap-3
+            flex items-center justify-center gap-2
           "
         >
-          <lucide-icon [img]="BookOpen"></lucide-icon>
+          <lucide-icon [img]="BookOpen" class="w-5 h-5"></lucide-icon>
           Ver menú completo
         </button>
-        
-        <p class="text-xs text-gray-500">
-          Explorá nuestra carta y hacé tu pedido
-        </p>
       </div>
     </div>
-  </section>
+
+    <!-- Info adicional -->
+    <p class="text-xs text-gray-500 text-center">
+      Disfrutá de la mejor experiencia gastronómica
+    </p>
+  </div>
+</section>
 
 <!-- CÓMO FUNCIONA -->
   <section class="px-4 py-8">
