@@ -1,11 +1,10 @@
-import { Component, computed, EventEmitter, inject, input, Input, output, Output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { CartService } from '../../../core/services/cart';
 import { Categoria, Product } from '../../../core/interfaces/product';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, Minus, Plus, ShoppingCart, X } from 'lucide-angular';
 import { BottomSheet } from '../../../layout/components/bottom-sheet/bottom-sheet';
-Input 
 
 @Component({
   selector: 'app-product-details',

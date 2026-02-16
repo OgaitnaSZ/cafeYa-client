@@ -1,0 +1,230 @@
+<app-bottom-sheet 
+  [isOpen]="isOpen()"
+  (close)="close.emit()"
+>
+  <!-- Header del pedido -->
+  <div class="px-6 py-4 border-b border-gray-100">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-2xl font-bold text-gray-900">
+        Pedido #{{ selectedPedido().numero_pedido }}
+        @if(selectedPedido().estado === 'Entregado' && selectedPedido().calificacion) {
+          <div class="flex items-center gap-1 text-amber-500 mt-1">
+            @for(star of getStarsArray(selectedPedido().calificacion!.puntuacion!); track star) {
+              <lucide-icon 
+                [img]="Star" 
+                class="w-4 h-4"
+                [class.fill-amber-400]="star <= selectedPedido().calificacion!.puntuacion"
+                [class.fill-gray-200]="star > selectedPedido().calificacion!.puntuacion"
+              ></lucide-icon>
+            }
+          </div>
+        }
+      </h2>
+      <span 
+        [class]="getEstadoBadgeClass(selectedPedido().estado)"
+        class="px-3 py-1.5 text-xs font-bold rounded-full uppercase"
+      >
+        {{ getEstadoLabel(selectedPedido().estado) }}
+      </span>
+    </div>
+
+    <div class="flex items-center gap-4 text-sm text-gray-600">
+      <div class="flex items-center gap-1.5">
+        <lucide-icon [img]="Clock" class="w-4 h-4"></lucide-icon>
+        {{ formatDate(selectedPedido().fecha_pago) }}
+      </div>
+      <div class="w-1 h-1 bg-gray-300 rounded-full"></div>
+      <div class="flex items-center gap-1.5">
+        <lucide-icon [img]="MapPin" class="w-4 h-4"></lucide-icon>
+        Mesa {{ mesa().numero || "0" }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline de estado (solo para pedidos activos) -->
+  @if(selectedPedido().estado !== 'Entregado') {
+    <div class="px-6 py-5 bg-gray-50 border-b border-gray-100">
+      <div class="flex items-center justify-between relative">
+        <!-- Línea de fondo -->
+        <div class="absolute top-5 left-0 right-0 h-0.5 bg-gray-200"></div>
+        <!-- Línea de progreso -->
+        <div 
+          class="absolute top-5 left-0 h-0.5 bg-blue-500 transition-all duration-500"
+          [style.width]="getProgresoWidth(selectedPedido().estado)"
+        ></div>
+
+        <!-- Steps -->
+        <div class="flex items-center justify-between w-full relative z-10">
+          <!-- Pendiente -->
+          <div class="flex flex-col items-center">
+            <div class="
+              w-10 h-10
+              rounded-full
+              flex items-center justify-center
+              bg-yellow-500 text-white
+              shadow-md
+            ">
+              <lucide-icon [img]="Clock" class="w-5 h-5" fill="currentColor" [strokeWidth]="0"></lucide-icon>
+            </div>
+            <p class="text-xs font-medium text-gray-600 mt-2">Recibido</p>
+          </div>
+
+          <!-- En preparación -->
+          <div class="flex flex-col items-center">
+            <div 
+              class="
+                w-10 h-10
+                rounded-full
+                flex items-center justify-center
+                shadow-md
+                transition-colors
+              "
+              [class.bg-blue-500]="selectedPedido().estado === 'En preparacion'"
+              [class.text-white]="selectedPedido().estado === 'En preparacion'"
+              [class.bg-gray-200]="selectedPedido().estado === 'Pendiente'"
+              [class.text-gray-400]="selectedPedido().estado === 'Pendiente'"
+            >
+              <lucide-icon [img]="CookingPot" class="w-5 h-5"></lucide-icon>
+            </div>
+            <p class="text-xs font-medium text-gray-600 mt-2">Cocinando</p>
+          </div>
+
+          <!-- Entregado -->
+          <div class="flex flex-col items-center">
+            <div class="
+              w-10 h-10
+              bg-gray-200 text-gray-400
+              rounded-full
+              flex items-center justify-center
+              shadow-md
+            ">
+              <lucide-icon [img]="CircleCheckBig" class="w-5 h-5"></lucide-icon>
+            </div>
+            <p class="text-xs font-medium text-gray-600 mt-2">Entregado</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Lista de items -->
+  <div class="px-6 py-5">
+    <h3 class="font-bold text-gray-900 mb-4">Productos</h3>
+    
+    <div class="space-y-3">
+      @for(item of selectedPedido().productos; track item.producto.producto_id) {
+        <div class="
+          flex items-start gap-3
+          p-3
+          bg-gray-50
+          rounded-xl
+        ">
+          <!-- Foto -->
+          @if (item.producto.imagen_url) {
+            <figure class="w-14 h-14 shrink-0 rounded-lg overflow-hidden">
+              <img 
+                [src]="item.producto.imagen_url" 
+                [alt]="item.producto.nombre"
+                class="w-full h-full object-cover"
+              />
+            </figure>
+          } @else {
+            <div 
+              class="
+                w-14 h-14
+                shrink-0
+                rounded-lg
+                bg-linear-to-br from-orange-100 to-amber-100
+                flex items-center justify-center
+                text-3xl
+              "
+            >
+              {{ item.producto.emoji || '🍽️' }}
+            </div>
+          }
+
+          <!-- Info del producto -->
+          <div class="flex-1 min-w-0">
+            <h4 class="font-semibold text-gray-900 mb-0.5">
+              {{ item.producto.nombre }}
+            </h4>
+            @if(item.notas) {
+              <p class="text-xs text-gray-600 mb-1">
+                📝 {{ item.notas }}
+              </p>
+            }
+            <p class="text-xs text-gray-500">
+              ${{ item.producto.precio_unitario | number }} c/u
+            </p>
+          </div>
+
+          <!-- Precio total del item -->
+          <div class="text-right shrink-0">
+            <p class="font-bold text-gray-900">
+              <span class="font-medium text-xs text-gray-500">{{ item.cantidad }}x</span> 
+              ${{ item.producto.precio_unitario * item.cantidad | number }}
+            </p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Resumen de pago -->
+  <div class="px-6 py-5 border-t border-gray-100 bg-gray-50">
+    <div class="space-y-2">
+      <div class="flex items-center justify-between text-sm">
+        <span class="text-gray-600">Subtotal</span>
+        <span class="font-semibold text-gray-900">
+          ${{ selectedPedido().precio_total | number }}
+        </span>
+      </div>
+
+      <!-- Método de pago -->
+      <div class="flex items-center justify-between text-sm">
+        <span class="text-gray-600">Método de pago</span>
+        <span class="font-medium text-gray-700">
+          {{ getMetodoPagoLabel(selectedPedido().medio_pago) }}
+        </span>
+      </div>
+
+      <div class="border-t border-gray-200 my-2"></div>
+
+      <div class="flex items-center justify-between">
+        <span class="font-bold text-gray-900">Total</span>
+        <span class="text-2xl font-black text-orange-600">
+          ${{ selectedPedido().precio_total | number }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botones de acción -->
+  <div class="px-6 py-4 flex gap-3">
+    <button
+      (click)="close.emit()"
+      class="flex-1 h-12 bg-gray-100 text-gray-700 text-base font-bold rounded-xl active:bg-gray-200 transition"
+    >
+      Cerrar
+    </button>
+
+    @if(selectedPedido().estado === 'Entregado' && !selectedPedido().calificacion) {
+      <button
+        (click)="requestRating()"
+        class="
+          flex-2 h-12
+          bg-linear-to-r from-amber-500 to-yellow-500
+          text-white
+          font-bold
+          rounded-xl
+          active:scale-95
+          transition
+          flex items-center justify-center gap-2
+        "
+      >
+        <lucide-icon [img]="Star" class="w-5 h-5"></lucide-icon>
+        Calificar pedido
+      </button>
+    }
+  </div>
+</app-bottom-sheet >

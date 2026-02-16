@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { PedidoData } from '../../core/interfaces/pedido.model';
@@ -9,26 +9,22 @@ import { Rating } from '../../layout/components/rating/rating';
 import { CalificacionService } from '../../core/services/calificacion';
 import { 
   ChevronRight,
-  CircleCheckBig,
   Clipboard,
   Clock,
   Check,
   ChefHat,
-  CookingPot,
   LucideAngularModule,
-  MapPin,
   Star,
-  X,
   Hourglass, 
- } from 'lucide-angular';
-import { BottomSheet } from '../../layout/components/bottom-sheet/bottom-sheet';
+} from 'lucide-angular';
+import { OrderDetails } from './order-details/order-details';
 
 type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
-type MetodoPago = 'efectivo' | 'app' | 'tarjeta';
 
 @Component({
   selector: 'app-orders',
-  imports: [CommonModule, Rating, LucideAngularModule, BottomSheet],
+  standalone: true,
+  imports: [CommonModule, Rating, LucideAngularModule, OrderDetails],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -46,18 +42,16 @@ export class Orders {
   error = this.auth.errorMesa;
   loading = this.auth.loadingMesa;
   mesaDetails = this.mesaService.mesa;
-
+  
   // Datos de mesa
   pedidos = this.pedidosService.pedidosMesa;
-
-  // Modal
-  isOpen = input<boolean>(true);
+  
+  // Modals
   selectedPedido = signal<PedidoData | undefined>(undefined);
-
   showRatingModal = signal(false);
   pedidoToRate = signal<PedidoData | undefined>(undefined);
 
-  // HELPERS
+  // HELPERS DE VISTA
   getEstadoIcon(estado: EstadoPedido) {
     const icons: Record<EstadoPedido, any> = {
       "Pendiente": this.Hourglass,
@@ -94,15 +88,6 @@ export class Orders {
     return widths[estado];
   }
 
-  getMetodoPagoLabel(metodo: MetodoPago): string {
-    const labels: Record<MetodoPago, string> = {
-      efectivo: 'Efectivo',
-      tarjeta: 'Tarjeta',
-      app: 'App'
-    };
-    return labels[metodo];
-  }
-
   formatDate(dateInput: Date | string): string {
     const date = new Date(dateInput);
   
@@ -124,17 +109,26 @@ export class Orders {
     });
   }
 
+  getStarsArray(count: number): number[] {
+    return Array.from({ length: count }, (_, i) => i + 1);
+  }
+
+  // ACCIONES DE RATING
   goToRating(pedido: PedidoData, event: Event): void {
     event.stopPropagation();
     this.pedidoToRate.set(pedido);
     this.showRatingModal.set(true);
-    document.body.style.overflow = 'hidden';
+  }
+
+  handleRatingFromDetails(pedido: PedidoData): void {
+    // El hijo ya cerró su modal, solo abrimos el de rating
+    this.pedidoToRate.set(pedido);
+    this.showRatingModal.set(true);
   }
 
   closeRatingModal(): void {
     this.showRatingModal.set(false);
     this.pedidoToRate.set(undefined);
-    document.body.style.overflow = 'unset';
   }
 
   handleRatingSubmitted(calificacion: any): void {
@@ -147,18 +141,6 @@ export class Orders {
     );
   }
 
-  goToRatingFromModal(): void {
-    const pedido = this.selectedPedido();
-    if (pedido) {
-      this.selectedPedido.set(undefined);
-      this.goToRating(pedido, new Event('click'));
-    }
-  }
-
-  getStarsArray(count: number): number[] {
-    return Array.from({ length: count }, (_, i) => i + 1);
-  }
-
   // NAVEGACIÓN
   goToMenu(): void {
     this.router.navigate(['/menu']);
@@ -168,11 +150,7 @@ export class Orders {
   readonly Clipboard = Clipboard;
   readonly ChevronRight = ChevronRight;
   readonly Star = Star;
-  readonly MapPin = MapPin;
-  readonly X = X;
   readonly Clock = Clock;
-  readonly CookingPot = CookingPot;
-  readonly CircleCheckBig = CircleCheckBig;
   readonly ChefHat = ChefHat;
   readonly Check = Check;
   readonly Hourglass = Hourglass;
