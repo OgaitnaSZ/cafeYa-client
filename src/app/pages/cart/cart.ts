@@ -7,6 +7,8 @@ import {
   Banknote,
   ChevronDown,
   ChevronLeft,
+  ChevronRight,
+  Coffee,
   LucideAngularModule, 
   Minus, 
   Plus, 
@@ -14,6 +16,7 @@ import {
   Trash2
  } from 'lucide-angular';
 import { Header } from '../../layout/components/header/header';
+import { Auth } from '../../core/services/auth';
 
 @Component({
   selector: 'app-cart',
@@ -24,6 +27,7 @@ import { Header } from '../../layout/components/header/header';
 export class Cart {
   // Servicios
   private cartService = inject(CartService);
+  private authService = inject(Auth);
 
   // Estado del carrito
   cartItems = this.cartService.cart;
@@ -33,8 +37,8 @@ export class Cart {
   selectedTip = signal(10); // Porcentaje de propina por defecto
   tipOptions = [0, 5, 10, 15];
 
-  // Número de mesa (desde localStorage o servicio)
-  mesaNumber = '5'; // TODO: Obtener desde el servicio de sesión
+  // Número de mesa
+  mesaNumber = this.authService.mesa()?.numero;
 
   // COMPUTED PROPERTIES
   getTotalItems(): number {
@@ -95,9 +99,11 @@ export class Cart {
   // Icons
   readonly Trash2 = Trash2;
   readonly ChevronLeft = ChevronLeft;
+  readonly ChevronRight = ChevronRight;
   readonly ShoppingCart = ShoppingCart;
   readonly Minus = Minus;
   readonly Plus = Plus;
   readonly ChevronDown = ChevronDown;
   readonly Banknote = Banknote;
+  readonly Coffee = Coffee;
 }

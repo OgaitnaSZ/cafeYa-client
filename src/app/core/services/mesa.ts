@@ -13,7 +13,6 @@ export class MesaService {
 
   // Inject
   private http = inject(HttpClient);
-  private tokenService = inject(TokenService);
 
   // Signals de estado
   mesa = signal<Mesa | null>(null);
