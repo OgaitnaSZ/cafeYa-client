@@ -9,6 +9,7 @@ import { Table } from './pages/table/table';
 import { Orders } from './pages/orders/orders';
 import { Cart } from './pages/cart/cart';
 import { Checkout } from './pages/checkout/checkout';
+import { Legal } from './pages/legal/legal';
 
 export const routes: Routes = [
     { path: '', component: Home },
@@ -20,5 +21,6 @@ export const routes: Routes = [
     { path: 'orders', component: Orders, canActivate: [authGuard] },
     { path: 'cart', component: Cart, canActivate: [authGuard] },
     { path: 'checkout', component: Checkout, canActivate: [authGuard] },
+    { path: 'legal', component: Legal },
     { path: '**', redirectTo: '' }
 ];
