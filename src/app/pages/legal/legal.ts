@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Info } from '../../layout/components/info/info';
-import { ChevronLeft, Headset, LucideAngularModule } from 'lucide-angular';
+import { ChevronLeft, Headset, LucideAngularModule, Mail, Phone } from 'lucide-angular';
 import { Header } from '../../layout/components/header/header';
 
 @Component({
@@ -20,4 +20,6 @@ export class Legal {
   // Icons
   readonly ChevronLeft = ChevronLeft;
   readonly Headset = Headset;
+  readonly Phone = Phone;
+  readonly Mail = Mail;
 }
