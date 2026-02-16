@@ -1,12 +1,13 @@
-import { Component, ViewChildren, QueryList, ElementRef, inject, effect } from '@angular/core';
+import { Component, ViewChildren, QueryList, ElementRef, inject, effect, output, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { MesaService } from '../../core/services/mesa';
 import { LucideAngularModule, CheckCircle2, AlertCircle  } from 'lucide-angular';
+import { BottomSheet } from '../../layout/components/bottom-sheet/bottom-sheet';
 
 @Component({
   selector: 'app-validate',
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, BottomSheet],
   templateUrl: './validate.html',
   styleUrl: './validate.css',
 })
@@ -24,12 +25,13 @@ export class Validate {
   error = this.auth.errorMesa;
   loading = this.auth.loadingMesa;
   mesaDetails = this.mesaService.mesa;
+  isOpen = signal(true);
+  close = output<void>();
 
   // Variables
   mesaId: string = '';
   code: string[] = ['', '', '', ''];
   invalidIdError: boolean = false;
-  showHelpModal: boolean = false;
 
   constructor() {
     effect(() => {
@@ -136,6 +138,10 @@ export class Validate {
     return uuidRegex.test(value);
   }
 
+  handleClose(): void {
+    this.isOpen.set(false);
+    this.close.emit();
+  }
 
   // Icons
   readonly CheckCircle2 = CheckCircle2;

@@ -240,7 +240,7 @@
         <!-- Ayuda adicional -->
         <div class="mt-6 text-center">
           <button 
-            (click)="showHelpModal = true"
+            (click)="this.isOpen.set(true)"
             class="text-sm text-gray-600 underline"
           >
             ¿No encontrás el código?
@@ -252,25 +252,13 @@
 </div>
 
 <!-- MODAL DE AYUDA -->
-@if(showHelpModal){
-  <div 
-    class="fixed inset-0 bg-black/70 flex items-end sm:items-center justify-center z-50"
-    (click)="showHelpModal = false"
+@if (isOpen()){
+  <app-bottom-sheet 
+    [isOpen]="isOpen()"
+    (close)="handleClose()"
   >
-    <div 
-      class="
-        bg-white 
-        rounded-t-3xl sm:rounded-2xl 
-        p-6 
-        w-full sm:max-w-md
-        pb-safe-bottom
-      "
-      (click)="$event.stopPropagation()"
-    >
-      <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6 sm:hidden"></div>
-      
+    <div class="p-6">
       <h3 class="text-xl font-bold mb-4">¿Dónde está el código?</h3>
-      
       <div class="space-y-4 mb-6">
         <!-- Ilustración o imagen -->
         <div class="
@@ -300,7 +288,7 @@
       </div>
       
       <button 
-        (click)="showHelpModal = false"
+        (click)="handleClose()"
         class="
           w-full h-12
           bg-orange-500 text-white
@@ -312,5 +300,5 @@
         Entendido
       </button>
     </div>
-  </div>
+  </app-bottom-sheet>
 }
