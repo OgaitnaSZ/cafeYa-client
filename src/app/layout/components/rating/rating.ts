@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, inject, input, Input, output, Output, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CalificacionService } from '../../../core/services/calificacion';
@@ -19,15 +19,17 @@ import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 })
 export class Rating {
   // INPUTS
-  @Input({ required: true }) pedido!: PedidoData;
-  @Input() nombreCliente: string = 'Cliente';
-
+  pedido = input.required<PedidoData>();
+  nombreCliente = input<string>('Cliente');
+  isOpen = input<boolean>(true);
+  
   // OUTPUTS
-  @Output() ratingSubmitted = new EventEmitter<any>();
+  ratingSubmitted = output<any>();
+  close = output<void>();
 
   constructor() {
     effect(() => {
-      if (this.pedido) {
+      if (this.pedido()) {
         this.resetRating();
       }
     });
@@ -40,8 +42,6 @@ export class Rating {
   loading =  this.calificacionService.loading;
   success = this.calificacionService.success;
   error = this.calificacionService.error;
-  isOpen = input<boolean>(true);
-  close = output<void>();
 
   // Rating
   resena = signal('');
@@ -90,10 +90,10 @@ export class Rating {
     this.loading.set(true);
   
     const calificacionData = {
-      pedido_id: this.pedido.pedido_id,
+      pedido_id: this.pedido().pedido_id,
       puntuacion: this.puntuacion(),
       resena: this.resena().trim(),
-      nombre_cliente: this.nombreCliente
+      nombre_cliente: this.nombreCliente()
     };
 
     this.calificacionService.createCalificacion(calificacionData).subscribe({

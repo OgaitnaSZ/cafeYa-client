@@ -1,81 +1,82 @@
 <div class="grid grid-cols-2 gap-3">
-  <div
-    *ngFor="let product of products; trackBy: trackByProductId"
-    class="
-      bg-white
-      rounded-2xl
-      overflow-hidden
-      border border-gray-100
-      shadow-sm
-    "
-  >
-    <!-- Imagen -->
-    @if (product.imagen_url) {
-      <figure class="h-46 w-full">
-        <img 
-          (click)="openProductDetail(product)"
-          [src]="product.imagen_url" 
-          [alt]="product.nombre"
-          class="w-full h-full aspect-square object-cover cursor-pointer"
-        />
-      </figure>
-    } @else {
-      <div 
-        (click)="openProductDetail(product)"
-        class="
-          aspect-square h-46 w-full
-          bg-linear-to-br from-orange-100 to-amber-100
-          flex items-center justify-center
-          text-5xl
-          cursor-pointer
-        "
-      >
-        {{ product.emoji || '🍽️' }}
-      </div>
-    }
-    
-    <!-- Info -->
-    <div 
-      (click)="openProductDetail(product)"
-      class="p-3 cursor-pointer"
+  @for (product of products(); track product.producto_id) {
+    <div
+      class="
+        bg-white
+        rounded-2xl
+        overflow-hidden
+        border border-gray-100
+        shadow-sm
+      "
     >
-      <h3 class="font-semibold text-sm text-gray-900 mb-1 line-clamp-1">
-        {{ product.nombre }}
-      </h3>
-      <p class="text-xs text-gray-600 mb-2 line-clamp-2">
-        {{ product.descripcion }}
-      </p>
-      
-      <div class="flex items-center justify-between">
-        <span class="text-base font-bold text-orange-600">
-          ${{ product.precio_unitario | number }}
-        </span>
-        
-        <button
-          [disabled]="!product.disponibilidad"
-          (click)="addToCart(product, $event)"
+      <!-- Imagen -->
+      @if (product.imagen_url) {
+        <figure class="h-46 w-full">
+          <img 
+            (click)="openProductDetail(product)"
+            [src]="product.imagen_url" 
+            [alt]="product.nombre"
+            class="w-full h-full aspect-square object-cover cursor-pointer"
+          />
+        </figure>
+      } @else {
+        <div 
+          (click)="openProductDetail(product)"
           class="
-            w-8 h-8
-            bg-orange-500 text-white
-            rounded-full
+            aspect-square h-46 w-full
+            bg-linear-to-br from-orange-100 to-amber-100
             flex items-center justify-center
-            shadow-md
-            active:scale-95
-            disabled:opacity-30 disabled:cursor-not-allowed
-            transition
+            text-5xl
+            cursor-pointer
           "
         >
-          <lucide-icon [img]="Plus" class="w-4 h-4"></lucide-icon>
-        </button>
-      </div>
-      
-      @if(!product.disponibilidad) {
-        <span 
-          class="block text-xs text-red-600 font-medium mt-2"
-        >
-          No disponible
-        </span>
+          {{ product.emoji || '🍽️' }}
+        </div>
       }
+      
+      <!-- Info -->
+      <div 
+        (click)="openProductDetail(product)"
+        class="p-3 cursor-pointer"
+      >
+        <h3 class="font-semibold text-sm text-gray-900 mb-1 line-clamp-1">
+          {{ product.nombre }}
+        </h3>
+        <p class="text-xs text-gray-600 mb-2 line-clamp-2">
+          {{ product.descripcion }}
+        </p>
+        
+        <div class="flex items-center justify-between">
+          <span class="text-base font-bold text-orange-600">
+            ${{ product.precio_unitario | number }}
+          </span>
+          
+          <button
+            [disabled]="!product.disponibilidad"
+            (click)="addToCart(product, $event)"
+            class="
+              w-8 h-8
+              bg-orange-500 text-white
+              rounded-full
+              flex items-center justify-center
+              shadow-md
+              active:scale-95
+              disabled:opacity-30 disabled:cursor-not-allowed
+              transition
+            "
+          >
+            <lucide-icon [img]="Plus" class="w-4 h-4"></lucide-icon>
+          </button>
+        </div>
+        
+        @if(!product.disponibilidad) {
+          <span 
+            class="block text-xs text-red-600 font-medium mt-2"
+          >
+            No disponible
+          </span>
+        }
+      </div>
     </div>
-  </div>
+  }
 </div>

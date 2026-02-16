@@ -222,7 +222,7 @@
 
                   @if(pedido.estado === 'Entregado' && pedido.calificacion) {
                     <div class="flex items-center gap-1 text-amber-500">
-                      @for(star of [1,2,3,4,5]; track star) {
+                      @for(star of getStarsArray(pedido.calificacion.puntuacion); track star) {
                         <lucide-icon 
                           [img]="Star" class="w-4 h-4"
                           [class.fill-amber-400]="star <= pedido.calificacion.puntuacion"
@@ -265,6 +265,17 @@
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-2xl font-bold text-gray-900">
           Pedido #{{ selectedPedido()!.numero_pedido }}
+          @if(selectedPedido()!.estado === 'Entregado' && selectedPedido()!.calificacion) {
+            <div class="flex items-center gap-1 text-amber-500">
+              @for(star of getStarsArray(selectedPedido()!.calificacion!.puntuacion!); track star) {
+                <lucide-icon 
+                  [img]="Star" class="w-4 h-4"
+                  [class.fill-amber-400]="star <= selectedPedido()!.calificacion!.puntuacion"
+                  [class.fill-gray-200]="star > selectedPedido()!.calificacion!.puntuacion"
+                ></lucide-icon>
+              }
+            </div>
+          }
         </h2>
         <span 
           [class]="getEstadoBadgeClass(selectedPedido()!.estado)"
@@ -453,7 +464,7 @@
         Cerrar
       </button>
 
-      @if(selectedPedido()!.estado === 'Entregado') {
+      @if(selectedPedido()!.estado === 'Entregado' && !selectedPedido()!.calificacion) {
         <button
           (click)="goToRatingFromModal()"
           class="

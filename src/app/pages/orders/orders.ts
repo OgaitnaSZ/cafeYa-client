@@ -155,6 +155,10 @@ export class Orders {
     }
   }
 
+  getStarsArray(count: number): number[] {
+    return Array.from({ length: count }, (_, i) => i + 1);
+  }
+
   // NAVEGACIÓN
   goToMenu(): void {
     this.router.navigate(['/menu']);

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../../core/interfaces/product';
 import { LucideAngularModule, Plus } from 'lucide-angular';
@@ -11,11 +11,11 @@ import { LucideAngularModule, Plus } from 'lucide-angular';
 })
 export class ProductsListGrid {
   // INPUTS
-  @Input({ required: true }) products: Product[] = [];
+  products = input.required<Product[]>();
 
   // OUTPUTS
-  @Output() productClick = new EventEmitter<Product>();
-  @Output() addToCartClick = new EventEmitter<Product>();
+  productClick = output<Product>();
+  addToCartClick = output<Product>();
 
   // MÉTODOS
   openProductDetail(product: Product): void {
