@@ -23,7 +23,6 @@ export class Validate {
   // Signals
   mesa = this.auth.getMesa;
   error = this.auth.errorMesa;
-  loading = this.auth.loadingMesa;
   mesaDetails = this.mesaService.mesa;
   isOpen = signal(false);
   close = output<void>();
@@ -116,13 +115,11 @@ export class Validate {
   async validateCode(): Promise<void> {
     if (!this.isCodeComplete()) return;
     
-    this.loading.set(true);
     this.error.set('');
     
     const fullCode = this.code.join('');
   
     this.auth.authMesa({ mesa_id: this.mesaId, codigo: fullCode });
-    this.loading.set(false);
   }
 
   clearCode(): void {

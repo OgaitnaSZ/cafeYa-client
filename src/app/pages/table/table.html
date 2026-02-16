@@ -58,9 +58,33 @@
 
         <!-- Contenido de la card -->
         <div class="relative z-10">
-          <p class="text-white/70 text-sm font-medium mb-1">
-            CafeYa — Café & Brunch
-          </p>
+          <div class="flex items-center gap-3 mb-4">
+            <!-- Avatar con inicial -->
+            <div class="
+              w-12 h-12
+              bg-white/20
+              backdrop-blur-sm
+              border-2 border-white/30
+              rounded-full
+              flex items-center justify-center
+              font-black text-white text-lg
+            ">
+              {{ user()?.nombre?.charAt(0) || 'U' }}
+            </div>
+            
+            <!-- Info del usuario -->
+            <div class="flex-1">
+              <p class="text-white/70 text-xs">Hola,</p>
+              <p class="text-white text-base font-bold leading-tight">
+                {{ user()?.nombre || 'Usuario' }}
+              </p>
+            </div>
+
+            <!-- Badge de CafeYa -->
+            <div class="px-3 py-1 bg-white/10 rounded-full">
+              <p class="text-white/90 text-xs font-semibold">CafeYa</p>
+            </div>
+          </div>
 
           <!-- Número de mesa grande -->
           <div class="flex items-end gap-3 mb-4">

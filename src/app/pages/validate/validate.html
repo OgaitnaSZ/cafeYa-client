@@ -233,12 +233,12 @@
             flex items-center justify-center gap-2
           "
         >
-          @if (!loading()){
+          @if (!auth.loadingMesa()){
             <span>Validar y continuar</span>
           }
           
           <!-- Loading state -->
-          @if(loading()){
+          @if(auth.loadingMesa()){
             <div class="flex items-center gap-2">
               <div class="
                 w-5 h-5
