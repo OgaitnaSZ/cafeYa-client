@@ -224,9 +224,14 @@
             active:scale-95
             transition-all
             flex items-center justify-center gap-2"
-          [disabled]="loading()"
+          [disabled]="auth.loadingUser()"
         >
-          {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
+          @if(auth.loadingUser()) {
+            <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Cargando...</span>
+          } @else{
+            Iniciar Sesión
+          }
         </button>
       </form>
       

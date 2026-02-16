@@ -87,7 +87,7 @@ export class Auth {
     this.loadingUser.set(true);
     this.errorUser.set(null);
 
-    this.http.post<LoginResponse>(`${this.authUrl}crear`, { nombre, email, telefono }).pipe(
+    this.http.post<LoginResponse>(`${this.authUrl}crear`, { nombre, email, telefono, duracion_minutos }).pipe(
       tap((data) => {
         console.log('Respuesta de login:', data);
         this.successUser.set("Login exitoso");

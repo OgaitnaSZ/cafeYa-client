@@ -20,7 +20,6 @@ export class Login {
   // Signals
   user = this.auth.user;
   success = this.auth.successUser;
-  loading = this.auth.loadingUser;
   error = this.auth.errorUser;
 
   // Campos del formulario
@@ -28,7 +27,7 @@ export class Login {
     nombre: ['', Validators.required],
     email: ['', [Validators.email]],
     telefono: ['', [Validators.pattern(/^\d{10}$/)]],
-    duracion_minutos: [15, [Validators.required]]
+    duracion_minutos: [30, [Validators.required]]
   });
 
   duracionOptions = [
@@ -53,10 +52,8 @@ export class Login {
 
   onLogin() {
     if (this.formLogin.invalid) return this.error.set('Faltan datos.');
-    this.loading.set(true);
     const { nombre, email, telefono, duracion_minutos } = this.formLogin.getRawValue(); 
     this.auth.login(nombre, email, telefono, duracion_minutos);
-    this.loading.set(false);
   }
 
   // Icons
