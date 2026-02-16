@@ -16,6 +16,20 @@
   <!-- CONTENIDO PRINCIPAL -->
   <div class="flex-1 overflow-y-auto px-4 pt-8 pb-6">
     <div class="max-w-md mx-auto">
+      @if(this.mesaService.loading()) {
+        <div class="
+          absolute inset-0
+          bg-white/80 backdrop-blur-sm
+          flex items-center justify-center
+          z-10
+          animate-fade-in
+        ">
+          <div class="text-center">
+            <div class="w-10 h-10 border-3 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <p class="text-sm text-gray-600">Cargando...</p>
+          </div>
+        </div>
+      }
       
       <!-- Hero -->
       @if(invalidIdError){
@@ -38,7 +52,7 @@
         <p class="text-center text-gray-600 mb-8">
           {{ error() }}
         </p>
-      } @else {
+      } @else if(!this.mesaService.loading()) {
         <!-- Ícono de éxito (QR escaneado) -->
         <div class="
           w-20 h-20

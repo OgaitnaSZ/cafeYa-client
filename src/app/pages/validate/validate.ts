@@ -25,7 +25,7 @@ export class Validate {
   error = this.auth.errorMesa;
   loading = this.auth.loadingMesa;
   mesaDetails = this.mesaService.mesa;
-  isOpen = signal(true);
+  isOpen = signal(false);
   close = output<void>();
 
   // Variables
