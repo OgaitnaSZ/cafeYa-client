@@ -229,6 +229,21 @@
         {{ filteredProducts().length }} producto{{ filteredProducts().length !== 1 ? 's' : '' }}
       </p>
     </div>
+
+    @if(this.productoService.loading()) {
+      <div class="flex flex-col items-center justify-center py-24">
+        <!-- Spinner minimalista -->
+        <div class="
+          w-12 h-12
+          border-4 border-orange-200
+          border-t-orange-500
+          rounded-full
+          animate-spin
+          mb-4
+        "></div>
+        <p class="text-gray-600 text-sm">Cargando productos...</p>
+      </div>
+    }
     
     @if(viewMode() === 'list') {
       <app-products-list-list

@@ -7,6 +7,7 @@ import { TokenService } from './token';
 import { catchError, finalize, of, tap } from 'rxjs';
 import { Mesa, MesaValidate } from '../interfaces/mesa.model';
 import { MesaSession } from '../interfaces/auth.model';
+import { PedidoService } from './pedido';
 
 interface LoginResponse {
   token: string;
@@ -25,6 +26,7 @@ export class Auth {
   private http = inject(HttpClient);
   private router = inject(Router);
   private tokenService = inject(TokenService);
+  private pedidoService = inject(PedidoService);
 
   // Signals de estado
   user = signal<User | null>(this.getStoredUser());
@@ -135,7 +137,8 @@ export class Auth {
     this.token.set(null);
     this.user.set(null);
     this.mesa.set(null);
-    this.mesaSession.set(null); 
+    this.mesaSession.set(null);
+    this.pedidoService.pedidosMesa.set([]);
     this.router.navigate(['/']);
   }
 
