@@ -114,22 +114,23 @@
           Categoría
         </label>
         <div class="flex flex-wrap gap-2">
-          <button
-            *ngFor="let cat of productoService.todasLasCategorias()"
-            (click)="toggleCategoria(cat.categoria_id)"
-            [class.bg-orange-500]="isCategoriaSelected(cat.categoria_id)"
-            [class.text-white]="isCategoriaSelected(cat.categoria_id)"
-            [class.bg-gray-100]="!isCategoriaSelected(cat.categoria_id)"
-            [class.text-gray-700]="!isCategoriaSelected(cat.categoria_id)"
-            class="
-              px-3 py-1.5
-              text-sm font-medium
-              rounded-full
-              transition
-            "
-          >
-            {{ cat.emoji }} {{ cat.nombre }}
-          </button>
+          @for (cat of productoService.todasLasCategorias(); track cat){
+            <button
+              (click)="toggleCategoria(cat.categoria_id)"
+              [class.bg-orange-500]="isCategoriaSelected(cat.categoria_id)"
+              [class.text-white]="isCategoriaSelected(cat.categoria_id)"
+              [class.bg-gray-100]="!isCategoriaSelected(cat.categoria_id)"
+              [class.text-gray-700]="!isCategoriaSelected(cat.categoria_id)"
+              class="
+                px-3 py-1.5
+                text-sm font-medium
+                rounded-full
+                transition
+              "
+            >
+              {{ cat.emoji }} {{ cat.nombre }}
+            </button>
+          }
         </div>
       </div>
       
@@ -196,25 +197,26 @@
   @if(showSort()) {
     <div class="bg-white border-b border-gray-200 px-4 py-3">
       <div class="space-y-2">
-        <button
-          *ngFor="let option of sortOptions"
-          (click)="selectSort(option.value)"
-          class="
-            w-full h-10
-            px-3
-            flex items-center justify-between
-            text-sm
-            rounded-lg
-            active:bg-gray-50
-          "
-          [class.text-orange-600]="sortBy() === option.value"
-          [class.font-semibold]="sortBy() === option.value"
-        >
-          <span>{{ option.label }}</span>
-          @if(sortBy() === option.value) {
-            <lucide-icon [img]="Check" class="w-5 h-5" fill="currentColor"></lucide-icon>
-          }
-        </button>
+        @for (option of sortOptions; track option){
+          <button
+            (click)="selectSort(option.value)"
+            class="
+              w-full h-10
+              px-3
+              flex items-center justify-between
+              text-sm
+              rounded-lg
+              active:bg-gray-50
+            "
+            [class.text-orange-600]="sortBy() === option.value"
+            [class.font-semibold]="sortBy() === option.value"
+          >
+            <span>{{ option.label }}</span>
+            @if(sortBy() === option.value) {
+              <lucide-icon [img]="Check" class="w-5 h-5" fill="currentColor"></lucide-icon>
+            }
+          </button>
+        }
       </div>
     </div>
   }
