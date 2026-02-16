@@ -16,6 +16,7 @@ import {
   QrCode, 
  } from 'lucide-angular';
 import { Header } from '../../layout/components/header/header';
+import { ToastService } from '../../core/services/toast';
 
 type MetodoPago = 'efectivo' | 'app' | 'tarjeta';
 
@@ -30,6 +31,7 @@ export class Checkout {
   private cartService = inject(CartService);
   public authService = inject(Auth);
   private pedidoService = inject(PedidoService);
+  private toastService = inject(ToastService);
 
   // Signals
   pedidoNuevo = this.pedidoService.pedidoNuevo; 
@@ -79,8 +81,11 @@ export class Checkout {
     }
   
     if (this.cartItems().length === 0) {
-      alert('El carrito está vacío');
-      return;
+      this.toastService.error(
+        'El carrito está vacío',
+        'Agrega productos'
+      );
+      return
     }
   
     this.isProcessing.set(true);
@@ -114,10 +119,17 @@ export class Checkout {
       this.showConfirmation.set(true);
   
       // Vibración de éxito
+      this.toastService.success(
+        '¡Pedido confirmado!',
+        'Tu pedido está siendo preparado'
+      );
       if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
   
     } catch (error: any) {
-      // ... tu manejo de errores actual ...
+      this.toastService.error(
+        'Error al procesar pedido',
+        'Intentá nuevamente en unos momentos'
+      );
     } finally {
       this.isProcessing.set(false);
     }

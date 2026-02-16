@@ -1,6 +1,6 @@
 @if (isOpen()) {
   <div 
-    class="bottom-sheet-backdrop fixed inset-0 bg-black/50 z-50 flex items-end"
+    class="w-md bottom-sheet-backdrop absolute inset-0 bg-black/50 z-50 flex items-end"
     [class.closing]="isClosing()"
     (click)="onBackdropClick()"
   >

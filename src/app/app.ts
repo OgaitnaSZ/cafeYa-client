@@ -3,10 +3,11 @@ import { NavigationEnd, RouterOutlet } from '@angular/router';
 import { BottomBar } from './layout/bottom-bar/bottom-bar';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { ToastContainer } from './layout/components/toast/toast-container/toast-container';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, BottomBar],
+  imports: [RouterOutlet, BottomBar, ToastContainer],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
