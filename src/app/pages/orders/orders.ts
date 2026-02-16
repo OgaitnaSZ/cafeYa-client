@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PedidoData } from '../../core/interfaces/pedido.model';
 import { Auth } from '../../core/services/auth';
 import { MesaService } from '../../core/services/mesa';
@@ -24,7 +24,7 @@ type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, Rating, LucideAngularModule, OrderDetails],
+  imports: [CommonModule, RouterLink, Rating, LucideAngularModule, OrderDetails],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -140,12 +140,7 @@ export class Orders {
       calificacion
     );
   }
-
-  // NAVEGACIÓN
-  goToMenu(): void {
-    this.router.navigate(['/menu']);
-  }
-
+  
   // Icons
   readonly Clipboard = Clipboard;
   readonly ChevronRight = ChevronRight;
