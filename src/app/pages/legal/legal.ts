@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Info } from '../../layout/components/info/info';
 import { ChevronLeft, Headset, LucideAngularModule } from 'lucide-angular';
+import { Header } from '../../layout/components/header/header';
 
 @Component({
   selector: 'app-legal',
-  imports: [CommonModule, Info, RouterLink, LucideAngularModule],
+  imports: [CommonModule, Info, LucideAngularModule, Header],
   templateUrl: './legal.html',
   styleUrl: './legal.css',
 })

@@ -1,25 +1,7 @@
 <div class="h-full flex flex-col bg-gray-50 pb-14">
   
   <!-- HEADER -->
-  <header class="
-    h-14 pt-safe-top
-    px-4
-    flex items-center
-    bg-white
-    border-b border-gray-100
-    sticky top-0 z-10
-  ">
-    <button 
-      routerLink="/home"
-      class="w-10 h-10 flex items-center justify-center rounded-full active:bg-gray-100"
-    >
-      <lucide-icon [img]="ChevronLeft" class="w-6 h-6"></lucide-icon>
-    </button>
-    
-    <h1 class="flex-1 text-center text-lg font-semibold text-gray-900 pr-10">
-      Información Legal
-    </h1>
-  </header>
+  <app-header title="Información Legal" backLink="/menu" />
 
   <!-- TABS -->
   <div class="flex gap-2 px-4 py-3 bg-white border-b border-gray-100 overflow-x-auto">

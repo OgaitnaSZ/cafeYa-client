@@ -13,10 +13,11 @@ import {
   ShoppingCart, 
   Trash2
  } from 'lucide-angular';
+import { Header } from '../../layout/components/header/header';
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, RouterLink, LucideAngularModule],
+  imports: [CommonModule, RouterLink, LucideAngularModule, Header],
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
@@ -31,9 +32,6 @@ export class Cart {
   showTipSelector = signal(false);
   selectedTip = signal(10); // Porcentaje de propina por defecto
   tipOptions = [0, 5, 10, 15];
-
-  // Modal de confirmación
-  showClearConfirm = signal(false);
 
   // Número de mesa (desde localStorage o servicio)
   mesaNumber = '5'; // TODO: Obtener desde el servicio de sesión
@@ -77,15 +75,6 @@ export class Cart {
 
   removeFromCart(producto: Product): void {
     this.cartService.removeFromCart(producto);
-  }
-
-  confirmClearCart(): void {
-    this.showClearConfirm.set(true);
-  }
-
-  clearCart(): void {
-    this.cartService.clearCart();
-    this.showClearConfirm.set(false);
   }
 
   // PROPINA

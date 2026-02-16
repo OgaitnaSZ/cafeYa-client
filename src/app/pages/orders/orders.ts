@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { PedidoData } from '../../core/interfaces/pedido.model';
@@ -18,13 +18,14 @@ import {
   Hourglass, 
 } from 'lucide-angular';
 import { OrderDetails } from './order-details/order-details';
+import { BadgeConfig, Header } from '../../layout/components/header/header';
 
 type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, RouterLink, Rating, LucideAngularModule, OrderDetails],
+  imports: [CommonModule, RouterLink, Rating, LucideAngularModule, OrderDetails, Header],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
@@ -50,6 +51,25 @@ export class Orders {
   selectedPedido = signal<PedidoData | undefined>(undefined);
   showRatingModal = signal(false);
   pedidoToRate = signal<PedidoData | undefined>(undefined);
+
+  // Badge para header
+  badgeConfig = computed<BadgeConfig>(() => {
+    const pendientes = this.pedidosService.totalPedidosPendientes();
+    
+    if (pendientes > 0) {
+      return {
+        text: `${pendientes} en curso`,
+        color: 'orange',
+        pulse: true
+      };
+    }
+    
+    return {
+      text: 'Todo al día',
+      color: 'green',
+      pulse: false
+    };
+  });
 
   // HELPERS DE VISTA
   getEstadoIcon(estado: EstadoPedido) {

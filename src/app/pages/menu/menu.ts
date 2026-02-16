@@ -4,7 +4,7 @@ import { Product, Categoria } from '../../core/interfaces/product';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product';
 import { CartService } from '../../core/services/cart';
-import { Header } from './header/header';
+import { Header } from '../../layout/components/header/header';
 import { ProductsListList } from './products-list-list/products-list-list';
 import { ProductDetails } from './product-details/product-details';
 import { ProductsListGrid } from './products-list-grid/products-list-grid';

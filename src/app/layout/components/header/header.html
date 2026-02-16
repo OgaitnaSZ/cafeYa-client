@@ -1,0 +1,72 @@
+<header class="
+    h-14
+    pt-safe-top
+    px-4
+    flex items-center
+    bg-white
+    border-b border-gray-100
+    sticky top-0
+    z-40
+"
+    [class.justify-between]="backLink() || badge()"
+    [class.justify-center]="!backLink() && !badge()"
+>
+    <!-- Botón de atrás (opcional) -->
+    @if(backLink()) {
+    <button 
+        [routerLink]="backLink()"
+        class="w-10 h-10 flex items-center justify-center rounded-full active:bg-gray-100"
+    >
+        <lucide-icon [img]="ChevronLeft" class="w-6 h-6"></lucide-icon>
+    </button>
+    }
+    
+    <!-- Título -->
+    <h1 
+    class="text-lg font-semibold text-gray-900"
+    [class.flex-1]="backLink() && !badge()"
+    [class.text-center]="backLink() && !badge()"
+    [class.pr-10]="backLink() && !badge()"
+    >
+    {{ title() }}
+    </h1>
+    
+    <!-- Badge (opcional) -->
+    @if(badge()) {
+    <span 
+        class="
+        px-3 py-1
+        text-xs font-semibold
+        rounded-full
+        flex items-center gap-1.5
+        "
+        [class.bg-green-100]="badge()?.color === 'green'"
+        [class.text-green-700]="badge()?.color === 'green'"
+        [class.bg-orange-100]="badge()?.color === 'orange'"
+        [class.text-orange-700]="badge()?.color === 'orange'"
+        [class.bg-blue-100]="badge()?.color === 'blue'"
+        [class.text-blue-700]="badge()?.color === 'blue'"
+        [class.bg-red-100]="badge()?.color === 'red'"
+        [class.text-red-700]="badge()?.color === 'red'"
+        [class.bg-purple-100]="badge()?.color === 'purple'"
+        [class.text-purple-700]="badge()?.color === 'purple'"
+    >
+        @if(badge()?.pulse) {
+        <span 
+            class="w-1.5 h-1.5 rounded-full animate-pulse"
+            [class.bg-green-500]="badge()?.color === 'green'"
+            [class.bg-orange-500]="badge()?.color === 'orange'"
+            [class.bg-blue-500]="badge()?.color === 'blue'"
+            [class.bg-red-500]="badge()?.color === 'red'"
+            [class.bg-purple-500]="badge()?.color === 'purple'"
+        ></span>
+        }
+        {{ badge()?.text }}
+    </span>
+    }
+    
+    <!-- Espaciador cuando hay backLink pero no badge -->
+    @if(backLink() && !badge()) {
+    <div class="w-10"></div>
+    }
+</header>

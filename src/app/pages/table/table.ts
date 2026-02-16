@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Auth } from '../../core/services/auth';
@@ -14,11 +14,12 @@ import {
   Check,
   ChevronRight
 } from 'lucide-angular';
+import { BadgeConfig, Header } from '../../layout/components/header/header';
 
 type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
 @Component({
   selector: 'app-table',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, Header],
   templateUrl: './table.html',
   styleUrl: './table.css',
 })
@@ -43,6 +44,12 @@ export class Table {
   showCloseConfirm = signal(false);
   waiterCalled = signal(false);
   private waiterCooldownTimer: any;
+
+  badgeConfig: BadgeConfig = {
+    text: 'Sesión activa',
+    color: 'green',
+    pulse: true
+  };
 
   duracionEstimada = computed(() => {
     const user = this.user();

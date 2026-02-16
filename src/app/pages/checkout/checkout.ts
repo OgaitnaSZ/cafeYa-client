@@ -15,12 +15,13 @@ import {
   LucideAngularModule,
   QrCode, 
  } from 'lucide-angular';
+import { Header } from '../../layout/components/header/header';
 
 type MetodoPago = 'efectivo' | 'app' | 'tarjeta';
 
 @Component({
   selector: 'app-checkout',
-  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
+  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule, Header],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css',
 })
