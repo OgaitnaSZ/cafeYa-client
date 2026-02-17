@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, Minus, Plus, ShoppingCart, X } from 'lucide-angular';
 import { BottomSheet } from '../../../layout/components/bottom-sheet/bottom-sheet';
+import { ToastService } from '../../../core/services/toast';
 
 @Component({
   selector: 'app-product-details',
@@ -23,6 +24,7 @@ export class ProductDetails {
 
   // Servicios
   cartService = inject(CartService);
+  toastService = inject(ToastService);
 
   // STATE INTERNO
   modalQuantity = signal(1);
@@ -44,6 +46,8 @@ export class ProductDetails {
       this.modalQuantity(),
       this.modalNotes()
     );
+
+    this.toastService.success('Añadido al carrito',`x${this.modalQuantity()} ${product.nombre}`)
   
     this.closeProductDetail();
   }

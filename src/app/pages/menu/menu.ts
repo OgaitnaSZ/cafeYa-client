@@ -9,6 +9,7 @@ import { ProductsListList } from './products-list-list/products-list-list';
 import { ProductDetails } from './product-details/product-details';
 import { ProductsListGrid } from './products-list-grid/products-list-grid';
 import { LucideAngularModule, Search, Funnel, ArrowDownWideNarrow, List, LayoutGrid, Check } from 'lucide-angular';
+import { ToastService } from '../../core/services/toast';
 
 @Component({
   selector: 'app-menu',
@@ -20,6 +21,7 @@ export class Menu {
   // Servicios
   public productoService = inject(ProductService);
   public cartService = inject(CartService);
+  private toastService = inject(ToastService);
 
   // Signals de UI
   viewMode = signal<'list' | 'grid'>('grid');
@@ -92,18 +94,12 @@ export class Menu {
   }
 
   handleAddToCart(product: Product): void {
-    if (!product.disponibilidad) return;
+    if (!product.disponibilidad) return this.toastService.error('No hay disponibilidad',`${product.nombre}`);
 
     this.cartService.addToCart(product, 1, '');
     
-    // Feedback visual (opcional)
-    this.showAddedFeedback(product);
-  }
-
-  //Mostrar feedback al agregar al carrito
-  private showAddedFeedback(product: Product): void {
-    // TODO: Implementar toast/snackbar
-    console.log(`${product.nombre} agregado al carrito`);
+    // Feedback visual
+    this.toastService.success('Añadido al carrito',`${product.nombre}`)
   }
 
   // Modal

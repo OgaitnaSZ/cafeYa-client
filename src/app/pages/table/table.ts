@@ -15,6 +15,7 @@ import {
   ChevronRight
 } from 'lucide-angular';
 import { BadgeConfig, Header } from '../../layout/components/header/header';
+import { ToastService } from '../../core/services/toast';
 
 type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
 @Component({
@@ -29,6 +30,7 @@ export class Table {
   public auth = inject(Auth);
   public mesaService = inject(MesaService);
   public pedidosService = inject(PedidoService);
+  private toastService = inject(ToastService);
 
   // Signals
   mesa = this.auth.currentMesa;
@@ -144,6 +146,8 @@ export class Table {
     if (this.waiterCalled()) return;
 
     this.waiterCalled.set(true);
+
+    this.toastService.success('Llamando al mozo...', 'En un instante te atenderá')
     
     // Vibración de confirmación
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);

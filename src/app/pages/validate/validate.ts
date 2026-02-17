@@ -4,6 +4,7 @@ import { Auth } from '../../core/services/auth';
 import { MesaService } from '../../core/services/mesa';
 import { LucideAngularModule, CheckCircle2, AlertCircle  } from 'lucide-angular';
 import { BottomSheet } from '../../layout/components/bottom-sheet/bottom-sheet';
+import { ToastService } from '../../core/services/toast';
 
 @Component({
   selector: 'app-validate',
@@ -19,6 +20,7 @@ export class Validate {
   private router = inject(Router);
   public auth = inject(Auth);
   public mesaService = inject(MesaService);
+  private toastService = inject(ToastService);
 
   // Signals
   mesa = this.auth.getMesa;
@@ -38,6 +40,20 @@ export class Validate {
         this.router.navigate(['login']);
         this.auth.resetSuccess('mesa');
       }
+
+      if (this.auth.errorMesa()) {
+        this.toastService.error(
+          'Código incorrecto',
+          'Prueba con otro código'
+        );
+      }
+
+      if (this.mesaService.error()) {
+        this.toastService.error(
+          'ID de mesa incorrecto',
+          'Vuelve a escanear el QR'
+        );
+      }
     });
   }
 
@@ -52,10 +68,12 @@ export class Validate {
         this.invalidIdError = false;
         this.mesaId = id;
 
-        // Opcional: Obtener detalles de la mesa para mostrar en el modal de ayuda
         this.mesaService.getMesa(id);
       } else {
-        this.error.set('ID de mesa inválido. Vuelve a scanear el código QR.');
+        this.toastService.error(
+          'ID de mesa inválido',
+          'Vuelve a scanear el código QR'
+        );
         this.invalidIdError = true;
       }
     });

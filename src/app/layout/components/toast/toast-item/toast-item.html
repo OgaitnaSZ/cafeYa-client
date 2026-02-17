@@ -12,20 +12,15 @@
       [class.animate-slide-out-right]="isClosing()"
     >
       <!-- Barra de progreso superior -->
-      @if(toast.duration && toast.duration > 0) {
-        <div class="absolute top-0 left-0 right-0 h-1 bg-gray-100">
-          <div 
-            #progressBar
-            class="h-full ease-linear"
-            [class.bg-green-500]="toast.type === 'success'"
-            [class.bg-red-500]="toast.type === 'error'"
-            [class.bg-amber-500]="toast.type === 'warning'"
-            [class.bg-blue-500]="toast.type === 'info'"
-            [style.width.%]="progressWidth()"
-            [style.transition]="progressTransition()"
-          ></div>
-        </div>
-      }
+        @if(toast.duration && toast.duration > 0) {
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gray-100">
+            <div 
+                class="h-full bg-linear-to-r from-orange-500 to-red-500 ease-linear"
+                [style.width.%]="progressWidth()"
+                [style.transition]="progressTransition()"
+            ></div>
+            </div>
+        }
 
       <!-- Contenido -->
       <div class="flex items-start gap-3 p-4 pt-5">

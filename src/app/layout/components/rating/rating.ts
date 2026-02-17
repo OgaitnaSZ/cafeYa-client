@@ -10,6 +10,7 @@ import {
   X
 } from 'lucide-angular';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
+import { ToastService } from '../../../core/services/toast';
 
 @Component({
   selector: 'app-rating',
@@ -36,6 +37,7 @@ export class Rating {
   }
   // Sercvicios
   private calificacionService = inject(CalificacionService);
+  private toastService = inject(ToastService);
 
   // Estados
   calificacion = this.calificacionService.calificacion;
@@ -78,16 +80,12 @@ export class Rating {
   // SUBMIT
   submitRating(): void {
     if (this.puntuacion() === 0) {
-      this.error.set('Por favor, seleccioná una puntuación');
-      return;
+      return this.toastService.error('Selecciona una puntuación');
     }
   
     if (!this.resena().trim()) {
-      this.error.set('Por favor, escribí un comentario');
-      return;
+      return this.toastService.error('Escribí un comentario');
     }
-  
-    this.loading.set(true);
   
     const calificacionData = {
       pedido_id: this.pedido().pedido_id,
@@ -99,15 +97,12 @@ export class Rating {
     this.calificacionService.createCalificacion(calificacionData).subscribe({
       next: (calificacionResponse) => {
         this.ratingSubmitted.emit(calificacionResponse);
-        
+        this.toastService.success('Calificación enviada correctamente')
         // Cerrar el modal
         this.close.emit();
-        
-        this.loading.set(false);
       },
       error: (err) => {
-        this.error.set('Error al enviar la calificación');
-        this.loading.set(false);
+        return this.toastService.error('Error al enviar calificación');
       }
     });
   }

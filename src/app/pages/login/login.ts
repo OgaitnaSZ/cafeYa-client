@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Lock, AlertCircle, Phone, Mail, User } from 'lucide-angular';
+import { ToastService } from '../../core/services/toast';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ export class Login {
   private router = inject(Router);
   public auth = inject(Auth);
   private fb = inject(FormBuilder);
+  private toastService = inject(ToastService);
 
   // Signals
   user = this.auth.user;
@@ -42,6 +44,7 @@ export class Login {
       if (this.auth.successUser()) {
         this.router.navigate(['menu']);
         this.auth.resetSuccess('user');
+        this.toastService.success('Inicio de sesion exitoso');
       }
     });
   }
@@ -51,7 +54,7 @@ export class Login {
   }
 
   onLogin() {
-    if (this.formLogin.invalid) return this.error.set('Faltan datos.');
+    if (this.formLogin.invalid) return this.toastService.error('Faltan datos','Completa los campos requeridos');
     const { nombre, email, telefono, duracion_minutos } = this.formLogin.getRawValue(); 
     this.auth.login(nombre, email, telefono, duracion_minutos);
   }
