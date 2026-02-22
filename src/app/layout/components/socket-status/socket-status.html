@@ -1,0 +1,60 @@
+<footer class="
+  fixed bottom-0 left-0 right-0
+  bg-white border-t border-gray-200
+  safe-bottom
+  z-20
+">
+  <div class="px-4 py-3">
+    <!-- Estado de conexión -->
+    <div class="flex items-center justify-between gap-3">
+      
+      <!-- Info de conexión -->
+      <div class="flex items-center gap-2 flex-1">
+        <!-- Dot indicador -->
+        <div 
+          class="w-2 h-2 rounded-full"
+          [ngClass]="statusColor()"
+        ></div>
+        
+        <!-- Texto estado -->
+        <span class="text-xs font-medium text-gray-700">
+          {{ statusText() }}
+        </span>
+
+        <!-- Último ping (solo si conectado) -->
+        @if(isConnected() && lastPingTime()) {
+          <span class="text-[10px] text-gray-400">
+            • {{ lastPingTime()!.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) }}
+          </span>
+        }
+
+        <!-- Error message -->
+        @if(connectionError()) {
+          <span class="text-[10px] text-red-600 truncate">
+            • {{ connectionError() }}
+          </span>
+        }
+      </div>
+
+      <!-- Botón reconectar (solo si hay error o desconectado) -->
+      @if(connectionStatus() === 'error' || connectionStatus() === 'disconnected') {
+        <button
+          (click)="reconnect()"
+          class="
+            px-3 py-1.5
+            bg-orange-500 text-white
+            text-xs font-semibold
+            rounded-lg
+            active:scale-95
+            transition-all
+          "
+        >
+          Reconectar
+        </button>
+      }
+    </div>
+
+    <!-- Barra de navegación (tus botones existentes) -->
+    <!-- ... resto de tu footer ... -->
+  </div>
+</footer>
