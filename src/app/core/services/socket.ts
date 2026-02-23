@@ -24,7 +24,7 @@ export class SocketService {
 
   constructor() {
     // Auto-conectar si hay sesión activa
-    if (this.authService.isAuthenticated()) {
+    if (this.authService.isLoggedIn()) {
       this.connect();
     }
   }
@@ -114,18 +114,24 @@ export class SocketService {
   }
 
   private authenticate() {
-    if (!this.socket || !this.authService.isAuthenticated()) return;
+    if (!this.socket || !this.authService.isLoggedIn()) return;
 
     const user = this.authService.currentUser();
-    const sesion = this.authService.currentMesaSession();
+    const mesa = this.authService.currentMesa();
     const token = this.authService.getToken();
 
-    this.socket.emit('authenticate', {
+    // Enviar datos simples al backend
+    const authData = {
       userId: user?.cliente_id,
+      userName: user?.nombre,
       userRole: 'cliente',
-      mesaId: sesion?.mesa,
-      sesionId: token
-    });
+      mesaId: mesa?.mesa_id,
+      mesaNumero: mesa?.numero,
+      token: token
+    };
+
+    console.log('🔐 Autenticando con:', authData);
+    this.socket.emit('authenticate', authData);
   }
 
   disconnect() {

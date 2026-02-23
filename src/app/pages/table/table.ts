@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Auth } from '../../core/services/auth';
@@ -15,6 +15,7 @@ import {
   ChevronRight
 } from 'lucide-angular';
 import { BadgeConfig, Header } from '../../layout/components/header/header';
+import { SocketService, ConnectionStatus } from '../../core/services/socket';
 import { ToastService } from '../../core/services/toast';
 
 type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
@@ -31,6 +32,7 @@ export class Table {
   public mesaService = inject(MesaService);
   public pedidosService = inject(PedidoService);
   private toastService = inject(ToastService);
+  private socketService = inject(SocketService);
 
   // Signals
   mesa = this.auth.currentMesa;
@@ -42,16 +44,70 @@ export class Table {
   currentTime = signal(Date.now());
   mesaSession = this.auth.currentMesaSession;
 
+  // Estado de conexión del socket
+  connectionStatus = this.socketService.connectionStatus;
+  isConnected = this.socketService.isConnected;
+  reconnectAttempts = this.socketService.reconnectAttempts;
+
   // Estado UI
   showCloseConfirm = signal(false);
   waiterCalled = signal(false);
   private waiterCooldownTimer: any;
 
-  badgeConfig: BadgeConfig = {
-    text: 'Sesión activa',
-    color: 'green',
-    pulse: true
-  };
+  badgeConfig = computed<BadgeConfig>(() => {
+    const status = this.connectionStatus();
+    const attempts = this.reconnectAttempts();
+
+    switch (status) {
+      case 'connected':
+        return {
+          text: 'Conectado',
+          color: 'green',
+          pulse: true
+        };
+      
+      case 'connecting':
+        return {
+          text: attempts > 0 ? `Reconectando (${attempts})` : 'Conectando...',
+          color: 'yellow',
+          pulse: true
+        };
+      
+      case 'disconnected':
+        return {
+          text: 'Desconectado',
+          color: 'gray',
+          pulse: false
+        };
+      
+      case 'error':
+        return {
+          text: 'Sin conexión',
+          color: 'red',
+          pulse: true
+        };
+      
+      default:
+        return {
+          text: 'Desconocido',
+          color: 'gray',
+          pulse: false
+        };
+    }
+  });
+
+  constructor() {
+    effect(() => {
+      console.log('🔌 Estado socket:', this.connectionStatus(), '- Badge:', this.badgeConfig());
+    });
+  }
+
+  reconnect() {
+    this.socketService.disconnect();
+    setTimeout(() => {
+      this.socketService.connect();
+    }, 500);
+  }
 
   duracionEstimada = computed(() => {
     const user = this.user();

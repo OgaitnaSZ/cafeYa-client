@@ -5,7 +5,7 @@ import { LucideAngularModule, ChevronLeft } from 'lucide-angular';
 
 export interface BadgeConfig {
   text: string;
-  color?: 'green' | 'orange' | 'blue' | 'red' | 'purple';
+  color?: 'green' | 'orange' | 'blue' | 'red' | 'purple' | 'yellow' | 'gray';
   pulse?: boolean;
 }
 
