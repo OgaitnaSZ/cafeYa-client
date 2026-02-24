@@ -30,7 +30,7 @@
             cursor-pointer
           "
         >
-          {{ product.emoji || '🍽️' }}
+          🍽️
         </div>
       }
       
@@ -52,7 +52,7 @@
           </span>
           
           <button
-            [disabled]="!product.disponibilidad"
+            [disabled]="product.stock == 0"
             (click)="addToCart(product, $event)"
             class="
               w-8 h-8
@@ -69,7 +69,7 @@
           </button>
         </div>
         
-        @if(!product.disponibilidad) {
+        @if(product.stock < 1) {
           <span 
             class="block text-xs text-red-600 font-medium mt-2"
           >

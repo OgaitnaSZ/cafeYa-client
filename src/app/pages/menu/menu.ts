@@ -94,7 +94,7 @@ export class Menu {
   }
 
   handleAddToCart(product: Product): void {
-    if (!product.disponibilidad) return this.toastService.error('No hay disponibilidad',`${product.nombre}`);
+    if (product.stock == 0) return this.toastService.error('No hay disponibilidad',`${product.nombre}`);
 
     this.cartService.addToCart(product, 1, '');
     
@@ -176,7 +176,7 @@ export class Menu {
   addToCart(product: Product, event: Event): void {
     event.stopPropagation();
     
-    if (!product.disponibilidad) return;
+    if (product.stock == 0) return;
 
     this.cartService.addToCart(product);
   }
