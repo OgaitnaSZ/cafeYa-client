@@ -26,7 +26,7 @@
   <div class="px-6 py-6">
     <!-- Badge de disponibilidad y categoría -->
     <div class="flex items-center gap-2 mb-3">
-      @if(selectedProduct().disponibilidad) {
+      @if(selectedProduct().stock > 1) {
         <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
           ✓ Disponible
         </span>
@@ -156,7 +156,7 @@
       </button>
       
       <button
-        [disabled]="!selectedProduct().disponibilidad"
+        [disabled]="!selectedProduct().stock < 1"
         (click)="addToCartFromModal()"
         class="
           flex-2 h-14

@@ -39,7 +39,7 @@ export class ProductDetails {
   // MÉTODOS
   addToCartFromModal(): void {
     const product = this.selectedProduct();
-    if (!product || !product.disponibilidad) return;
+    if (!product || product.stock == 0) return;
   
     this.cartService.addToCart(
       product,

@@ -1,13 +1,12 @@
 export interface Product {
   producto_id: string;
   nombre: string;
-  precio_unitario: number;
   descripcion: string;
-  emoji?: string;
+  precio_unitario: number;
   imagen_url?: string;
-  disponibilidad: boolean;
   categoria_id: number;
   categoria?: Categoria;
+  stock: Number;
 }
 
 export interface Categoria {
