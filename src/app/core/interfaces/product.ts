@@ -6,7 +6,7 @@ export interface Product {
   imagen_url?: string;
   categoria_id: number;
   categoria?: Categoria;
-  stock: Number;
+  stock: number;
 }
 
 export interface Categoria {
