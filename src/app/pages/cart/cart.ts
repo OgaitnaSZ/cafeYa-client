@@ -17,6 +17,7 @@ import {
  } from 'lucide-angular';
 import { Header } from '../../layout/components/header/header';
 import { Auth } from '../../core/services/auth';
+import { ToastService } from '../../core/services/toast';
 
 @Component({
   selector: 'app-cart',
@@ -28,6 +29,7 @@ export class Cart {
   // Servicios
   private cartService = inject(CartService);
   private authService = inject(Auth);
+  private toastService = inject(ToastService);
 
   // Estado del carrito
   cartItems = this.cartService.cart;
@@ -65,6 +67,16 @@ export class Cart {
 
   // MÉTODOS DE CARRITO
   increaseQuantity(producto: Product): void {
+    const itemEnCarrito = this.cartItems().find(
+      item => item.producto.producto_id === producto.producto_id
+    );
+  
+    const cantidadActual = itemEnCarrito ? itemEnCarrito.cantidad : 0;
+  
+    if (cantidadActual >= producto.stock) {
+      return this.toastService.error( 'No hay más stock disponible');
+    }
+  
     this.cartService.addToCart(producto, 1, '');
   }
 

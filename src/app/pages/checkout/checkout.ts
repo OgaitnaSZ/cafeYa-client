@@ -76,8 +76,7 @@ export class Checkout {
   
     // Validaciones
     if (!this.user()?.cliente_id || !this.mesa()?.mesa_id) {
-      alert('Error: Faltan datos de sesión. Por favor, volvé a escanear el QR.');
-      return;
+      return this.toastService.error( 'Faltan datos de sesión.', 'Por favor, volvé a escanear el QR.' );
     }
   
     if (this.cartItems().length === 0) {
