@@ -107,7 +107,7 @@ export class Auth {
     this.loadingMesa.set(true);
     this.errorMesa.set(null);
     
-    this.http.post<Mesa>(`${this.mesaUrl}validar`, mesa, { headers: this.tokenService.createAuthHeaders()}).pipe(
+    this.http.post<Mesa>(`${this.mesaUrl}validar`, mesa).pipe(
         tap((data) => {
           this.successMesa.set("Mesa validada con exito");
           this.mesa.set(data);
@@ -123,17 +123,33 @@ export class Auth {
           this.mesaSession.set(session);
         }),
         catchError(err => {
-          const errorMessage = err.error?.error || err.error?.message || 'Error al validar mesa';
+          const errorMessage = err.error.message?.error || err.error.message?.message || 'Error al validar mesa';
           this.errorMesa.set(errorMessage);
-          console.error(err.error);
+          console.error(err.error.message);
           return of(null);
         }),
         finalize(() => this.loadingMesa.set(false))
     ).subscribe();
   }
 
+  liberarMesa(mesa_id: string){
+    this.loadingMesa.set(true);
+    this.errorMesa.set(null);
+    
+    this.http.get(`${this.mesaUrl}mesa/${mesa_id}/liberar`).pipe(
+      tap(() => {}),
+      catchError(err => {
+        this.errorMesa.set('Error al liberar mesa');
+        console.error(err);
+        return of(null);
+      }),
+      finalize(() => this.loadingMesa.set(false))
+    ).subscribe();
+  }
+
   // Logout
   logout() {
+    this.liberarMesa(this.mesa()?.mesa_id!);
     this.token.set(null);
     this.user.set(null);
     this.mesa.set(null);
