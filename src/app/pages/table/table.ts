@@ -52,7 +52,7 @@ export class Table {
   // Estado UI
   showCloseConfirm = signal(false);
   waiterCalled = signal(false);
-  private waiterCooldownTimer: any;
+  private waiterCooldownTimer: ReturnType<typeof setTimeout> | null = null;
 
   badgeConfig = computed<BadgeConfig>(() => {
     const status = this.connectionStatus();
@@ -167,9 +167,9 @@ export class Table {
     this.startDurationTimer();
   }
 
-  ngOnDestroy(): void {
-    clearInterval(this.durationTimer);
-    clearTimeout(this.waiterCooldownTimer);
+  ngOnDestroy() {
+    this.socketService.off('mozo:llamada-confirmada');
+    if (this.waiterCooldownTimer) clearTimeout(this.waiterCooldownTimer);
   }
 
   private startDurationTimer(): void {
@@ -200,17 +200,23 @@ export class Table {
   // ACCIONES
   callWaiter(): void {
     if (this.waiterCalled()) return;
-
+  
     this.waiterCalled.set(true);
-
-    this.toastService.success('Llamando al mozo...', 'En un instante te atenderá')
-    
-    // Vibración de confirmación
-    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-
-    // TODO: Enviar notificación al mozo via API/WebSocket
-
-    // Cooldown de 60 segundos para no spamear
+  
+    // Emitir evento al backend → backend lo redirige a admin-room
+    this.socketService.emit('mozo:llamada');
+  
+    // Escuchar confirmación del backend
+    this.socketService.on('mozo:llamada-confirmada', () => {
+      this.toastService.success('Llamando al mozo...', 'En un instante te atenderá');
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+  
+      // Dejar de escuchar hasta el próximo uso
+      this.socketService.off('mozo:llamada-confirmada');
+    });
+  
+    // Cooldown de 60 segundos
+    if (this.waiterCooldownTimer) clearTimeout(this.waiterCooldownTimer);
     this.waiterCooldownTimer = setTimeout(() => {
       this.waiterCalled.set(false);
     }, 60000);
