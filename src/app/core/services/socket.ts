@@ -22,7 +22,7 @@ export class SocketService {
   // Estadísticas
   reconnectAttempts = signal(0);
   connectionError = signal<string | null>(null);
-  ultimoCambioEstado = signal<{ pedido_id: string; mesa_id: string; estado: string } | null>(null);
+  ultimoCambioEstado = signal<{ pedido_id: string; numero_pedido: string; mesa_id: string; estado: string } | null>(null);
 
   constructor() {
     // Auto-conectar si hay sesión activa

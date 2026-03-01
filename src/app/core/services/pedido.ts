@@ -4,6 +4,7 @@ import { catchError, finalize, map, Observable, switchMap, tap, throwError } fro
 import { environment } from '../../../environments/environment';
 import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse, PedidoData, Calificacion } from '../interfaces/pedido.model';
 import { SocketService } from './socket';
+import { ToastService } from './toast';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class PedidoService {
 
   // Servicios
   private http = inject(HttpClient);
+  private toastService = inject(ToastService);
 
   // Signals de estado
   pedidoNuevo = signal<Pedido | null>(null);
@@ -158,7 +160,7 @@ export class PedidoService {
   }
 
   // Se ejecuta cuando se recibe la notificacion
-  actualizarEstadoPedido(data: { pedido_id: string; estado: string }) {
+  actualizarEstadoPedido(data: { pedido_id: string; numero_pedido: string; estado: string }) {
     this.pedidosMesa.update(pedidos =>
       pedidos.map(p =>
         p.pedido_id === data.pedido_id
@@ -166,6 +168,7 @@ export class PedidoService {
           : p
       )
     );
+    this.toastService.success( '¡Nuevo estado de tu pedido!.', `Tu pedido #${data.numero_pedido} está ${data.estado}.` );
   }
   
   private createPagoInternal(pagoData: CreatePagoDTO): Observable<PagoResponse> {
