@@ -69,7 +69,7 @@
             <p class="text-xs font-medium text-gray-600 mt-2">Recibido</p>
           </div>
 
-          <!-- En preparación -->
+          <!-- En_preparacion -->
           <div class="flex flex-col items-center">
             <div 
               class="
@@ -79,14 +79,28 @@
                 shadow-md
                 transition-colors
               "
-              [class.bg-blue-500]="selectedPedido().estado === 'En preparacion'"
-              [class.text-white]="selectedPedido().estado === 'En preparacion'"
+              [class.bg-blue-500]="selectedPedido().estado === 'En_preparacion'"
+              [class.text-white]="selectedPedido().estado === 'En_preparacion'"
               [class.bg-gray-200]="selectedPedido().estado === 'Pendiente'"
               [class.text-gray-400]="selectedPedido().estado === 'Pendiente'"
             >
               <lucide-icon [img]="CookingPot" class="w-5 h-5"></lucide-icon>
             </div>
             <p class="text-xs font-medium text-gray-600 mt-2">Cocinando</p>
+          </div>
+
+          <!-- Listo -->
+          <div class="flex flex-col items-center">
+            <div class="
+              w-10 h-10
+              bg-gray-200 text-gray-400
+              rounded-full
+              flex items-center justify-center
+              shadow-md
+            ">
+              <lucide-icon [img]="PackageCheck" class="w-5 h-5"></lucide-icon>
+            </div>
+            <p class="text-xs font-medium text-gray-600 mt-2">Listo</p>
           </div>
 
           <!-- Entregado -->

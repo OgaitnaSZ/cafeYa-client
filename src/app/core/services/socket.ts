@@ -2,6 +2,7 @@ import { Injectable, signal, inject, computed } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
 import { Auth } from './auth';
+import { PedidoService } from './pedido';
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
@@ -10,7 +11,7 @@ export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'er
 })
 export class SocketService {
   private authService = inject(Auth);
-  
+  private pedidosService: PedidoService | null = null;
   private socket: Socket | null = null;
   
   // Signals
@@ -21,6 +22,7 @@ export class SocketService {
   // Estadísticas
   reconnectAttempts = signal(0);
   connectionError = signal<string | null>(null);
+  ultimoCambioEstado = signal<{ pedido_id: string; mesa_id: string; estado: string } | null>(null);
 
   constructor() {
     // Auto-conectar si hay sesión activa
@@ -30,10 +32,7 @@ export class SocketService {
   }
 
   connect() {
-    if (this.socket?.connected) {
-      console.log('Socket ya conectado');
-      return;
-    }
+    if (this.socket?.connected) return;
 
     this.connectionStatus.set('connecting');
     this.connectionError.set(null);
@@ -55,32 +54,23 @@ export class SocketService {
 
     // Conexión exitosa
     this.socket.on('connect', () => {
-      console.log('✅ Socket conectado:', this.socket?.id);
       this.connectionStatus.set('connected');
       this.reconnectAttempts.set(0);
       this.connectionError.set(null);
 
-      // Autenticarse con el backend
       this.authenticate();
     });
 
     // Desconexión
     this.socket.on('disconnect', (reason) => {
-      console.log('❌ Socket desconectado:', reason);
       this.connectionStatus.set('disconnected');
     });
 
     // Error de conexión
     this.socket.on('connect_error', (error) => {
-      console.error('❌ Error de conexión:', error);
       this.connectionStatus.set('error');
       this.connectionError.set('Error al conectar con el servidor');
       this.reconnectAttempts.update(v => v + 1);
-    });
-
-    // Autenticación exitosa
-    this.socket.on('authenticated', (data) => {
-      console.log('🔐 Autenticado:', data);
     });
 
     // Pong (respuesta del servidor)
@@ -90,26 +80,23 @@ export class SocketService {
 
     // Reconexión
     this.socket.on('reconnect', (attemptNumber) => {
-      console.log('🔄 Reconectado después de', attemptNumber, 'intentos');
       this.connectionStatus.set('connected');
       this.reconnectAttempts.set(0);
       this.authenticate();
     });
 
     this.socket.on('reconnect_attempt', (attemptNumber) => {
-      console.log('🔄 Intento de reconexión:', attemptNumber);
       this.connectionStatus.set('connecting');
       this.reconnectAttempts.set(attemptNumber);
     });
 
-    this.socket.on('reconnect_error', (error) => {
-      console.error('❌ Error al reconectar:', error);
-    });
-
     this.socket.on('reconnect_failed', () => {
-      console.error('❌ Fallo total de reconexión');
       this.connectionStatus.set('error');
       this.connectionError.set('No se pudo reconectar al servidor');
+    });
+
+    this.socket.on('pedido:estado-actualizado', (data: any) => {
+      this.ultimoCambioEstado.set(data);
     });
   }
 
@@ -130,7 +117,6 @@ export class SocketService {
       token: token
     };
 
-    console.log('🔐 Autenticando con:', authData);
     this.socket.emit('authenticate', authData);
   }
 
@@ -146,16 +132,16 @@ export class SocketService {
   emit(event: string, data?: any) {
     if (this.socket?.connected) {
       this.socket.emit(event, data);
-    } else {
-      console.warn('Socket no conectado. No se puede emitir:', event);
     }
   }
 
   // Método para escuchar eventos
-  on(event: string, callback: (data: any) => void) {
-    if (this.socket) {
-      this.socket.on(event, callback);
-    }
+  initPedidosListener(pedidosService: any) {
+    this.pedidosService = pedidosService;
+  }
+
+  on<T = any>(event: string, callback: (data: T) => void) {
+    this.socket?.on(event, callback);
   }
 
   // Método para dejar de escuchar eventos

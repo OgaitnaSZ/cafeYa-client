@@ -228,7 +228,8 @@
                   <div 
                     class="h-full transition-all duration-500"
                     [class.bg-yellow-500]="pedido.estado === 'Pendiente'"
-                    [class.bg-blue-500]="pedido.estado === 'En preparacion'"
+                    [class.bg-blue-500]="pedido.estado === 'En_preparacion'"
+                    [class.bg-green-500]="pedido.estado === 'Listo'"
                     [style.width]="getProgresoWidth(pedido.estado)"
                   ></div>
                 </div>

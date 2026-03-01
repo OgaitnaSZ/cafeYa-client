@@ -1,12 +1,12 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CircleCheckBig, Clock, CookingPot, LucideAngularModule, MapPin, Star} from 'lucide-angular';
+import { CircleCheckBig, Clock, CookingPot, LucideAngularModule, MapPin, PackageCheck, Star} from 'lucide-angular';
 import { PedidoData } from '../../../core/interfaces/pedido.model';
 import { Mesa } from '../../../core/interfaces/mesa.model';
 import { BottomSheet } from '../../../layout/components/bottom-sheet/bottom-sheet';
 
 
-type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
+type EstadoPedido = 'Pendiente' | 'En_preparacion' | 'Entregado' | 'Listo';
 type MetodoPago = 'efectivo' | 'app' | 'tarjeta';
 
 @Component({
@@ -63,8 +63,9 @@ export class OrderDetails {
   
   getProgresoWidth(estado: EstadoPedido): string {
     const widths: Record<EstadoPedido, string> = {
-      "Pendiente": '33%',
-      "En preparacion": '66%',
+      "Pendiente": '5%',
+      "En_preparacion": '33%',
+      "Listo": '66%',
       "Entregado": '100%'
     };
     return widths[estado];
@@ -73,7 +74,8 @@ export class OrderDetails {
   getEstadoLabel(estado: EstadoPedido): string {
     const labels: Record<EstadoPedido, string> = {
       "Pendiente": 'Pendiente',
-      "En preparacion": 'Preparando',
+      "En_preparacion": 'Preparando',
+      "Listo": 'Listo',
       "Entregado": 'Entregado'
     };
     return labels[estado];
@@ -82,8 +84,9 @@ export class OrderDetails {
   getEstadoBadgeClass(estado: EstadoPedido): string {
     const classes: Record<EstadoPedido, string> = {
       "Pendiente": 'bg-yellow-100 text-yellow-700',
-      "En preparacion": 'bg-blue-100 text-blue-700',
-      "Entregado": 'bg-green-100 text-green-700'
+      "En_preparacion": 'bg-blue-100 text-blue-700',
+      "Listo": 'bg-green-100 text-green-700',
+      "Entregado": 'bg-orange-100 text-orange-700'
     };
     return classes[estado];
   }
@@ -104,4 +107,5 @@ export class OrderDetails {
   readonly CookingPot = CookingPot;
   readonly CircleCheckBig = CircleCheckBig;
   readonly MapPin = MapPin;
+  readonly PackageCheck = PackageCheck;
 }

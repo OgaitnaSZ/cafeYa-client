@@ -1,6 +1,5 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { MesaService } from '../../core/services/mesa';
 import { PedidoService } from '../../core/services/pedido';
@@ -15,10 +14,10 @@ import {
   ChevronRight
 } from 'lucide-angular';
 import { BadgeConfig, Header } from '../../layout/components/header/header';
-import { SocketService, ConnectionStatus } from '../../core/services/socket';
+import { SocketService } from '../../core/services/socket';
 import { ToastService } from '../../core/services/toast';
 
-type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
+type EstadoPedido = 'Pendiente' | 'En_preparacion' | 'Listo' | 'Entregado';
 @Component({
   selector: 'app-table',
   imports: [CommonModule, LucideAngularModule, Header],
@@ -27,7 +26,6 @@ type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
 })
 export class Table {
   // Servicios
-  private router = inject(Router);
   public auth = inject(Auth);
   public mesaService = inject(MesaService);
   public pedidosService = inject(PedidoService);
@@ -96,12 +94,6 @@ export class Table {
     }
   });
 
-  constructor() {
-    effect(() => {
-      console.log('🔌 Estado socket:', this.connectionStatus(), '- Badge:', this.badgeConfig());
-    });
-  }
-
   reconnect() {
     this.socketService.disconnect();
     setTimeout(() => {
@@ -157,21 +149,6 @@ export class Table {
     return `Hace ${hours} horas y ${mins} min`;
   });
 
-  ngOnInit(): void {
-    if (!this.mesaSession()) {
-      console.warn('No hay sesión activa');
-      this.router.navigate(['/']);
-      return;
-    }
-
-    this.startDurationTimer();
-  }
-
-  ngOnDestroy() {
-    this.socketService.off('mozo:llamada-confirmada');
-    if (this.waiterCooldownTimer) clearTimeout(this.waiterCooldownTimer);
-  }
-
   private startDurationTimer(): void {
     this.durationTimer = setInterval(() => {
       this.currentTime.set(Date.now());
@@ -181,18 +158,20 @@ export class Table {
   // BADGE HELPERS
   getEstadoBadgeClass(estado: EstadoPedido): string {
     const classes: Record<EstadoPedido, string> = {
-      "Pendiente":       'bg-yellow-100 text-yellow-700',
-      "En preparacion":  'bg-blue-100 text-blue-700',
-      "Entregado":       'bg-green-100 text-green-700'
+      "Pendiente": 'bg-yellow-100 text-yellow-700',
+      "En_preparacion": 'bg-blue-100 text-blue-700',
+      "Listo": 'bg-green-100 text-green-700',
+      "Entregado": 'bg-orange-100 text-orange-700'
     };
     return classes[estado];
   }
 
   getEstadoLabel(estado: EstadoPedido): string {
     const labels: Record<EstadoPedido, string> = {
-      "Pendiente":       '⏳ Pendiente',
-      "En preparacion":  '👨‍🍳 Preparando',
-      "Entregado":       '✓ Entregado'
+      "Pendiente": '⏳ Pendiente',
+      "En_preparacion": '👨‍🍳 Preparando',
+      "Listo": 'Listo',
+      "Entregado": '✓ Entregado'
     };
     return labels[estado];
   }

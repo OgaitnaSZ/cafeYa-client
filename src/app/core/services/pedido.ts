@@ -1,8 +1,9 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, finalize, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, finalize, map, Observable, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse, PedidoData, Calificacion } from '../interfaces/pedido.model';
+import { SocketService } from './socket';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class PedidoService {
   private apiUrlPedido = `${environment.apiUrl}pedido/`;
   private apiUrlPago = `${environment.apiUrl}pago/`;
 
-  // Inject
+  // Servicios
   private http = inject(HttpClient);
 
   // Signals de estado
@@ -46,9 +47,7 @@ export class PedidoService {
 
   // Computed para los totales pedidos pendientes
   readonly totalPedidosPendientes = computed(() =>
-    this.pedidosMesa()
-      .filter(pedido => pedido.estado === 'Pendiente')
-      .length
+    this.pedidosMesa().filter(p => p.estado === 'Pendiente' || p.estado === 'En_preparacion').length
   );
 
   // Computed para los totales pedidos pendientes
@@ -64,14 +63,21 @@ export class PedidoService {
   });
 
   constructor() {
-    // Efecto para mantener sincronizado localStorage
     effect(() => {
       const pedidos = this.pedidosMesa();
-      
       if (pedidos.length > 0) {
         localStorage.setItem("pedidosMesa", JSON.stringify(pedidos));
       } else {
         localStorage.removeItem("pedidosMesa");
+      }
+    });
+  }
+
+  initSocketListeners(socketService: SocketService) {
+    effect(() => {
+      const cambio = socketService.ultimoCambioEstado();
+      if (cambio) {
+        this.actualizarEstadoPedido(cambio);
       }
     });
   }
@@ -150,13 +156,24 @@ export class PedidoService {
       finalize(() => this.loadingPedido.set(false))
     );
   }
+
+  // Se ejecuta cuando se recibe la notificacion
+  actualizarEstadoPedido(data: { pedido_id: string; estado: string }) {
+    this.pedidosMesa.update(pedidos =>
+      pedidos.map(p =>
+        p.pedido_id === data.pedido_id
+          ? { ...p, estado: this.mapEstado(data.estado) }
+          : p
+      )
+    );
+  }
   
   private createPagoInternal(pagoData: CreatePagoDTO): Observable<PagoResponse> {
     this.loadingPago.set(true);
     this.errorPago.set(null);
   
     return this.http.post<PagoResponse>(`${this.apiUrlPago}crear`, pagoData).pipe(
-      tap((data) => {
+      tap(() => {
         this.successPago.set("Pago creado exitosamente");
       }),
       catchError(err => {
@@ -168,9 +185,7 @@ export class PedidoService {
     );
   }
 
-    /**
-   * Agregar calificación a un pedido en el array local
-   */
+  // Agregar calificación a un pedido en el array local
   agregarCalificacion(pedidoId: string, calificacion: Calificacion): void {
     this.pedidosMesa.update(pedidos => 
       pedidos.map(p => 
@@ -188,33 +203,28 @@ export class PedidoService {
           : p
       )
     );
-    
-    console.log('⭐ Calificación agregada al pedido:', pedidoId);
   }
 
-  /**
-   * Verificar si un pedido está calificado
-   */
+  // Verificar si un pedido está calificado
   pedidoEstaCalificado(pedidoId: string): boolean {
     const pedido = this.getPedidoById(pedidoId);
     return !!pedido?.calificacion;
   }
 
-  /**
-   * Obtener calificación de un pedido
-   */
+  // Obtener calificación de un pedido
   getCalificacion(pedidoId: string): PedidoData['calificacion'] | undefined {
     return this.getPedidoById(pedidoId)?.calificacion;
   }
 
   // Helpers
-    private mapEstado(estado: string): 'Pendiente' | 'En preparacion' | 'Entregado' {
+  private mapEstado(estado: string): 'Pendiente' | 'En_preparacion' | 'Listo' | 'Entregado' {
     switch(estado) {
       case 'Pendiente':
         return 'Pendiente';
       case 'En_preparacion':
-      case 'En preparacion':
-        return 'En preparacion';
+        return 'En_preparacion';
+      case 'Listo':
+        return 'Listo';  
       case 'Entregado':
         return 'Entregado';
       default:

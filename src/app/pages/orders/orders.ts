@@ -15,12 +15,13 @@ import {
   ChefHat,
   LucideAngularModule,
   Star,
-  Hourglass, 
+  Hourglass,
+  PackageCheck, 
 } from 'lucide-angular';
 import { OrderDetails } from './order-details/order-details';
 import { BadgeConfig, Header } from '../../layout/components/header/header';
 
-type EstadoPedido = 'Pendiente' | 'En preparacion' | 'Entregado';
+type EstadoPedido = 'Pendiente' | 'En_preparacion' | 'Listo' | 'Entregado';
 
 @Component({
   selector: 'app-orders',
@@ -75,7 +76,8 @@ export class Orders {
   getEstadoIcon(estado: EstadoPedido) {
     const icons: Record<EstadoPedido, any> = {
       "Pendiente": this.Hourglass,
-      "En preparacion": this.ChefHat,
+      "En_preparacion": this.ChefHat,
+      "Listo": this.PackageCheck,
       "Entregado": this.Check
     };
     return icons[estado];
@@ -84,8 +86,9 @@ export class Orders {
   getEstadoBadgeClass(estado: EstadoPedido): string {
     const classes: Record<EstadoPedido, string> = {
       "Pendiente": 'bg-yellow-100 text-yellow-700',
-      "En preparacion": 'bg-blue-100 text-blue-700',
-      "Entregado": 'bg-green-100 text-green-700'
+      "En_preparacion": 'bg-blue-100 text-blue-700',
+      "Listo": 'bg-green-100 text-green-700',
+      "Entregado": 'bg-orange-100 text-orange-700'
     };
     return classes[estado];
   }
@@ -93,7 +96,8 @@ export class Orders {
   getEstadoLabel(estado: EstadoPedido): string {
     const labels: Record<EstadoPedido, string> = {
       "Pendiente": 'Pendiente',
-      "En preparacion": 'Preparando',
+      "En_preparacion": 'Preparando',
+      "Listo": 'Listo',
       "Entregado": 'Entregado'
     };
     return labels[estado];
@@ -101,8 +105,9 @@ export class Orders {
 
   getProgresoWidth(estado: EstadoPedido): string {
     const widths: Record<EstadoPedido, string> = {
-      "Pendiente": '33%',
-      "En preparacion": '66%',
+      "Pendiente": '5%',
+      "En_preparacion": '33%',
+      "Listo": '66%',
       "Entregado": '100%'
     };
     return widths[estado];
@@ -141,7 +146,6 @@ export class Orders {
   }
 
   handleRatingFromDetails(pedido: PedidoData): void {
-    // El hijo ya cerró su modal, solo abrimos el de rating
     this.pedidoToRate.set(pedido);
     this.showRatingModal.set(true);
   }
@@ -169,4 +173,5 @@ export class Orders {
   readonly ChefHat = ChefHat;
   readonly Check = Check;
   readonly Hourglass = Hourglass;
+  readonly PackageCheck = PackageCheck;
 }

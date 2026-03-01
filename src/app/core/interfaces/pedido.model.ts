@@ -4,7 +4,7 @@ export interface Pedido {
   numero_pedido?: string;
   cliente_id: string;
   cliente_nombre: string;
-  estado?: 'Pendiente' | 'En preparacion' | 'Entregado';
+  estado?: 'Pendiente' | 'En_preparacion' | 'Listo' | 'Entregado';
   mesa_id: string;
   productos: CartItem[];
   precio_total?: number;
@@ -41,7 +41,7 @@ export interface PedidoData {
   mesa_id: string;
   nota: string;
   precio_total: number;
-  estado: 'Pendiente' | 'En preparacion' | 'Entregado';
+  estado: 'Pendiente' | 'En_preparacion' | 'Listo' | 'Entregado';
   productos: CartItem[];
   pedido_padre_id?: string; // Opcional
   calificacion?: Calificacion;
