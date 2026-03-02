@@ -44,7 +44,6 @@ export class Login {
       if (this.auth.successUser()) {
         this.router.navigate(['menu']);
         this.auth.resetSuccess('user');
-        this.toastService.success('Inicio de sesion exitoso');
       }
     });
   }

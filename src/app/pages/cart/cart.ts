@@ -103,11 +103,6 @@ export class Cart {
     this.showTipSelector.set(false);
   }
 
-  // TRACK BY para performance
-  trackByProductId(index: number, item: CartItem): string {
-    return item.producto.producto_id;
-  }
-
   // Icons
   readonly Trash2 = Trash2;
   readonly ChevronLeft = ChevronLeft;

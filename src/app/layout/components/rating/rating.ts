@@ -97,12 +97,8 @@ export class Rating {
     this.calificacionService.createCalificacion(calificacionData).subscribe({
       next: (calificacionResponse) => {
         this.ratingSubmitted.emit(calificacionResponse);
-        this.toastService.success('Calificación enviada correctamente')
         // Cerrar el modal
         this.close.emit();
-      },
-      error: (err) => {
-        return this.toastService.error('Error al enviar calificación');
       }
     });
   }

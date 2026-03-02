@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, forkJoin, of, tap } from 'rxjs';
 import { Categoria, Product } from '../interfaces/product';
 import { environment } from '../../../environments/environment';
+import { ToastService } from './toast';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +11,9 @@ import { environment } from '../../../environments/environment';
 export class ProductService {
   private apiUrl = `${environment.apiUrl}producto/`;
 
-  // Inject
+  // Servicios
   private http = inject(HttpClient);
+  private ts = inject(ToastService);
 
   // Signals de estado
   productos = signal<Product[]>([]);
@@ -37,7 +39,6 @@ export class ProductService {
 
   cargarDatos(): void {
     this.loading.set(true);
-    this.error.set(null);
     
     forkJoin({
       productos: this.http.get<Product[]>(`${this.apiUrl}productos`),
@@ -58,8 +59,7 @@ export class ProductService {
         this.todasLasCategorias.set(categorias);
       }),
       catchError(err => {
-        this.error.set('Error al cargar los datos');
-        console.error(err);
+        this.ts.error('Error al cargar productos', err.error.message);
         return of({ productos: [], categorias: [] });
       }),
       finalize(() => this.loading.set(false))
@@ -75,17 +75,12 @@ export class ProductService {
     this.loading.set(true);
     this.error.set(null);
 
-    console.log("cargando...");
-
     this.http.get<Product[]>(`${this.apiUrl}destacados`).pipe(
       tap((data) => {
         this.productos.set(data);
-        console.log(data);
-        this.success.set("Productos obtenidos correctamente");
       }),
       catchError(err => {
-        this.error.set('Error al obtener productos destacados');
-        console.error(err);
+        this.ts.error('Error al obtener productos destacados', err.error.message);
         return of(null);
       }),
       finalize(() => this.loading.set(false))

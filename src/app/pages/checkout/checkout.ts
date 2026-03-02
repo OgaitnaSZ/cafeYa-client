@@ -105,8 +105,7 @@ export class Checkout {
         nota: this.notaGeneral() || '',
         ...(this.pedidoPadre?.pedido_id && { pedido_padre_id: this.pedidoPadre?.pedido_id })
       };
-  
-      // ✨ Una sola llamada que maneja todo el flujo
+      
       await firstValueFrom(
         this.pedidoService.createPedidoConPago(pedidoData, this.selectedPayment()!)
       );
@@ -125,10 +124,6 @@ export class Checkout {
       if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
   
     } catch (error: any) {
-      this.toastService.error(
-        'Error al procesar pedido',
-        'Intentá nuevamente en unos momentos'
-      );
     } finally {
       this.isProcessing.set(false);
     }

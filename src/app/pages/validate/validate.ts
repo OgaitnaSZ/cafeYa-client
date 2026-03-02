@@ -40,20 +40,6 @@ export class Validate {
         this.router.navigate(['login']);
         this.auth.resetSuccess('mesa');
       }
-
-      if (this.auth.errorMesa()) {
-        this.toastService.error(
-          'Código incorrecto',
-          'Prueba con otro código'
-        );
-      }
-
-      if (this.mesaService.error()) {
-        this.toastService.error(
-          'ID de mesa incorrecto',
-          'Vuelve a escanear el QR'
-        );
-      }
     });
   }
 

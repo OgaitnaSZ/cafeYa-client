@@ -15,7 +15,7 @@ export class PedidoService {
 
   // Servicios
   private http = inject(HttpClient);
-  private toastService = inject(ToastService);
+  private ts = inject(ToastService);
 
   // Signals de estado
   pedidoNuevo = signal<Pedido | null>(null);
@@ -24,8 +24,6 @@ export class PedidoService {
   loadingPedido = signal(false);
   errorPedido = signal<string | null>(null);
   successPedido = signal<string | null>(null);
-
-  // Estados
   loadingPago = signal(false);
   errorPago = signal<string | null>(null);
   successPago = signal<string | null>(null);
@@ -93,9 +91,7 @@ export class PedidoService {
     }
   
     try {
-      const parsed = JSON.parse(stored);
-      console.log('📂 Pedidos cargados desde localStorage:', parsed.length);
-      return parsed;
+      return JSON.parse(stored);
     } catch (e) {
       console.error('Error al parsear pedidos almacenados:', e);
       return [];
@@ -104,12 +100,10 @@ export class PedidoService {
 
   createPedidoConPago(pedidoData: Pedido, metodoPago: MedioPago): Observable<{pedido: Pedido, pago: any}> {
     this.loadingPedido.set(true);
-    this.errorPedido.set(null);
   
     return this.http.post<PedidoResponse>(`${this.apiUrlPedido}crear`, pedidoData).pipe(
       tap((response) => {
         this.pedidoNuevo.set(response.pedido);
-        this.successPedido.set("Pedido creado con éxito");
       }),
       // Encadenar la creación del pago
       switchMap((pedidoResponse) => {
@@ -151,8 +145,7 @@ export class PedidoService {
         this.pedidosMesa.update(pedidos => [...pedidos, nuevoPedidoData]);
       }),
       catchError(err => {
-        this.errorPedido.set('Error al procesar pedido y pago');
-        console.error(err);
+        this.ts.error('Error al procesar pedido y pago', err.error.message);
         return throwError(() => err);
       }),
       finalize(() => this.loadingPedido.set(false))
@@ -168,20 +161,18 @@ export class PedidoService {
           : p
       )
     );
-    this.toastService.success( '¡Nuevo estado de tu pedido!.', `Tu pedido #${data.numero_pedido} está ${data.estado}.` );
+    this.ts.success( '¡Nuevo estado de tu pedido!.', `Tu pedido #${data.numero_pedido} está ${data.estado}.` );
   }
   
   private createPagoInternal(pagoData: CreatePagoDTO): Observable<PagoResponse> {
     this.loadingPago.set(true);
-    this.errorPago.set(null);
   
     return this.http.post<PagoResponse>(`${this.apiUrlPago}crear`, pagoData).pipe(
       tap(() => {
         this.successPago.set("Pago creado exitosamente");
       }),
       catchError(err => {
-        this.errorPago.set('Error al crear pago');
-        console.error(err);
+        this.ts.error('Error al procesar el pago', err.error.message);
         return throwError(() => err);
       }),
       finalize(() => this.loadingPago.set(false))

@@ -3,11 +3,11 @@ import { User } from '../interfaces/user.model';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { TokenService } from './token';
 import { catchError, finalize, of, tap } from 'rxjs';
 import { Mesa, MesaValidate } from '../interfaces/mesa.model';
 import { MesaSession } from '../interfaces/auth.model';
 import { PedidoService } from './pedido';
+import { ToastService } from './toast';
 
 interface LoginResponse {
   token: string;
@@ -25,8 +25,8 @@ export class Auth {
   // Inject
   private http = inject(HttpClient);
   private router = inject(Router);
-  private tokenService = inject(TokenService);
   private pedidoService = inject(PedidoService);
+  private ts = inject(ToastService);
 
   // Signals de estado
   user = signal<User | null>(this.getStoredUser());
@@ -85,18 +85,15 @@ export class Auth {
   // Login
   login(nombre: string, email: string, telefono: string, duracion_minutos: number): void {
     this.loadingUser.set(true);
-    this.errorUser.set(null);
 
     this.http.post<LoginResponse>(`${this.authUrl}crear`, { nombre, email, telefono, duracion_minutos }).pipe(
       tap((data) => {
-        console.log('Respuesta de login:', data);
         this.successUser.set("Login exitoso");
         this.user.set(data.user);
         this.token.set(data.token);
       }),
       catchError(err => {
-        this.errorUser.set('Error al iniciar session');
-        console.error(err);
+        this.ts.error('Error al iniciar sesión', err.error.message);
         return of(null);
       }), 
       finalize(() => this.loadingUser.set(false))
@@ -105,12 +102,12 @@ export class Auth {
 
   authMesa(mesa: MesaValidate): void {
     this.loadingMesa.set(true);
-    this.errorMesa.set(null);
     
     this.http.post<Mesa>(`${this.mesaUrl}validar`, mesa).pipe(
         tap((data) => {
           this.successMesa.set("Mesa validada con exito");
           this.mesa.set(data);
+          this.ts.success('Mesa validada con exito');
 
           const now = Date.now();
           const session: MesaSession = {
@@ -123,9 +120,7 @@ export class Auth {
           this.mesaSession.set(session);
         }),
         catchError(err => {
-          const errorMessage = err.error.message?.error || err.error.message?.message || 'Error al validar mesa';
-          this.errorMesa.set(errorMessage);
-          console.error(err.error.message);
+          this.ts.error('Error al validar mesa', err.error.message);
           return of(null);
         }),
         finalize(() => this.loadingMesa.set(false))
@@ -134,13 +129,11 @@ export class Auth {
 
   liberarMesa(mesa_id: string){
     this.loadingMesa.set(true);
-    this.errorMesa.set(null);
     
     this.http.get(`${this.mesaUrl}mesa/${mesa_id}/liberar`).pipe(
       tap(() => {}),
       catchError(err => {
-        this.errorMesa.set('Error al liberar mesa');
-        console.error(err);
+        this.ts.error('Error al liberar mesa', err.error.message);
         return of(null);
       }),
       finalize(() => this.loadingMesa.set(false))

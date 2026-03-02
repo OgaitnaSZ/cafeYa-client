@@ -1,6 +1,6 @@
 import { Component, inject, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SocketService, ConnectionStatus } from '../../../core/services/socket';
+import { SocketService } from '../../../core/services/socket';
 
 @Component({
   selector: 'app-socket-status',
