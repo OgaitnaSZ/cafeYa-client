@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -17,8 +17,7 @@ import {
  } from 'lucide-angular';
 import { Header } from '../../layout/components/header/header';
 import { ToastService } from '../../core/services/toast';
-
-type MetodoPago = 'efectivo' | 'app' | 'tarjeta';
+import { MedioPago } from '../../core/interfaces/pedido.model';
 
 @Component({
   selector: 'app-checkout',
@@ -39,7 +38,8 @@ export class Checkout {
   user = this.authService.user;
   cartItems = this.cartService.cart; // Carrito
   notaGeneral = signal(''); // Nota general del pedido
-  selectedPayment = signal<MetodoPago | null>(null); // Método de pago
+  MedioPago = MedioPago;
+  selectedPayment = signal<MedioPago | null>(null); // Método de pago
 
   pedidoPadre = this.pedidoService.pedidoPadre();
 
@@ -67,7 +67,7 @@ export class Checkout {
   }
 
   // MÉTODOS
-  selectPaymentMethod(method: MetodoPago): void {
+  selectPaymentMethod(method: MedioPago): void {
     this.selectedPayment.set(method);
   }
 

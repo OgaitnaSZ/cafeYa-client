@@ -136,10 +136,10 @@
         <div class="p-4 space-y-3">
           <!-- Opción: Efectivo -->
           <button
-            (click)="selectPaymentMethod('efectivo')"
-            [class.border-orange-500]="selectedPayment() === 'efectivo'"
-            [class.bg-orange-50]="selectedPayment() === 'efectivo'"
-            [class.border-gray-200]="selectedPayment() !== 'efectivo'"
+            (click)="selectPaymentMethod(MedioPago.Efectivo)"
+            [class.border-orange-500]="selectedPayment() === MedioPago.Efectivo"
+            [class.bg-orange-50]="selectedPayment() === MedioPago.Efectivo"
+            [class.border-gray-200]="selectedPayment() !== MedioPago.Efectivo"
             class="
               w-full
               p-4
@@ -152,8 +152,8 @@
           >
             <!-- Ícono -->
             <div 
-              [class.bg-orange-500]="selectedPayment() === 'efectivo'"
-              [class.bg-gray-100]="selectedPayment() !== 'efectivo'"
+              [class.bg-orange-500]="selectedPayment() === MedioPago.Efectivo"
+              [class.bg-gray-100]="selectedPayment() !== MedioPago.Efectivo"
               class="
                 w-12 h-12
                 rounded-xl
@@ -165,16 +165,16 @@
               <lucide-icon 
                 [img]="Banknote" 
                 class="w-6 h-6" 
-                [class.text-white]="selectedPayment() === 'efectivo'"
-                [class.text-gray-600]="selectedPayment() !== 'efectivo'"
+                [class.text-white]="selectedPayment() === MedioPago.Efectivo"
+                [class.text-gray-600]="selectedPayment() !== MedioPago.Efectivo"
               ></lucide-icon>
             </div>
 
             <!-- Info -->
             <div class="flex-1 text-left">
               <p 
-                [class.text-orange-900]="selectedPayment() === 'efectivo'"
-                [class.text-gray-900]="selectedPayment() !== 'efectivo'"
+                [class.text-orange-900]="selectedPayment() === MedioPago.Efectivo"
+                [class.text-gray-900]="selectedPayment() !== MedioPago.Efectivo"
                 class="font-bold text-sm mb-0.5"
               >
                 Efectivo
@@ -185,7 +185,7 @@
             </div>
 
             <!-- Checkmark -->
-            @if(selectedPayment() === 'efectivo') {
+            @if(selectedPayment() === MedioPago.Efectivo) {
               <div class="
                 w-6 h-6
                 bg-orange-500 text-white
@@ -200,10 +200,10 @@
 
           <!-- Opción: QR / App -->
           <button
-            (click)="selectPaymentMethod('app')"
-            [class.border-orange-500]="selectedPayment() === 'app'"
-            [class.bg-orange-50]="selectedPayment() === 'app'"
-            [class.border-gray-200]="selectedPayment() !== 'app'"
+            (click)="selectPaymentMethod(MedioPago.App)"
+            [class.border-orange-500]="selectedPayment() === MedioPago.App"
+            [class.bg-orange-50]="selectedPayment() === MedioPago.App"
+            [class.border-gray-200]="selectedPayment() !== MedioPago.App"
             class="
               w-full
               p-4
@@ -216,8 +216,8 @@
           >
             <!-- Ícono -->
             <div 
-              [class.bg-orange-500]="selectedPayment() === 'app'"
-              [class.bg-gray-100]="selectedPayment() !== 'app'"
+              [class.bg-orange-500]="selectedPayment() === MedioPago.App"
+              [class.bg-gray-100]="selectedPayment() !== MedioPago.App"
               class="
                 w-12 h-12
                 rounded-xl
@@ -229,16 +229,16 @@
                 <lucide-icon 
                   [img]="QrCode" 
                   class="w-6 h-6" 
-                  [class.text-white]="selectedPayment() === 'app'"
-                  [class.text-gray-600]="selectedPayment() !== 'app'"
+                  [class.text-white]="selectedPayment() === MedioPago.App"
+                  [class.text-gray-600]="selectedPayment() !== MedioPago.App"
                 ></lucide-icon>
             </div>
 
             <!-- Info -->
             <div class="flex-1 text-left">
               <p 
-                [class.text-orange-900]="selectedPayment() === 'app'"
-                [class.text-gray-900]="selectedPayment() !== 'app'"
+                [class.text-orange-900]="selectedPayment() === MedioPago.App"
+                [class.text-gray-900]="selectedPayment() !== MedioPago.App"
                 class="font-bold text-sm mb-0.5"
               >
                 Mercado Pago / QR
@@ -249,7 +249,7 @@
             </div>
 
             <!-- Checkmark -->
-            @if(selectedPayment() === 'app') {
+            @if(selectedPayment() === MedioPago.App) {
               <div class="
                 w-6 h-6
                 bg-orange-500 text-white
@@ -395,7 +395,7 @@
 
       <!-- Mensaje según método de pago -->
       <div class="text-center mb-6">
-        @if(selectedPayment() === 'efectivo') {
+        @if(selectedPayment() === MedioPago.Efectivo) {
           <p class="text-gray-700 mb-2">
             Tu pedido está siendo preparado.
           </p>

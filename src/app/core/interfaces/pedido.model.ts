@@ -1,14 +1,27 @@
 import { CartItem } from "./product";
+
+export enum PedidoEstado {
+  Pendiente = 'Pendiente',
+  EnPreparacion = 'En_preparacion',
+  Listo = 'Listo',
+  Entregado = 'Entregado'
+}
+
+export enum MedioPago {
+  Efectivo = 'efectivo',
+  App = 'app',
+  Tarjeta = 'tarjeta'
+}
 export interface Pedido {
   pedido_id?: string; 
   numero_pedido?: string;
   cliente_id: string;
   cliente_nombre: string;
-  estado?: 'Pendiente' | 'En_preparacion' | 'Listo' | 'Entregado';
+  estado?: PedidoEstado;
   mesa_id: string;
   productos: CartItem[];
   precio_total?: number;
-  nota: string; // Requerido (puede ser string vacío)
+  nota: string;
   pedido_padre_id?: string; // Opcional
 }
 
@@ -19,13 +32,13 @@ export interface PedidoResponse {
 
 export interface CreatePagoDTO {
   pedido_id: string;
-  medio_pago: 'efectivo' | 'app' | 'tarjeta';
+  medio_pago: MedioPago;
 }
 
 export interface PagoResponse {
   pago_id: string;
   pedido_id: string;
-  medio_de_pago: 'efectivo' | 'app' | 'tarjeta' ;
+  medio_de_pago: MedioPago ;
   monto: number;
   IVA: number;
   monto_final: number;
@@ -41,14 +54,14 @@ export interface PedidoData {
   mesa_id: string;
   nota: string;
   precio_total: number;
-  estado: 'Pendiente' | 'En_preparacion' | 'Listo' | 'Entregado';
+  estado: PedidoEstado;
   productos: CartItem[];
   pedido_padre_id?: string; // Opcional
   calificacion?: Calificacion;
   
   // Datos del pago
   pago_id: string;
-  medio_pago: 'efectivo' | 'app' | 'tarjeta';
+  medio_pago: MedioPago;
   monto: number;
   monto_final: number;
   IVA: number;

@@ -2,16 +2,23 @@ import { Injectable, signal, inject, computed } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
 import { Auth } from './auth';
-import { PedidoService } from './pedido';
+import { PedidoEstado } from '../interfaces/pedido.model';
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
+
+export interface CambioEstadoPedidoPayload {
+  pedido_id: string;
+  numero_pedido: string;
+  mesa_id: string;
+  estado: PedidoEstado;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class SocketService {
   private authService = inject(Auth);
-  private pedidosService: PedidoService | null = null;
+
   private socket: Socket | null = null;
   
   // Signals
@@ -22,7 +29,7 @@ export class SocketService {
   // Estadísticas
   reconnectAttempts = signal(0);
   connectionError = signal<string | null>(null);
-  ultimoCambioEstado = signal<{ pedido_id: string; numero_pedido: string; mesa_id: string; estado: string } | null>(null);
+  ultimoCambioEstado = signal<CambioEstadoPedidoPayload | null>(null);
 
   constructor() {
     // Auto-conectar si hay sesión activa
@@ -95,7 +102,7 @@ export class SocketService {
       this.connectionError.set('No se pudo reconectar al servidor');
     });
 
-    this.socket.on('pedido:estado-actualizado', (data: any) => {
+    this.socket.on('pedido:estado-actualizado', (data: CambioEstadoPedidoPayload) => {
       this.ultimoCambioEstado.set(data);
     });
   }
@@ -133,11 +140,6 @@ export class SocketService {
     if (this.socket?.connected) {
       this.socket.emit(event, data);
     }
-  }
-
-  // Método para escuchar eventos
-  initPedidosListener(pedidosService: any) {
-    this.pedidosService = pedidosService;
   }
 
   on<T = any>(event: string, callback: (data: T) => void) {

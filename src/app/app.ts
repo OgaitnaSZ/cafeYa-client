@@ -32,7 +32,7 @@ export class App {
       this.hideBottomBar.set(shouldHide);
     });
 
-    // Escuchar notificaciones de cambio de estados pedido en tiempo ral
+    // Escuchar notificaciones de cambio de estados de pedido en tiempo real
     effect(() => {
       const cambio = this.socketService.ultimoCambioEstado();
       if (cambio) {

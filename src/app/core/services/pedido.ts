@@ -2,8 +2,8 @@ import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, map, Observable, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse, PedidoData, Calificacion } from '../interfaces/pedido.model';
-import { SocketService } from './socket';
+import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse, PedidoData, Calificacion, PedidoEstado, MedioPago } from '../interfaces/pedido.model';
+import { CambioEstadoPedidoPayload, SocketService } from './socket';
 import { ToastService } from './toast';
 
 @Injectable({
@@ -61,7 +61,7 @@ export class PedidoService {
 
   // Computed para el total de la sesión
   totalSesion = computed(() => {
-    return this.pedidosMesa().reduce((total, pedido) => total + pedido.monto_final, 0);
+    return this.pedidosMesa().reduce((precio_total, pedido) => precio_total + pedido.precio_total, 0);
   });
 
   constructor() {
@@ -102,7 +102,7 @@ export class PedidoService {
     }
   }
 
-  createPedidoConPago(pedidoData: Pedido, metodoPago: 'efectivo' | 'app' | 'tarjeta'): Observable<{pedido: Pedido, pago: any}> {
+  createPedidoConPago(pedidoData: Pedido, metodoPago: MedioPago): Observable<{pedido: Pedido, pago: any}> {
     this.loadingPedido.set(true);
     this.errorPedido.set(null);
   
@@ -160,7 +160,7 @@ export class PedidoService {
   }
 
   // Se ejecuta cuando se recibe la notificacion
-  actualizarEstadoPedido(data: { pedido_id: string; numero_pedido: string; estado: string }) {
+  actualizarEstadoPedido(data: CambioEstadoPedidoPayload) {
     this.pedidosMesa.update(pedidos =>
       pedidos.map(p =>
         p.pedido_id === data.pedido_id
@@ -220,18 +220,18 @@ export class PedidoService {
   }
 
   // Helpers
-  private mapEstado(estado: string): 'Pendiente' | 'En_preparacion' | 'Listo' | 'Entregado' {
-    switch(estado) {
+  mapEstado(estado: string): PedidoEstado {
+    switch (estado) {
       case 'Pendiente':
-        return 'Pendiente';
+        return PedidoEstado.Pendiente;
       case 'En_preparacion':
-        return 'En_preparacion';
+        return PedidoEstado.EnPreparacion;
       case 'Listo':
-        return 'Listo';  
+        return PedidoEstado.Listo;
       case 'Entregado':
-        return 'Entregado';
+        return PedidoEstado.Entregado;
       default:
-        return 'Pendiente';
+        throw new Error('Estado inválido');
     }
   }
 
