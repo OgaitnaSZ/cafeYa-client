@@ -32,7 +32,7 @@
       }
       
       <!-- Hero -->
-      @if(invalidIdError){
+      @if(invalidIdError || mesaService.mesa() == null){
         <!-- Ícono error -->
         <div class="
           w-20 h-20
@@ -50,7 +50,7 @@
         </h2>
         
         <p class="text-center text-gray-600 mb-8">
-          {{ error() }}
+          {{ error() || "Mesa no encontrada. Llamá al mozo para solucitar ayuda." }}
         </p>
       } @else if(!this.mesaService.loading()) {
         <!-- Ícono de éxito (QR escaneado) -->
