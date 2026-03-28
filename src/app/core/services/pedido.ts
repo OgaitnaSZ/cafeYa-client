@@ -1,6 +1,6 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, finalize, map, Observable, switchMap, tap, throwError } from 'rxjs';
+import { catchError, finalize, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Pedido, CreatePagoDTO, PedidoResponse, PagoResponse, PedidoData, Calificacion, PedidoEstado, MedioPago } from '../interfaces/pedido.model';
 import { CambioEstadoPedidoPayload, SocketService } from './socket';
@@ -71,6 +71,12 @@ export class PedidoService {
         localStorage.removeItem("pedidosMesa");
       }
     });
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        this.sincronizarSiHayActivos();
+      }
+    });
   }
 
   initSocketListeners(socketService: SocketService) {
@@ -78,6 +84,56 @@ export class PedidoService {
       const cambio = socketService.ultimoCambioEstado();
       if (cambio) {
         this.actualizarEstadoPedido(cambio);
+      }
+    });
+
+    // Sincronizar estado de pedidos cuando Socket.io reconecta
+    effect(() => {
+      const reconexiones = socketService.reconectado();
+      if (reconexiones > 0) {
+        this.sincronizarSiHayActivos();
+      }
+    });
+  }
+
+  private sincronizarSiHayActivos(): void {
+    const estadosActivos: PedidoEstado[] = [
+      PedidoEstado.Pendiente,
+      PedidoEstado.EnPreparacion,
+      PedidoEstado.Listo
+    ];
+
+    const idsActivos = this.pedidosMesa()
+      .filter(p => estadosActivos.includes(p.estado))
+      .map(p => p.pedido_id);
+
+    if (idsActivos.length === 0) return; 
+
+    this.http.post<{ pedido_id: string; estado: string }[]>(
+      `${this.apiUrlPedido}sincronizar-estado`,
+      { pedido_ids: idsActivos }
+    ).pipe(
+      catchError(() => of([])) // Si falla, no romper nada
+    ).subscribe(estadosActualizados => {
+      if (estadosActualizados.length === 0) return;
+
+      let huboCambios = false;
+
+      this.pedidosMesa.update(pedidos =>
+        pedidos.map(p => {
+          const actualizado = estadosActualizados.find(e => e.pedido_id === p.pedido_id);
+          if (!actualizado) return p;
+
+          const nuevoEstado = this.mapEstado(actualizado.estado);
+          if (nuevoEstado === p.estado) return p; // Sin cambio, no tocar
+
+          huboCambios = true;
+          return { ...p, estado: nuevoEstado };
+        })
+      );
+
+      if (huboCambios) {
+        this.ts.success('Pedidos actualizados', 'Sincronizamos el estado de tus pedidos.');
       }
     });
   }

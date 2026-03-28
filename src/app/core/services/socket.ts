@@ -25,6 +25,7 @@ export class SocketService {
   connectionStatus = signal<ConnectionStatus>('disconnected');
   isConnected = computed(() => this.connectionStatus() === 'connected');
   lastPingTime = signal<Date | null>(null);
+  reconectado = signal<number>(0);
   
   // Estadísticas
   reconnectAttempts = signal(0);
@@ -90,6 +91,7 @@ export class SocketService {
       this.connectionStatus.set('connected');
       this.reconnectAttempts.set(0);
       this.authenticate();
+      this.reconectado.update(v => v + 1);
     });
 
     this.socket.on('reconnect_attempt', (attemptNumber) => {
